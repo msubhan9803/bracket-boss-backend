@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: bracket_boss_db
+    environment:
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: Password123
+      POSTGRES_DB: bracket_boss
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./volumes/db:/var/lib/postgresql/data
+    networks:
+      - bracket_boss_network
+
+networks:
+  bracket_boss_network:

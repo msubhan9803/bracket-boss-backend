@@ -4,7 +4,7 @@ import { IsNotEmpty, IsNumber, validateSync } from 'class-validator';
 class EnvironmentVariables {
   @IsNotEmpty()
   @IsNumber()
-  PORT: number;
+  APP_PORT: number;
 }
 
 export function validateEnvVariables(config: Record<string, unknown>) {
