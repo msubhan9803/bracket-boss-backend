@@ -9,6 +9,7 @@ import { validateEnvVariables } from './config/env.validation';
 import { UsersModule } from './users/users.module';
 import { join } from 'path';
 import { ClubsModule } from './clubs/clubs.module';
+import { UserManagementModule } from './user-management/user-management.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -45,6 +46,7 @@ const ENV = process.env.NODE_ENV;
     }),
     UsersModule,
     ClubsModule,
+    UserManagementModule,
   ],
   controllers: [],
   providers: [],

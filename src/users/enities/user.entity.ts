@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Field, ObjectType, ID } from '@nestjs/graphql';
 import { Club } from 'src/clubs/enities/club.entity';
+import { Role } from 'src/user-management/entities/role.entity';
 
 @ObjectType()
 @Entity()
@@ -34,8 +35,12 @@ export class User {
   profileImage?: string;
 
   @ManyToMany(() => Club, (club) => club.users)
-  @JoinTable()
+  @JoinTable({ name: 'clubs_users' })
   clubs: Club[];
+
+  @ManyToMany(() => Role, (role) => role.users)
+  @JoinTable({ name: 'roles_users' })
+  roles: Role[];
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })
