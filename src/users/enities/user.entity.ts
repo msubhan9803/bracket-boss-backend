@@ -1,5 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Club } from 'src/clubs/enities/club.entity';
 
 @ObjectType()
 @Entity()
@@ -9,10 +18,34 @@ export class User {
   id: number;
 
   @Field()
-  @Column('text')
+  @Column('varchar')
   name: string;
 
   @Field()
-  @Column('text')
+  @Column('varchar', { unique: true })
   email: string;
+
+  @Field()
+  @Column('varchar', { nullable: true })
+  password: string;
+
+  @Field({ nullable: true })
+  @Column('varchar', { nullable: true })
+  profileImage?: string;
+
+  @ManyToMany(() => Club, (club) => club.users)
+  @JoinTable()
+  clubs: Club[];
+
+  @Field()
+  @CreateDateColumn({ name: 'created_at' })
+  created_at: Date;
+
+  @Field()
+  @UpdateDateColumn({ name: 'updated_at' })
+  updated_at: Date;
+
+  constructor(user: Partial<User>) {
+    Object.assign(this, user);
+  }
 }

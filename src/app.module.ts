@@ -8,6 +8,7 @@ import configuration from './config/configuration';
 import { validateEnvVariables } from './config/env.validation';
 import { UsersModule } from './users/users.module';
 import { join } from 'path';
+import { ClubsModule } from './clubs/clubs.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -43,6 +44,7 @@ const ENV = process.env.NODE_ENV;
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     UsersModule,
+    ClubsModule,
   ],
   controllers: [],
   providers: [],
