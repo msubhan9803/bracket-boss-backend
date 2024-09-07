@@ -7,11 +7,6 @@ config({ path: envFilePath });
 
 export class SuperAdminCreation1725706999572 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Reset the sequence of the primary key (assuming the primary key is 'id')
-    await queryRunner.query(
-      `SELECT setval(pg_get_serial_sequence('user', 'id'), COALESCE(MAX(id), 0) + 1, false) FROM "user";`,
-    );
-
     // Create a super admin role if it doesn't already exist
     await queryRunner.query(`
       INSERT INTO "role" ("name", "createdDate", "updatedDate")
