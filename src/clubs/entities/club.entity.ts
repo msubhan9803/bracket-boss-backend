@@ -7,7 +7,7 @@ import {
   ManyToMany,
 } from 'typeorm';
 import { Field, ObjectType, ID } from '@nestjs/graphql';
-import { User } from 'src/users/enities/user.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @ObjectType()
 @Entity()

@@ -1,7 +1,13 @@
 import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
-import { User } from './src/users/enities/user.entity';
 import { DataSource } from 'typeorm';
+import { User } from './src/users/entities/user.entity';
+import { Club } from './src/clubs/entities/club.entity';
+import { Role } from './src/user-management/entities/role.entity';
+import { Policy } from './src/user-management/entities/policy.entity';
+import { Action } from './src/user-management/entities/action.entity';
+import { RolePolicyModule } from './src/user-management/entities/role-policy-module.entity';
+import { Module } from 'src/user-management/entities/module.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFilePath });
@@ -16,5 +22,5 @@ export default new DataSource({
   password: configService.getOrThrow<string>('DB_PASSWORD'),
   database: configService.getOrThrow<string>('DB_NAME'),
   migrations: ['migrations/**'],
-  entities: [User],
+  entities: [User, Club, Role, Policy, Module, Action, RolePolicyModule],
 });

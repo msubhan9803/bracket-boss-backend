@@ -8,7 +8,7 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Field, ObjectType, ID } from '@nestjs/graphql';
-import { Club } from 'src/clubs/enities/club.entity';
+import { Club } from 'src/clubs/entities/club.entity';
 import { Role } from 'src/user-management/entities/role.entity';
 
 @ObjectType()

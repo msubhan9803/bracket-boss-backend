@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Field, ObjectType, ID } from '@nestjs/graphql';
-import { User } from 'src/users/enities/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import { RolePolicyModule } from './role-policy-module.entity';
 
 @ObjectType()

@@ -1,5 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { User } from './enities/user.entity';
+import { User } from './entities/user.entity';
 import { UsersService } from './providers/users.service';
 import { CreateUserInput } from './dtos/create-user-input.dto';
 import { InternalServerErrorException } from '@nestjs/common';
