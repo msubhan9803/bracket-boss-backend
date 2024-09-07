@@ -6,7 +6,7 @@ import { Club } from './src/clubs/entities/club.entity';
 import { Role } from './src/user-management/entities/role.entity';
 import { Policy } from './src/user-management/entities/policy.entity';
 import { Action } from './src/user-management/entities/action.entity';
-import { RolePolicyModule } from './src/user-management/entities/role-policy-module.entity';
+import { ModulePolicyRole } from './src/user-management/entities/modules-policies-roles.entity';
 import { Module } from 'src/user-management/entities/module.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
@@ -22,5 +22,5 @@ export default new DataSource({
   password: configService.getOrThrow<string>('DB_PASSWORD'),
   database: configService.getOrThrow<string>('DB_NAME'),
   migrations: ['migrations/**'],
-  entities: [User, Club, Role, Policy, Module, Action, RolePolicyModule],
+  entities: [User, Club, Role, Policy, Module, Action, ModulePolicyRole],
 });

@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { RolePolicyModule } from './role-policy-module.entity';
+import { ModulePolicyRole } from './modules-policies-roles.entity';
 
 @Entity()
 export class Module {
@@ -22,8 +22,8 @@ export class Module {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany(() => RolePolicyModule, (rpm) => rpm.module)
-  rolePolicyModule: RolePolicyModule[];
+  @OneToMany(() => ModulePolicyRole, (rpm) => rpm.module)
+  rolePolicyModule: ModulePolicyRole[];
 
   constructor(module: Partial<Module>) {
     Object.assign(this, module);

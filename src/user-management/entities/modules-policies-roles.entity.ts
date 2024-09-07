@@ -10,7 +10,7 @@ import { Policy } from './policy.entity';
 import { Module } from './module.entity';
 
 @Entity({ name: 'modules_policies_roles' })
-export class RolePolicyModule {
+export class ModulePolicyRole {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -35,7 +35,7 @@ export class RolePolicyModule {
   @UpdateDateColumn()
   updated_at: Date;
 
-  constructor(rolePolicyModule: Partial<RolePolicyModule>) {
+  constructor(rolePolicyModule: Partial<ModulePolicyRole>) {
     Object.assign(this, rolePolicyModule);
   }
 }

@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Field, ObjectType, ID } from '@nestjs/graphql';
 import { User } from 'src/users/entities/user.entity';
-import { RolePolicyModule } from './role-policy-module.entity';
+import { ModulePolicyRole } from './modules-policies-roles.entity';
 
 @ObjectType()
 @Entity()
@@ -25,8 +25,8 @@ export class Role {
   @ManyToMany(() => User, (user) => user.roles)
   users: User[];
 
-  @OneToMany(() => RolePolicyModule, (rpm) => rpm.module)
-  rolePolicyModule: RolePolicyModule[];
+  @OneToMany(() => ModulePolicyRole, (rpm) => rpm.module)
+  rolePolicyModule: ModulePolicyRole[];
 
   @CreateDateColumn()
   createdDate: Date;

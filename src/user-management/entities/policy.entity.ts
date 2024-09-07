@@ -9,7 +9,7 @@ import {
   ManyToMany,
 } from 'typeorm';
 import { Field, ObjectType, ID } from '@nestjs/graphql';
-import { RolePolicyModule } from './role-policy-module.entity';
+import { ModulePolicyRole } from './modules-policies-roles.entity';
 import { Action } from './action.entity';
 
 @ObjectType()
@@ -23,8 +23,8 @@ export class Policy {
   @Column('text', { unique: true })
   name: string;
 
-  @OneToMany(() => RolePolicyModule, (rpm) => rpm.policy)
-  rolePolicyModule: RolePolicyModule[];
+  @OneToMany(() => ModulePolicyRole, (rpm) => rpm.policy)
+  rolePolicyModule: ModulePolicyRole[];
 
   @ManyToMany(() => Action, (action) => action.policies)
   @JoinTable({ name: 'actions_policies' })
