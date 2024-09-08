@@ -1,10 +1,9 @@
 import {
   ConflictException,
   InternalServerErrorException,
-  Request,
   UseGuards,
 } from '@nestjs/common';
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 import { UsersService } from 'src/users/providers/users.service';
 import { LoginInputDto } from './dtos/login-input.dto';
 import { AuthService } from './providers/auth.service';
@@ -49,7 +48,7 @@ export class AuthResolver {
 
   @UseGuards(RefreshJwtGuard)
   @Mutation(() => RefreshTokenResponseDto)
-  async refreshToken(@Request() req) {
+  async refreshToken(@Context('req') req) {
     try {
       return await this.authService.refreshToken(req.user);
     } catch (error) {
