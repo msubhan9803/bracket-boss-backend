@@ -7,4 +7,14 @@ export default () => ({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
   },
+  jwt: {
+    access: {
+      secretKey: process.env.JWT_ACCESS_TOKEN_KEY,
+      expiry: process.env.JWT_ACCESS_EXPIRY,
+    },
+    refresh: {
+      secretKey: process.env.JWT_REFRESH_TOKEN_KEY,
+      expiry: process.env.JWT_REFRESH_EXPIRY,
+    },
+  },
 });

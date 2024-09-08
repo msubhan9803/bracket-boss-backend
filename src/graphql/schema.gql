@@ -2,22 +2,45 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input CreateUserInput {
-  email: String!
-  name: String!
-}
-
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
+input LoginInputDto {
+  email: String!
+  password: String!
+}
+
+type LoginResponseDto {
+  tokens: RefreshTokenResponseDto!
+  user: User!
+}
+
 type Mutation {
-  createUser(input: CreateUserInput!): User!
+  login(input: LoginInputDto!): LoginResponseDto!
+  refreshToken: RefreshTokenResponseDto!
+  register(input: RegisterInputDto!): RegisterResponseDto!
 }
 
 type Query {
   getUsers: [User!]!
+}
+
+type RefreshTokenResponseDto {
+  accessToken: String!
+  expiresIn: Float!
+  refreshToken: String!
+}
+
+input RegisterInputDto {
+  email: String!
+  name: String!
+  password: String!
+}
+
+type RegisterResponseDto {
+  message: String!
 }
 
 type User {
@@ -25,7 +48,6 @@ type User {
   email: String!
   id: ID!
   name: String!
-  password: String!
   profileImage: String
   updated_at: DateTime!
 }

@@ -7,7 +7,7 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ObjectType, ID, HideField } from '@nestjs/graphql';
 import { Club } from 'src/clubs/entities/club.entity';
 import { Role } from 'src/user-management/entities/role.entity';
 
@@ -26,7 +26,7 @@ export class User {
   @Column('varchar', { unique: true })
   email: string;
 
-  @Field()
+  @HideField()
   @Column('varchar', { nullable: true })
   password: string;
 

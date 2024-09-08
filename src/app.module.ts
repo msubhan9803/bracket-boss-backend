@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { join } from 'path';
 import { ClubsModule } from './clubs/clubs.module';
 import { UserManagementModule } from './user-management/user-management.module';
+import { AuthModule } from './auth/auth.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -47,6 +48,7 @@ const ENV = process.env.NODE_ENV;
     UsersModule,
     ClubsModule,
     UserManagementModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
