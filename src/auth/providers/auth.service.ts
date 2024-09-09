@@ -29,7 +29,7 @@ export class AuthService {
 
     return {
       user,
-      tokens: {
+      authTokens: {
         accessToken: await this.jwtService.signAsync(payload, {
           expiresIn: this.configuration.jwt.access.expiry,
           secret: this.configuration.jwt.access.secretKey,

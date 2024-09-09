@@ -13,7 +13,7 @@ input LoginInputDto {
 }
 
 type LoginResponseDto {
-  tokens: RefreshTokenResponseDto!
+  authTokens: RefreshTokenResponseDto!
   user: User!
 }
 

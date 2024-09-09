@@ -8,5 +8,5 @@ export class LoginResponseDto {
   user: User;
 
   @Field()
-  tokens: RefreshTokenResponseDto;
+  authTokens: RefreshTokenResponseDto;
 }
