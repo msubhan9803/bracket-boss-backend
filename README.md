@@ -1,9 +1,34 @@
-# Prerequisites
-## Copy .env.template to your desired environment
-- .env.production <== production
-- .env.development <== development
-- .env.test <== test
+# Bracket Boss Backend app built using Nest Js
 
-# Commands to start the project:
+## ✅ Initial setup
+```bash
+# Install dependencies
+$ pnpm install
 
-docker-compose up -d
+# Copy dev env template file to .env.development (required during development)
+$ cp .env.template .env.development
+
+# Run required services using docker-compose i.e. postgres
+$ docker-compose up -d
+
+# Run migrations (refer to Migrations section)
+```
+**IMPORTANT NOTE: If you have a separate copy of Postgres installed, you must stop that Postgres instance or it will claim the port that the Docker tries to use, and you will not be able to connect to Postgres.**
+
+## Migrations
+```bash
+# Run all migrations
+$ npm run typeorm:run-migrations:dev
+
+# Run specific migration by providing name
+$ npm run typeorm:run-migrations:dev --name=SetupUserManagement1725711761726
+
+# Create new migration by providing the name of the migration
+$ npm run typeorm:create-migration --name=SetRoles
+
+# Revert all migrations
+$ npm run typeorm:revert-migrations:dev
+
+# Revert specific migration
+$ npm run typeorm:revert-migrations:dev --name=SetupUserManagement1725711761726
+```
