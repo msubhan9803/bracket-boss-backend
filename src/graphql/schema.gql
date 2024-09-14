@@ -34,6 +34,7 @@ type RefreshTokenResponseDto {
 }
 
 input RegisterInputDto {
+  clubId: Int
   email: String!
   name: String!
   password: String!

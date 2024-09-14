@@ -1,0 +1,21 @@
+import { Injectable } from '@nestjs/common';
+import { EmailSenderStrategy } from '../abstracts/email-sender-strategy.interface';
+import { MailerIdentifiers } from '../types/email-sender.types';
+import { emailMessages } from 'src/utils/messages';
+
+@Injectable()
+export class EmailSenderService {
+  constructor(private readonly emailSenderStrategy: EmailSenderStrategy) {}
+
+  async sendUserRegistration(
+    to: string,
+    username: string,
+    otp: number,
+  ): Promise<void> {
+    const subject = emailMessages.userRegistration.welcomeText;
+    const template = MailerIdentifiers.USER_REGISTRATION;
+    const data = { username, otp };
+
+    await this.emailSenderStrategy.sendEmail(to, subject, template, data);
+  }
+}

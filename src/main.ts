@@ -17,6 +17,10 @@ async function bootstrap() {
 
   await app
     .listen(port)
-    .then(() => console.log(`🚀 App running at: http://localhost:${port}`));
+    .then(() =>
+      console.log(
+        `🚀 Apollo server running at: http://localhost:${port}/graphql`,
+      ),
+    );
 }
 bootstrap();

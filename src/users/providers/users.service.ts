@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { UpdateUserInput } from '../dtos/update-user-input.dto';
 import { CreateUserDto } from '../dtos/create-user.dto';
+import messages from 'src/utils/messages';
 
 @Injectable()
 export class UsersService {
@@ -42,7 +43,7 @@ export class UsersService {
       ...updateUserInput,
     });
     if (!user) {
-      throw new Error('User not found');
+      throw new Error(messages.USER_NOT_FOUND);
     }
     return this.userRepository.save(user);
   }

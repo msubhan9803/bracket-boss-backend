@@ -17,4 +17,16 @@ export default () => ({
       expiry: process.env.JWT_REFRESH_EXPIRY,
     },
   },
+  smtp: {
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT, 10),
+    auth: {
+      user: process.env.SMTP_USERNAME,
+      password: process.env.SMTP_PASSWORD,
+    },
+  },
+  email: {
+    // add more i.e. info email, contact or support etc.
+    default: process.env.DEFAULT_EMAIL_FROM,
+  },
 });
