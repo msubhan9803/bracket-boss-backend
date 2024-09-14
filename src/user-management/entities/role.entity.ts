@@ -6,10 +6,12 @@ import {
   UpdateDateColumn,
   ManyToMany,
   OneToMany,
+  JoinTable,
 } from 'typeorm';
 import { Field, ObjectType, ID } from '@nestjs/graphql';
 import { User } from 'src/users/entities/user.entity';
 import { ModulePolicyRole } from './modules-policies-roles.entity';
+import { Step } from 'src/users-onboarding-steps/entities/step.entity';
 
 @ObjectType()
 @Entity()
@@ -27,6 +29,10 @@ export class Role {
 
   @OneToMany(() => ModulePolicyRole, (rpm) => rpm.module)
   rolePolicyModule: ModulePolicyRole[];
+
+  @ManyToMany(() => Step, (step) => step.roles)
+  @JoinTable({ name: 'roles_steps' })
+  steps: Step[];
 
   @CreateDateColumn()
   createdDate: Date;

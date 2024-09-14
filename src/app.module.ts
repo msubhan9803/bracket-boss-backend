@@ -13,6 +13,7 @@ import { UserManagementModule } from './user-management/user-management.module';
 import { AuthModule } from './auth/auth.module';
 import { EmailModule } from './email/email.module';
 import { OtpModule } from './otp/otp.module';
+import { UsersOnboardingStepsModule } from './users-onboarding-steps/users-onboarding-steps.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -53,6 +54,7 @@ const ENV = process.env.NODE_ENV;
     AuthModule,
     EmailModule,
     OtpModule,
+    UsersOnboardingStepsModule,
   ],
   controllers: [],
   providers: [],

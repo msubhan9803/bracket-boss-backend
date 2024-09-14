@@ -10,6 +10,7 @@ import {
 import { Field, ObjectType, ID, HideField } from '@nestjs/graphql';
 import { Club } from 'src/clubs/entities/club.entity';
 import { Role } from 'src/user-management/entities/role.entity';
+import { Step } from 'src/users-onboarding-steps/entities/step.entity';
 
 @ObjectType()
 @Entity()
@@ -45,6 +46,10 @@ export class User {
   @Field()
   @Column('varchar')
   otpSecret: string;
+
+  @ManyToMany(() => Step, (step) => step.users)
+  @JoinTable({ name: 'steps_users' })
+  steps: Step[];
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })
