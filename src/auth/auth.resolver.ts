@@ -14,6 +14,7 @@ import { LoginResponseDto } from './dtos/login-response.dto';
 import { RegisterResponseDto } from './dtos/register-response.dto';
 import messages from 'src/utils/messages';
 import { EmailSenderService } from 'src/email/providers/email-sender.service';
+import { OtpService } from 'src/otp/providers/otp.service';
 
 @Resolver()
 export class AuthResolver {
@@ -21,6 +22,7 @@ export class AuthResolver {
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
     private readonly emailSenderService: EmailSenderService,
+    private readonly otpService: OtpService,
   ) {}
 
   @Mutation(() => RegisterResponseDto)
@@ -31,12 +33,19 @@ export class AuthResolver {
         throw new ConflictException(messages.USER_ALREADY_EXISTS);
       }
 
-      const createdUser = await this.usersService.create(registerInput);
+      const otpSecret = this.otpService.generateSecret();
+
+      const createdUser = await this.usersService.create({
+        ...registerInput,
+        otpSecret,
+      });
+
+      const emailVerificationOtp = this.otpService.generateOtp(otpSecret);
 
       await this.emailSenderService.sendUserRegistration(
         createdUser.email,
         createdUser.name,
-        234344,
+        emailVerificationOtp,
       );
 
       return { message: messages.VERIFY_YOUR_EMAIL };

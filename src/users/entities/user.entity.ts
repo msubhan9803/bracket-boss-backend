@@ -43,6 +43,10 @@ export class User {
   roles: Role[];
 
   @Field()
+  @Column('varchar')
+  otpSecret: string;
+
+  @Field()
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;
 

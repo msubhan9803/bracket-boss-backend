@@ -49,6 +49,7 @@ type User {
   email: String!
   id: ID!
   name: String!
+  otpSecret: String!
   profileImage: String
   updated_at: DateTime!
 }

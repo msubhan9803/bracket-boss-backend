@@ -12,6 +12,7 @@ import { ClubsModule } from './clubs/clubs.module';
 import { UserManagementModule } from './user-management/user-management.module';
 import { AuthModule } from './auth/auth.module';
 import { EmailModule } from './email/email.module';
+import { OtpModule } from './otp/otp.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -51,6 +52,7 @@ const ENV = process.env.NODE_ENV;
     UserManagementModule,
     AuthModule,
     EmailModule,
+    OtpModule,
   ],
   controllers: [],
   providers: [],

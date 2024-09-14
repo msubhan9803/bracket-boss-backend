@@ -9,4 +9,7 @@ export class CreateUserDto {
 
   @IsStrongPassword({}, { message: 'Password is required' })
   password: string;
+
+  @IsString()
+  otpSecret: string;
 }

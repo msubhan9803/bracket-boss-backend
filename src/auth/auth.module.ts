@@ -4,9 +4,10 @@ import { AuthResolver } from './auth.resolver';
 import { UsersModule } from 'src/users/users.module';
 import { JwtService } from '@nestjs/jwt';
 import { EmailModule } from 'src/email/email.module';
+import { OtpModule } from 'src/otp/otp.module';
 
 @Module({
-  imports: [UsersModule, EmailModule],
+  imports: [UsersModule, EmailModule, OtpModule],
   providers: [AuthService, AuthResolver, JwtService],
 })
 export class AuthModule {}
