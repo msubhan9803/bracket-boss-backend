@@ -5,19 +5,26 @@ import { Repository } from 'typeorm';
 import { StepNames } from '../types/step.types';
 import { User } from 'src/users/entities/user.entity';
 import messages from 'src/utils/messages';
+import { Role } from 'src/user-management/entities/role.entity';
 
 @Injectable()
 export class UsersOnboardingStepsService {
   constructor(
     @InjectRepository(Step)
     private stepRepository: Repository<Step>,
-
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Role)
+    private roleRepository: Repository<Role>,
   ) {}
 
-  findAlByRole(): Promise<Step[]> {
-    return this.stepRepository.find();
+  async findAlByRole(roleId: number): Promise<Step[]> {
+    const role = await this.roleRepository.findOne({
+      where: { id: roleId },
+      relations: ['steps'],
+    });
+
+    return role.steps;
   }
 
   findOneByStepName(name: StepNames): Promise<Step> {

@@ -1,9 +1,9 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsString } from 'class-validator';
+import { IsNumber } from 'class-validator';
 
 @InputType()
 export class StepsByRoleDto {
   @Field()
-  @IsString()
-  role: string;
+  @IsNumber()
+  roleId: number;
 }

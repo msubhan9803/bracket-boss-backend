@@ -16,8 +16,9 @@ export class UsersOnboardingStepsResolver {
   @Query(() => [Step])
   async getAllStepsByRole(@Args('input') stepsByRoleDto: StepsByRoleDto) {
     try {
-      console.log('stepsByRoleDto: ', stepsByRoleDto);
-      return await this.usersOnboardingStepsService.findAlByRole();
+      return await this.usersOnboardingStepsService.findAlByRole(
+        stepsByRoleDto.roleId,
+      );
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }

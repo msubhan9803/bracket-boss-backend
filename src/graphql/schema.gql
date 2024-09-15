@@ -60,7 +60,7 @@ enum StepNames {
 }
 
 input StepsByRoleDto {
-  role: String!
+  roleId: Float!
 }
 
 input StepsOfUserDto {
