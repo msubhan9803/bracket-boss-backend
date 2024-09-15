@@ -7,9 +7,14 @@ import {
   ManyToMany,
 } from 'typeorm';
 import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { registerEnumType } from '@nestjs/graphql';
 import { User } from 'src/users/entities/user.entity';
 import { Role } from 'src/user-management/entities/role.entity';
 import { StepNames } from '../types/step.types';
+
+registerEnumType(StepNames, {
+  name: 'StepNames',
+});
 
 @ObjectType()
 @Entity()

@@ -24,6 +24,8 @@ type Mutation {
 }
 
 type Query {
+  getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
+  getStepsOfUser(input: StepsOfUserDto!): [Step!]!
   getUsers: [User!]!
 }
 
@@ -42,6 +44,27 @@ input RegisterInputDto {
 
 type RegisterResponseDto {
   message: String!
+}
+
+type Step {
+  id: ID!
+  name: StepNames!
+}
+
+enum StepNames {
+  CLUB_INFORMATION_INSERTION
+  CLUB_SELECTION
+  EMAIL_VERIFICATION
+  REGISTRATION
+  USER_TYPE_SELECTION
+}
+
+input StepsByRoleDto {
+  role: String!
+}
+
+input StepsOfUserDto {
+  userId: Float!
 }
 
 type User {
