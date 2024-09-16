@@ -1,6 +1,7 @@
 import {
   ConflictException,
   InternalServerErrorException,
+  NotFoundException,
   UseGuards,
 } from '@nestjs/common';
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
@@ -11,12 +12,14 @@ import { RegisterInputDto } from './dtos/register-input.dto';
 import { RefreshJwtGuard } from './guards/refresh.guard';
 import { RefreshTokenResponseDto } from './dtos/refresh-token-response.dto';
 import { LoginResponseDto } from './dtos/login-response.dto';
-import { RegisterResponseDto } from './dtos/register-response.dto';
+import { MessageResponseDto } from './dtos/message-response.dto';
 import messages from 'src/utils/messages';
 import { EmailSenderService } from 'src/email/providers/email-sender.service';
 import { OtpService } from 'src/otp/providers/otp.service';
 import { UsersOnboardingStepsService } from 'src/users-onboarding-steps/providers/users-onboarding-steps.service';
 import { StepNames } from 'src/users-onboarding-steps/types/step.types';
+import { AuthCheckGuard } from './guards/auth-check.guard';
+import { VerifyEmailInputDto } from './dtos/verify-email-input.dto';
 
 @Resolver()
 export class AuthResolver {
@@ -28,7 +31,7 @@ export class AuthResolver {
     private readonly usersOnboardingStepsService: UsersOnboardingStepsService,
   ) {}
 
-  @Mutation(() => RegisterResponseDto)
+  @Mutation(() => MessageResponseDto)
   async register(@Args('input') registerInput: RegisterInputDto) {
     try {
       const user = await this.usersService.findOneByEmail(registerInput.email);
@@ -84,6 +87,45 @@ export class AuthResolver {
   async refreshToken(@Context('req') req) {
     try {
       return await this.authService.refreshToken(req.user);
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => MessageResponseDto)
+  async verifyEmail(@Args('input') verifyEmailInput: VerifyEmailInputDto) {
+    try {
+      const user = await this.usersService.findOneByEmail(
+        verifyEmailInput.email,
+      );
+      if (!user) {
+        throw new NotFoundException(messages.USER_NOT_FOUND);
+      }
+
+      const isOTPValid = this.otpService.validateOtp(
+        verifyEmailInput.otp.toString(),
+        user.otpSecret,
+      );
+      if (!isOTPValid) {
+        /**
+         * Sending new email verification otp
+         */
+        const emailVerificationOtp = this.otpService.generateOtp(
+          user.otpSecret,
+        );
+        await this.emailSenderService.sendUserRegistration(
+          user.email,
+          user.name,
+          emailVerificationOtp,
+        );
+
+        throw new NotFoundException(messages.EMAIL_VERIFICATION_OTP_EXPIRED);
+      }
+
+      await this.authService.verifyEmail(user.id);
+
+      return { message: messages.EMAIL_VERIFICATION_SUCCESSFULL };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }

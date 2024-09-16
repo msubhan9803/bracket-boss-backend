@@ -37,9 +37,12 @@ export class UsersService {
     return this.userRepository.save(newUser);
   }
 
-  async update(id: number, updateUserInput: UpdateUserInput): Promise<User> {
+  async update(
+    id: number,
+    updateUserInput: Partial<UpdateUserInput>,
+  ): Promise<User> {
     const user = await this.userRepository.preload({
-      id: id,
+      id,
       ...updateUserInput,
     });
     if (!user) {

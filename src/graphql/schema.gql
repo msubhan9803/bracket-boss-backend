@@ -17,10 +17,15 @@ type LoginResponseDto {
   user: User!
 }
 
+type MessageResponseDto {
+  message: String!
+}
+
 type Mutation {
   login(input: LoginInputDto!): LoginResponseDto!
   refreshToken: RefreshTokenResponseDto!
-  register(input: RegisterInputDto!): RegisterResponseDto!
+  register(input: RegisterInputDto!): MessageResponseDto!
+  verifyEmail(input: VerifyEmailInputDto!): MessageResponseDto!
 }
 
 type Query {
@@ -40,10 +45,6 @@ input RegisterInputDto {
   email: String!
   name: String!
   password: String!
-}
-
-type RegisterResponseDto {
-  message: String!
 }
 
 type Step {
@@ -71,8 +72,14 @@ type User {
   created_at: DateTime!
   email: String!
   id: ID!
+  isEmailVerified: Boolean!
   name: String!
   otpSecret: String!
   profileImage: String
   updated_at: DateTime!
+}
+
+input VerifyEmailInputDto {
+  email: String!
+  otp: Float!
 }

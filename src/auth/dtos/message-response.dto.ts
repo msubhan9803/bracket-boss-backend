@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class RegisterResponseDto {
+export abstract class MessageResponseDto {
   @Field()
   message: string;
 }

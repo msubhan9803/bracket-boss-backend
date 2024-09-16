@@ -5,6 +5,9 @@ export default {
   USER_NOT_FOUND: 'User not found',
   USER_NOT_FOUND_BY_USER_ID: (userId: number) =>
     `User with ID ${userId} not found`,
+  EMAIL_VERIFICATION_OTP_EXPIRED:
+    'OTP expired. A new OTP has been sent to your email',
+  EMAIL_VERIFICATION_SUCCESSFULL: 'Email has been verified',
 };
 
 export const emailMessages = {

@@ -35,6 +35,10 @@ export class User {
   @Column('varchar', { nullable: true })
   profileImage?: string;
 
+  @Field({ defaultValue: false })
+  @Column('varchar', { default: false })
+  isEmailVerified: boolean;
+
   @ManyToMany(() => Club, (club) => club.users)
   @JoinTable({ name: 'clubs_users' })
   clubs: Club[];

@@ -1,11 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/providers/users.service';
 import { LoginInputDto } from '../dtos/login-input.dto';
 import configuration from 'src/config/configuration';
 import { RefreshTokenResponseDto } from '../dtos/refresh-token-response.dto';
+import messages from 'src/utils/messages';
 
 const EXPIRE_TIME = 20 * 1000;
 
@@ -71,5 +76,9 @@ export class AuthService {
       }),
       expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
     };
+  }
+
+  async verifyEmail(userId: number): Promise<void> {
+    await this.userService.update(userId, { isEmailVerified: true });
   }
 }
