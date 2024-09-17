@@ -12,7 +12,7 @@ import { RegisterInputDto } from './dtos/register-input.dto';
 import { RefreshJwtGuard } from './guards/refresh.guard';
 import { RefreshTokenResponseDto } from './dtos/refresh-token-response.dto';
 import { LoginResponseDto } from './dtos/login-response.dto';
-import { MessageResponseDto } from './dtos/message-response.dto';
+import { MessageResponseDto } from '../common/dtos/message-response.dto';
 import messages from 'src/utils/messages';
 import { EmailSenderService } from 'src/email/providers/email-sender.service';
 import { OtpService } from 'src/otp/providers/otp.service';

@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Request } from 'express';
 import configuration from 'src/config/configuration';
+import { GuardUserContext } from '../types/types';
 
 @Injectable()
 export class AuthCheckGuard implements CanActivate {
@@ -27,7 +28,7 @@ export class AuthCheckGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: this.configuration.jwt.access.secretKey,
       });
-      request['user'] = payload;
+      request['user'] = payload as GuardUserContext;
     } catch {
       throw new UnauthorizedException();
     }
