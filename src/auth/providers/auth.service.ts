@@ -1,9 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/providers/users.service';
@@ -56,7 +52,7 @@ export class AuthService {
       return result;
     }
 
-    throw new UnauthorizedException();
+    throw new BadRequestException(messages.INVALID_CREDENTIALS);
   }
 
   async refreshToken(user: any): Promise<RefreshTokenResponseDto> {

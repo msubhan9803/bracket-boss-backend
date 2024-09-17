@@ -1,4 +1,5 @@
 export default {
+  INVALID_CREDENTIALS: 'Email or password in incorrect',
   VERIFY_YOUR_EMAIL:
     'You are successfully registered. Please check your email to verify your account',
   USER_ALREADY_EXISTS: 'User already exists',
