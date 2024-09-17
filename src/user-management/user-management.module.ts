@@ -5,11 +5,13 @@ import { Policy } from './entities/policy.entity';
 import { Module } from './entities/module.entity';
 import { ModulePolicyRole } from './entities/modules-policies-roles.entity';
 import { Action } from './entities/action.entity';
+import { RolesService } from './providers/roles.service';
 
 @NestJsModule({
   imports: [
     TypeOrmModule.forFeature([Role, Policy, Module, ModulePolicyRole, Action]),
   ],
-  providers: [],
+  providers: [RolesService],
+  exports: [RolesService],
 })
 export class UserManagementModule {}

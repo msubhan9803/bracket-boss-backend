@@ -52,7 +52,7 @@ export class AuthResolver {
        * Verification Email
        */
       const emailVerificationOtp = this.otpService.generateOtp(otpSecret);
-      await this.emailSenderService.sendUserRegistration(
+      await this.emailSenderService.sendUserRegistrationEmail(
         createdUser.email,
         createdUser.name,
         emailVerificationOtp,
@@ -61,11 +61,10 @@ export class AuthResolver {
       /**
        * Onboarding step creation
        */
-      const step = await this.usersOnboardingStepsService.findOneByStepName(
+      await this.usersOnboardingStepsService.createOnboardingStep(
+        createdUser.id,
         StepNames.REGISTRATION,
       );
-      createdUser.steps = [step];
-      await this.usersService.update(createdUser.id, createdUser);
 
       return { message: messages.VERIFY_YOUR_EMAIL };
     } catch (error) {
@@ -109,12 +108,13 @@ export class AuthResolver {
       );
       if (!isOTPValid) {
         /**
+         * OTP is expired
          * Sending new email verification otp
          */
         const emailVerificationOtp = this.otpService.generateOtp(
           user.otpSecret,
         );
-        await this.emailSenderService.sendUserRegistration(
+        await this.emailSenderService.sendUserRegistrationEmail(
           user.email,
           user.name,
           emailVerificationOtp,
@@ -124,6 +124,14 @@ export class AuthResolver {
       }
 
       await this.authService.verifyEmail(user.id);
+
+      /**
+       * Onboarding step creation
+       */
+      await this.usersOnboardingStepsService.createOnboardingStep(
+        user.id,
+        StepNames.EMAIL_VERIFICATION,
+      );
 
       return { message: messages.EMAIL_VERIFICATION_SUCCESSFULL };
     } catch (error) {

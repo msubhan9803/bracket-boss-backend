@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
-import { UpdateUserInput } from '../dtos/update-user-input.dto';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import messages from 'src/utils/messages';
 
@@ -22,6 +21,13 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
 
+  findOneWithRelations(userId: number, relations: string[]): Promise<User> {
+    return this.userRepository.findOne({
+      where: { id: userId },
+      relations,
+    });
+  }
+
   findOneByEmail(email: string): Promise<User> {
     return this.userRepository.findOneBy({ email });
   }
@@ -37,10 +43,7 @@ export class UsersService {
     return this.userRepository.save(newUser);
   }
 
-  async update(
-    id: number,
-    updateUserInput: Partial<UpdateUserInput>,
-  ): Promise<User> {
+  async update(id: number, updateUserInput: Partial<User>): Promise<User> {
     const user = await this.userRepository.preload({
       id,
       ...updateUserInput,

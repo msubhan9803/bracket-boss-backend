@@ -7,7 +7,7 @@ import { emailMessages } from 'src/utils/messages';
 export class EmailSenderService {
   constructor(private readonly emailSenderStrategy: EmailSenderStrategy) {}
 
-  async sendUserRegistration(
+  async sendUserRegistrationEmail(
     to: string,
     username: string,
     otp: number,
