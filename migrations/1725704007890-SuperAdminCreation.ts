@@ -1,6 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { config } from 'dotenv';
+import * as speakeasy from 'speakeasy';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFilePath });
@@ -27,10 +28,12 @@ export class SuperAdminCreation1725706999572 implements MigrationInterface {
       10,
     );
 
+    const otpSecret = speakeasy.generateSecret({ length: 20 }).base32;
+
     // Insert a super admin user
     await queryRunner.query(`
-      INSERT INTO "user" (name, email, password, created_at, updated_at)
-      VALUES ('Super Admin', '${process.env.APP_SUPER_ADMIN_EMAIL}', '${hashedPassword}', NOW(), NOW())
+      INSERT INTO "user" (name, email, password, "otpSecret", "isEmailVerified", created_at, updated_at)
+      VALUES ('Super Admin', '${process.env.APP_SUPER_ADMIN_EMAIL}', '${hashedPassword}', '${otpSecret}', '${false}', NOW(), NOW())
       ON CONFLICT (email) DO NOTHING;
     `);
 
