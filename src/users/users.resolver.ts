@@ -30,6 +30,22 @@ export class UsersResolver {
   }
 
   @UseGuards(AuthCheckGuard)
+  @Query(() => User)
+  async getUserById(@Args('userId') userId: number) {
+    try {
+      const user = await this.usersService.findOneWithRelations(userId, [
+        'clubs',
+        'roles',
+        'steps',
+      ]);
+
+      return user;
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
   @Mutation(() => MessageResponseDto)
   async updateUserRole(
     @Args('input') updateUserRoleDto: UpdateUserRoleDto,

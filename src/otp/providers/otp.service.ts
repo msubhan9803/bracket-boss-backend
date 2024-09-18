@@ -3,14 +3,14 @@ import * as speakeasy from 'speakeasy';
 
 @Injectable()
 export class OtpService {
-  generateOtp(secret: string, step: number = 60): number {
+  generateOtp(secret: string, step: number = 60): string {
     const otp = speakeasy.totp({
       secret,
       encoding: 'base32',
       step,
       digits: 6,
     });
-    return parseInt(otp, 10);
+    return otp;
   }
 
   validateOtp(otp: string, secret: string, step: number = 60): boolean {

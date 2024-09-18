@@ -36,13 +36,15 @@ export class User {
   profileImage?: string;
 
   @Field({ defaultValue: false })
-  @Column('varchar', { default: false })
+  @Column('boolean', { default: false })
   isEmailVerified: boolean;
 
+  @Field(() => [Club], { nullable: true })
   @ManyToMany(() => Club, (club) => club.users)
   @JoinTable({ name: 'clubs_users' })
   clubs: Club[];
 
+  @Field(() => [Role], { nullable: true })
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({ name: 'roles_users' })
   roles: Role[];
@@ -51,6 +53,7 @@ export class User {
   @Column('varchar')
   otpSecret: string;
 
+  @Field(() => [Step], { nullable: true })
   @ManyToMany(() => Step, (step) => step.users)
   @JoinTable({ name: 'steps_users' })
   steps: Step[];

@@ -10,7 +10,7 @@ export class EmailSenderService {
   async sendUserRegistrationEmail(
     to: string,
     username: string,
-    otp: number,
+    otp: string,
   ): Promise<void> {
     const subject = emailMessages.userRegistration.welcomeText;
     const template = MailerIdentifiers.USER_REGISTRATION;
