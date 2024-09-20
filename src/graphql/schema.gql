@@ -103,5 +103,5 @@ type User {
 
 input VerifyEmailInputDto {
   email: String!
-  otp: Float!
+  otp: String!
 }

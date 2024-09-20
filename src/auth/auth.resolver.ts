@@ -103,7 +103,7 @@ export class AuthResolver {
       }
 
       const isOTPValid = this.otpService.validateOtp(
-        verifyEmailInput.otp.toString(),
+        verifyEmailInput.otp,
         user.otpSecret,
       );
       if (!isOTPValid) {

@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEmail, IsNumber } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
 
 @InputType()
 export class VerifyEmailInputDto {
@@ -8,6 +8,6 @@ export class VerifyEmailInputDto {
   email: string;
 
   @Field()
-  @IsNumber({}, { message: 'OTP is required' })
-  otp: number;
+  @IsString({ message: 'OTP is required' })
+  otp: string;
 }
