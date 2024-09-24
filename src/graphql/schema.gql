@@ -65,6 +65,7 @@ type Mutation {
   refreshToken: RefreshTokenResponseDto!
   register(input: RegisterInputDto!): MessageResponseDto!
   updateUserRole(input: UpdateUserRoleDto!): UpdateUserResponseDto!
+  uploadFile(file: Upload!): UploadFileResponseDto!
   verifyEmail(input: VerifyEmailInputDto!): MessageResponseDto!
 }
 
@@ -139,6 +140,13 @@ type UpdateUserResponseDto {
 
 input UpdateUserRoleDto {
   roleId: Float!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+type UploadFileResponseDto {
+  url: String!
 }
 
 type User {

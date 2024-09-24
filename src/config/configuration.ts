@@ -29,4 +29,11 @@ export default () => ({
     // add more i.e. info email, contact or support etc.
     default: process.env.DEFAULT_EMAIL_FROM,
   },
+  aws: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+    sessionToken: process.env.AWS_SESSION_TOKEN || '',
+    region: process.env.AWS_REGION || 'us-east-1',
+    bucketName: process.env.AWS_BUCKET_NAME || 'default-bucket',
+  },
 });

@@ -15,6 +15,7 @@ import { EmailModule } from './email/email.module';
 import { OtpModule } from './otp/otp.module';
 import { UsersOnboardingStepsModule } from './users-onboarding-steps/users-onboarding-steps.module';
 import { CustomNumberIdScalar } from './common/scalars/custom-number-id.scalar';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -57,6 +58,7 @@ const ENV = process.env.NODE_ENV;
     EmailModule,
     OtpModule,
     UsersOnboardingStepsModule,
+    FileUploadModule,
   ],
   controllers: [],
   providers: [],
