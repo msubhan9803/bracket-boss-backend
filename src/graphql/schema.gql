@@ -2,13 +2,27 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Action {
+  createdDate: DateTime!
+  id: CustomID!
+  name: String!
+  policies: [Policy!]
+  updatedDate: DateTime!
+}
+
 type Club {
+  createdDate: DateTime!
   description: String!
-  id: ID!
+  id: CustomID!
   logo: String!
   name: String!
+  updatedDate: DateTime!
   url: String!
+  users: [User!]
 }
+
+"""A custom scalar to handle numeric IDs as integers"""
+scalar CustomID
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
@@ -29,12 +43,38 @@ type MessageResponseDto {
   message: String!
 }
 
+type Module {
+  created_at: DateTime!
+  id: CustomID!
+  name: String!
+  rolePolicyModule: [ModulePolicyRole!]
+  updated_at: DateTime!
+}
+
+type ModulePolicyRole {
+  created_at: DateTime!
+  id: CustomID!
+  module: Module!
+  policy: Policy!
+  role: Role!
+  updated_at: DateTime!
+}
+
 type Mutation {
   login(input: LoginInputDto!): LoginResponseDto!
   refreshToken: RefreshTokenResponseDto!
   register(input: RegisterInputDto!): MessageResponseDto!
-  updateUserRole(input: UpdateUserRoleDto!): MessageResponseDto!
+  updateUserRole(input: UpdateUserRoleDto!): UpdateUserResponseDto!
   verifyEmail(input: VerifyEmailInputDto!): MessageResponseDto!
+}
+
+type Policy {
+  actions: [Action!]
+  createdDate: DateTime!
+  id: ID!
+  name: String!
+  rolePolicyModule: [ModulePolicyRole!]
+  updatedDate: DateTime!
 }
 
 type Query {
@@ -58,13 +98,22 @@ input RegisterInputDto {
 }
 
 type Role {
-  id: ID!
+  createdDate: DateTime!
+  id: CustomID!
   name: String!
+  rolePolicyModule: [ModulePolicyRole!]
+  steps: [Step!]
+  updatedDate: DateTime!
+  users: [User!]
 }
 
 type Step {
+  createdDate: DateTime!
   id: ID!
   name: StepNames!
+  roles: [Role!]
+  updatedDate: DateTime!
+  users: [User!]
 }
 
 enum StepNames {
@@ -83,6 +132,11 @@ input StepsOfUserDto {
   userId: Float!
 }
 
+type UpdateUserResponseDto {
+  message: String!
+  user: User!
+}
+
 input UpdateUserRoleDto {
   roleId: Float!
 }
@@ -91,7 +145,7 @@ type User {
   clubs: [Club!]
   created_at: DateTime!
   email: String!
-  id: ID!
+  id: CustomID!
   isEmailVerified: Boolean!
   name: String!
   otpSecret: String!

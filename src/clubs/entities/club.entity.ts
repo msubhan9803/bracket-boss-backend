@@ -6,13 +6,14 @@ import {
   UpdateDateColumn,
   ManyToMany,
 } from 'typeorm';
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { User } from 'src/users/entities/user.entity';
+import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 
 @ObjectType()
 @Entity()
 export class Club {
-  @Field(() => ID)
+  @Field(() => CustomNumberIdScalar)
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -32,12 +33,15 @@ export class Club {
   @Column('varchar')
   url: string;
 
+  @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.clubs)
   users: User[];
 
+  @Field()
   @CreateDateColumn()
   createdDate: Date;
 
+  @Field()
   @UpdateDateColumn()
   updatedDate: Date;
 

@@ -23,16 +23,20 @@ export class Policy {
   @Column('text', { unique: true })
   name: string;
 
+  @Field(() => [ModulePolicyRole], { nullable: true })
   @OneToMany(() => ModulePolicyRole, (rpm) => rpm.policy)
   rolePolicyModule: ModulePolicyRole[];
 
+  @Field(() => [Action], { nullable: true })
   @ManyToMany(() => Action, (action) => action.policies)
   @JoinTable({ name: 'actions_policies' })
   actions: Action[];
 
+  @Field()
   @CreateDateColumn()
   createdDate: Date;
 
+  @Field()
   @UpdateDateColumn()
   updatedDate: Date;
 

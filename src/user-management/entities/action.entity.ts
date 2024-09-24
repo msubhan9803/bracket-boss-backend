@@ -6,13 +6,14 @@ import {
   UpdateDateColumn,
   ManyToMany,
 } from 'typeorm';
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Policy } from './policy.entity';
+import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 
 @ObjectType()
 @Entity()
 export class Action {
-  @Field(() => ID)
+  @Field(() => CustomNumberIdScalar)
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -20,12 +21,15 @@ export class Action {
   @Column('text', { unique: true })
   name: string;
 
+  @Field(() => [Policy], { nullable: true })
   @ManyToMany(() => Policy, (policy) => policy.actions)
   policies: Policy[];
 
+  @Field()
   @CreateDateColumn()
   createdDate: Date;
 
+  @Field()
   @UpdateDateColumn()
   updatedDate: Date;
 

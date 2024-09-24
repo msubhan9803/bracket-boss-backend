@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { EmailModule } from './email/email.module';
 import { OtpModule } from './otp/otp.module';
 import { UsersOnboardingStepsModule } from './users-onboarding-steps/users-onboarding-steps.module';
+import { CustomNumberIdScalar } from './common/scalars/custom-number-id.scalar';
 
 const ENV = process.env.NODE_ENV;
 
@@ -47,6 +48,7 @@ const ENV = process.env.NODE_ENV;
       sortSchema: true,
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      resolvers: { CustomID: CustomNumberIdScalar },
     }),
     UsersModule,
     ClubsModule,

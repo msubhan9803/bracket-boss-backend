@@ -9,7 +9,7 @@ import messages from 'src/utils/messages';
 import { UsersOnboardingStepsService } from 'src/users-onboarding-steps/providers/users-onboarding-steps.service';
 import { StepNames } from 'src/users-onboarding-steps/types/step.types';
 import { CustomRequest } from 'src/auth/types/types';
-import { MessageResponseDto } from 'src/common/dtos/message-response.dto';
+import { UpdateUserResponseDto } from './dtos/update-user-response.dto';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -46,7 +46,7 @@ export class UsersResolver {
   }
 
   @UseGuards(AuthCheckGuard)
-  @Mutation(() => MessageResponseDto)
+  @Mutation(() => UpdateUserResponseDto)
   async updateUserRole(
     @Args('input') updateUserRoleDto: UpdateUserRoleDto,
     @Context('req') req: CustomRequest,
@@ -57,7 +57,7 @@ export class UsersResolver {
     try {
       const role = await this.rolesService.findOne(roleId);
 
-      await this.usersService.update(userId, {
+      const updatedUser = await this.usersService.update(userId, {
         roles: [role],
       });
 
@@ -69,7 +69,7 @@ export class UsersResolver {
         StepNames.USER_TYPE_SELECTION,
       );
 
-      return { message: messages.SUCCESS_MESSAGE };
+      return { message: messages.SUCCESS_MESSAGE, user: updatedUser };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }

@@ -32,15 +32,19 @@ export class Step {
   })
   name: StepNames;
 
+  @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.steps)
   users: User[];
 
+  @Field(() => [Role], { nullable: true })
   @ManyToMany(() => Role, (role) => role.steps)
   roles: Role[];
 
+  @Field()
   @CreateDateColumn()
   createdDate: Date;
 
+  @Field()
   @UpdateDateColumn()
   updatedDate: Date;
 

@@ -7,15 +7,16 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Field, ObjectType, ID, HideField } from '@nestjs/graphql';
+import { Field, ObjectType, HideField } from '@nestjs/graphql';
 import { Club } from 'src/clubs/entities/club.entity';
 import { Role } from 'src/user-management/entities/role.entity';
 import { Step } from 'src/users-onboarding-steps/entities/step.entity';
+import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 
 @ObjectType()
 @Entity()
 export class User {
-  @Field(() => ID)
+  @Field(() => CustomNumberIdScalar)
   @PrimaryGeneratedColumn()
   id: number;
 
