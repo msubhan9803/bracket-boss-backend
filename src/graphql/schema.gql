@@ -16,9 +16,21 @@ type Club {
   id: CustomID!
   logo: String!
   name: String!
+  slug: String!
   updatedDate: DateTime!
-  url: String!
   users: [User!]
+}
+
+input CreateClubInputDto {
+  description: String!
+  logo: String!
+  name: String!
+  slug: String!
+}
+
+type CreateClubResponseDto {
+  club: Club!
+  message: String!
 }
 
 """A custom scalar to handle numeric IDs as integers"""
@@ -61,6 +73,7 @@ type ModulePolicyRole {
 }
 
 type Mutation {
+  createClub(input: CreateClubInputDto!): CreateClubResponseDto!
   login(input: LoginInputDto!): LoginResponseDto!
   refreshToken: RefreshTokenResponseDto!
   register(input: RegisterInputDto!): MessageResponseDto!

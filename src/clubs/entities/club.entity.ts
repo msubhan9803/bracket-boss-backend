@@ -31,7 +31,7 @@ export class Club {
 
   @Field()
   @Column('varchar')
-  url: string;
+  slug: string;
 
   @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.clubs)
