@@ -7,12 +7,15 @@ import { CreateClubInputDto } from './dtos/create-club-input.dto';
 import { CreateClubResponseDto } from './dtos/create-club-response.dto';
 import messages from 'src/utils/messages';
 import { UsersService } from 'src/users/providers/users.service';
+import { UsersOnboardingStepsService } from 'src/users-onboarding-steps/providers/users-onboarding-steps.service';
+import { StepNames } from 'src/users-onboarding-steps/types/step.types';
 
 @Resolver()
 export class ClubsResolver {
   constructor(
     private readonly clubsService: ClubsService,
     private readonly usersService: UsersService,
+    private readonly usersOnboardingStepsService: UsersOnboardingStepsService,
   ) {}
 
   @UseGuards(AuthCheckGuard)
@@ -30,6 +33,14 @@ export class ClubsResolver {
         ...createClubInputDto,
         users: [user],
       });
+
+      /**
+       * Onboarding step creation
+       */
+      await this.usersOnboardingStepsService.createOnboardingStep(
+        userId,
+        StepNames.CLUB_INFORMATION_INSERTION,
+      );
 
       return { message: messages.SUCCESS_MESSAGE, club: createdClub };
     } catch (error) {
