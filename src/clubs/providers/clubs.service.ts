@@ -14,6 +14,13 @@ export class ClubsService {
     return this.clubRepository.find();
   }
 
+  findOneWithRelations(userId: number, relations: string[]): Promise<Club> {
+    return this.clubRepository.findOne({
+      where: { id: userId },
+      relations,
+    });
+  }
+
   async create(createUserInput: Partial<Club>): Promise<Club> {
     const newUser = this.clubRepository.create({
       ...createUserInput,

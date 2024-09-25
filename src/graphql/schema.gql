@@ -94,6 +94,7 @@ type Policy {
 type Query {
   getAllClubs: [Club!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
+  getClubById(clubId: Float!): Club!
   getStepsOfUser(input: StepsOfUserDto!): [Step!]!
   getUserById(userId: Float!): User!
   getUsers: [User!]!

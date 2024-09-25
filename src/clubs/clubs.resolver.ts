@@ -10,6 +10,7 @@ import { UsersService } from 'src/users/providers/users.service';
 import { UsersOnboardingStepsService } from 'src/users-onboarding-steps/providers/users-onboarding-steps.service';
 import { StepNames } from 'src/users-onboarding-steps/types/step.types';
 import { Club } from './entities/club.entity';
+import { TransformImageUrls } from 'src/common/decorators/transform-image-urls.decorator';
 
 @Resolver(() => Club)
 export class ClubsResolver {
@@ -19,10 +20,25 @@ export class ClubsResolver {
     private readonly usersOnboardingStepsService: UsersOnboardingStepsService,
   ) {}
 
+  @TransformImageUrls('logo')
   @Query(() => [Club])
   async getAllClubs() {
     try {
       return await this.clubsService.findAll();
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @TransformImageUrls('logo')
+  @Query(() => Club)
+  async getClubById(@Args('clubId') clubId: number) {
+    try {
+      const club = await this.clubsService.findOneWithRelations(clubId, [
+        'users',
+      ]);
+
+      return club;
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }
