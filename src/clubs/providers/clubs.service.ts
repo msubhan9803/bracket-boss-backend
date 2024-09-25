@@ -10,6 +10,10 @@ export class ClubsService {
     private clubRepository: Repository<Club>,
   ) {}
 
+  findAll(): Promise<Club[]> {
+    return this.clubRepository.find();
+  }
+
   async create(createUserInput: Partial<Club>): Promise<Club> {
     const newUser = this.clubRepository.create({
       ...createUserInput,

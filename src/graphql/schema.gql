@@ -92,6 +92,7 @@ type Policy {
 }
 
 type Query {
+  getAllClubs: [Club!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
   getStepsOfUser(input: StepsOfUserDto!): [Step!]!
   getUserById(userId: Float!): User!
