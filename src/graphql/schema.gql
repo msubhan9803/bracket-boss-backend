@@ -77,6 +77,7 @@ type Mutation {
   login(input: LoginInputDto!): LoginResponseDto!
   refreshToken: RefreshTokenResponseDto!
   register(input: RegisterInputDto!): MessageResponseDto!
+  updateUserClub(input: UpdateUserClubDto!): UpdateUserResponseDto!
   updateUserRole(input: UpdateUserRoleDto!): UpdateUserResponseDto!
   uploadFile(file: Upload!): UploadFileResponseDto!
   verifyEmail(input: VerifyEmailInputDto!): MessageResponseDto!
@@ -146,6 +147,10 @@ input StepsByRoleDto {
 
 input StepsOfUserDto {
   userId: Float!
+}
+
+input UpdateUserClubDto {
+  clubId: Float!
 }
 
 type UpdateUserResponseDto {

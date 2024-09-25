@@ -10,9 +10,10 @@ import { UsersOnboardingStepsModule } from 'src/users-onboarding-steps/users-onb
 @Module({
   imports: [
     TypeOrmModule.forFeature([Club]),
-    UsersModule,
+    forwardRef(() => UsersModule),
     forwardRef(() => UsersOnboardingStepsModule),
   ],
   providers: [ClubsResolver, ClubsService, JwtService],
+  exports: [ClubsService],
 })
 export class ClubsModule {}

@@ -10,6 +10,8 @@ import { UsersOnboardingStepsService } from 'src/users-onboarding-steps/provider
 import { StepNames } from 'src/users-onboarding-steps/types/step.types';
 import { CustomRequest } from 'src/auth/types/types';
 import { UpdateUserResponseDto } from './dtos/update-user-response.dto';
+import { UpdateUserClubDto } from './dtos/update-user-club-input.dto';
+import { ClubsService } from 'src/clubs/providers/clubs.service';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -17,6 +19,7 @@ export class UsersResolver {
     private readonly usersService: UsersService,
     private readonly rolesService: RolesService,
     private readonly usersOnboardingStepsService: UsersOnboardingStepsService,
+    private readonly clubsService: ClubsService,
   ) {}
 
   @UseGuards(AuthCheckGuard)
@@ -67,6 +70,36 @@ export class UsersResolver {
       await this.usersOnboardingStepsService.createOnboardingStep(
         userId,
         StepNames.USER_TYPE_SELECTION,
+      );
+
+      return { message: messages.SUCCESS_MESSAGE, user: updatedUser };
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => UpdateUserResponseDto)
+  async updateUserClub(
+    @Args('input') updateUserClubDto: UpdateUserClubDto,
+    @Context('req') req: CustomRequest,
+  ) {
+    const { clubId } = updateUserClubDto;
+    const userId = req.user.sub.id;
+
+    try {
+      const club = await this.clubsService.findOne(clubId);
+
+      const updatedUser = await this.usersService.update(userId, {
+        clubs: [club],
+      });
+
+      /**
+       * Onboarding step creation
+       */
+      await this.usersOnboardingStepsService.createOnboardingStep(
+        userId,
+        StepNames.CLUB_SELECTION,
       );
 
       return { message: messages.SUCCESS_MESSAGE, user: updatedUser };

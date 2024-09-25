@@ -14,6 +14,10 @@ export class ClubsService {
     return this.clubRepository.find();
   }
 
+  findOne(id: number): Promise<Club> {
+    return this.clubRepository.findOneBy({ id });
+  }
+
   findOneWithRelations(userId: number, relations: string[]): Promise<Club> {
     return this.clubRepository.findOne({
       where: { id: userId },
