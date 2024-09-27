@@ -1,7 +1,7 @@
 export enum StepNames {
-  REGISTRATION = 'registration',
-  EMAIL_VERIFICATION = 'email_verification',
-  USER_TYPE_SELECTION = 'user_type_selection',
-  CLUB_INFORMATION_INSERTION = 'club_information_insertion',
-  CLUB_SELECTION = 'club_selection',
+  registration = 'registration',
+  email_verification = 'email_verification',
+  user_type_selection = 'user_type_selection',
+  club_information_insertion = 'club_information_insertion',
+  club_selection = 'club_selection',
 }

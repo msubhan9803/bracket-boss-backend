@@ -65,7 +65,7 @@ export class ClubsResolver {
        */
       await this.usersOnboardingStepsService.createOnboardingStep(
         userId,
-        StepNames.CLUB_INFORMATION_INSERTION,
+        StepNames.club_information_insertion,
       );
 
       return { message: messages.SUCCESS_MESSAGE, club: createdClub };

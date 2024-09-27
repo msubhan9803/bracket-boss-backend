@@ -96,7 +96,7 @@ type Query {
   getAllClubs: [Club!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
   getClubById(clubId: Float!): Club!
-  getStepsOfUser(input: StepsOfUserDto!): [Step!]!
+  getStepsOfUser: [Step!]!
   getUserById(userId: Float!): User!
   getUsers: [User!]!
 }
@@ -134,19 +134,15 @@ type Step {
 }
 
 enum StepNames {
-  CLUB_INFORMATION_INSERTION
-  CLUB_SELECTION
-  EMAIL_VERIFICATION
-  REGISTRATION
-  USER_TYPE_SELECTION
+  club_information_insertion
+  club_selection
+  email_verification
+  registration
+  user_type_selection
 }
 
 input StepsByRoleDto {
   roleId: Float!
-}
-
-input StepsOfUserDto {
-  userId: Float!
 }
 
 input UpdateUserClubDto {

@@ -63,7 +63,7 @@ export class AuthResolver {
        */
       await this.usersOnboardingStepsService.createOnboardingStep(
         createdUser.id,
-        StepNames.REGISTRATION,
+        StepNames.registration,
       );
 
       return { message: messages.VERIFY_YOUR_EMAIL };
@@ -130,7 +130,7 @@ export class AuthResolver {
        */
       await this.usersOnboardingStepsService.createOnboardingStep(
         user.id,
-        StepNames.EMAIL_VERIFICATION,
+        StepNames.email_verification,
       );
 
       return { message: messages.EMAIL_VERIFICATION_SUCCESSFULL };

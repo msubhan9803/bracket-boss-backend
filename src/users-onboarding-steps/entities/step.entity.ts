@@ -27,7 +27,7 @@ export class Step {
   @Column({
     type: 'enum',
     enum: StepNames,
-    default: StepNames.REGISTRATION,
+    default: StepNames.registration,
     unique: true,
   })
   name: StepNames;

@@ -69,7 +69,7 @@ export class UsersResolver {
        */
       await this.usersOnboardingStepsService.createOnboardingStep(
         userId,
-        StepNames.USER_TYPE_SELECTION,
+        StepNames.user_type_selection,
       );
 
       return { message: messages.SUCCESS_MESSAGE, user: updatedUser };
@@ -99,7 +99,7 @@ export class UsersResolver {
        */
       await this.usersOnboardingStepsService.createOnboardingStep(
         userId,
-        StepNames.CLUB_SELECTION,
+        StepNames.club_selection,
       );
 
       return { message: messages.SUCCESS_MESSAGE, user: updatedUser };
