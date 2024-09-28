@@ -83,6 +83,14 @@ type Mutation {
   verifyEmail(input: VerifyEmailInputDto!): MessageResponseDto!
 }
 
+type PermissionByRoleIdResponse {
+  id: String!
+  moduleId: String!
+  moduleName: String!
+  policyId: String!
+  policyName: String!
+}
+
 type Policy {
   actions: [Action!]
   createdDate: DateTime!
@@ -96,6 +104,7 @@ type Query {
   getAllClubs: [Club!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
   getClubById(clubId: Float!): Club!
+  getPermissionsByRoleId: [PermissionByRoleIdResponse!]!
   getStepsOfUser: [Step!]!
   getUserById(userId: Float!): User!
   getUsers: [User!]!

@@ -1,4 +1,4 @@
-import { Module as NestJsModule } from '@nestjs/common';
+import { forwardRef, Module as NestJsModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from './entities/role.entity';
 import { Policy } from './entities/policy.entity';
@@ -6,12 +6,22 @@ import { Module } from './entities/module.entity';
 import { ModulePolicyRole } from './entities/modules-policies-roles.entity';
 import { Action } from './entities/action.entity';
 import { RolesService } from './providers/roles.service';
+import { UserManagementResolver } from './user-management.resolver';
+import { UserManagementService } from './providers/user-management.service';
+import { JwtService } from '@nestjs/jwt';
+import { UsersModule } from 'src/users/users.module';
 
 @NestJsModule({
   imports: [
     TypeOrmModule.forFeature([Role, Policy, Module, ModulePolicyRole, Action]),
+    forwardRef(() => UsersModule),
   ],
-  providers: [RolesService],
+  providers: [
+    UserManagementResolver,
+    RolesService,
+    UserManagementService,
+    JwtService,
+  ],
   exports: [RolesService],
 })
 export class UserManagementModule {}
