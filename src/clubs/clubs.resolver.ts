@@ -11,6 +11,7 @@ import { UsersOnboardingStepsService } from 'src/users-onboarding-steps/provider
 import { StepNames } from 'src/users-onboarding-steps/types/step.types';
 import { Club } from './entities/club.entity';
 import { TransformImageUrls } from 'src/common/decorators/transform-image-urls.decorator';
+import { UserManagementService } from 'src/user-management/providers/user-management.service';
 
 @Resolver(() => Club)
 export class ClubsResolver {
@@ -18,6 +19,7 @@ export class ClubsResolver {
     private readonly clubsService: ClubsService,
     private readonly usersService: UsersService,
     private readonly usersOnboardingStepsService: UsersOnboardingStepsService,
+    private readonly userManagementService: UserManagementService,
   ) {}
 
   @TransformImageUrls('logo')
@@ -66,6 +68,20 @@ export class ClubsResolver {
       await this.usersOnboardingStepsService.createOnboardingStep(
         userId,
         StepNames.club_information_insertion,
+      );
+
+      /**
+       * Updating role based on club selection
+       */
+      const clubId = createdClub.id;
+      const { role } = await this.userManagementService.findOneUserRoleClub({
+        userId: user.id,
+      });
+
+      await this.userManagementService.addOrUpdateUserRoleClub(
+        userId,
+        role.id,
+        clubId,
       );
 
       return { message: messages.SUCCESS_MESSAGE, club: createdClub };

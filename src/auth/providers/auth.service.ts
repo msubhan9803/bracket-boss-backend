@@ -46,9 +46,7 @@ export class AuthService {
   }
 
   async validateUser(dto: LoginInputDto) {
-    const user = await this.userService.findOneByEmailWithRelations(dto.email, [
-      'roles',
-    ]);
+    const user = await this.userService.findOneByEmail(dto.email);
 
     if (user && (await compare(dto.password, user.password))) {
       const { password, ...result } = user;

@@ -10,6 +10,7 @@ export default {
   EMAIL_VERIFICATION_OTP_EXPIRED:
     'OTP expired. A new OTP has been sent to your email',
   EMAIL_VERIFICATION_SUCCESSFULL: 'Email has been verified',
+  ROLE_NOT_FOUND: 'Role not found',
 };
 
 export const emailMessages = {

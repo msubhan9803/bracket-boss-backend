@@ -5,10 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
+  OneToMany,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { User } from 'src/users/entities/user.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
+import { UserRoleClub } from 'src/user-management/entities/user-role-club.entity';
 
 @ObjectType()
 @Entity()
@@ -36,6 +38,10 @@ export class Club {
   @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.clubs)
   users: User[];
+
+  @Field(() => [UserRoleClub], { nullable: true })
+  @OneToMany(() => UserRoleClub, (userRoleClub) => userRoleClub.club)
+  userRoleClub: UserRoleClub[];
 
   @Field()
   @CreateDateColumn()

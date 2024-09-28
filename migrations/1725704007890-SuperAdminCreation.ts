@@ -44,17 +44,17 @@ export class SuperAdminCreation1725706999572 implements MigrationInterface {
 
     const superAdminUserId = superAdminUser[0].id;
 
-    // Assign the super admin role to the super admin user
+    // Assign the super admin role to the super admin user in the users_roles_clubs table
     await queryRunner.query(`
-      INSERT INTO "roles_users" ("roleId", "userId")
-      VALUES ('${superAdminRoleId}', '${superAdminUserId}')
+      INSERT INTO "users_roles_clubs" ("roleId", "userId", "clubId", created_at, updated_at)
+      VALUES ('${superAdminRoleId}', '${superAdminUserId}', NULL, NOW(), NOW())
       ON CONFLICT DO NOTHING;
     `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-      DELETE FROM "roles_users" WHERE "userId" IN (
+      DELETE FROM "users_roles_clubs" WHERE "userId" IN (
         SELECT id FROM public.user WHERE email = '${process.env.APP_SUPER_ADMIN_EMAIL}'
       );
     `);

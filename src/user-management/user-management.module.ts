@@ -10,10 +10,18 @@ import { UserManagementResolver } from './user-management.resolver';
 import { UserManagementService } from './providers/user-management.service';
 import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
+import { UserRoleClub } from './entities/user-role-club.entity';
 
 @NestJsModule({
   imports: [
-    TypeOrmModule.forFeature([Role, Policy, Module, ModulePolicyRole, Action]),
+    TypeOrmModule.forFeature([
+      Role,
+      Policy,
+      Module,
+      ModulePolicyRole,
+      Action,
+      UserRoleClub,
+    ]),
     forwardRef(() => UsersModule),
   ],
   providers: [
@@ -22,6 +30,6 @@ import { UsersModule } from 'src/users/users.module';
     UserManagementService,
     JwtService,
   ],
-  exports: [RolesService],
+  exports: [RolesService, UserManagementService],
 })
 export class UserManagementModule {}

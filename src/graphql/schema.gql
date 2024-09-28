@@ -18,6 +18,7 @@ type Club {
   name: String!
   slug: String!
   updatedDate: DateTime!
+  userRoleClub: [UserRoleClub!]
   users: [User!]
 }
 
@@ -78,7 +79,7 @@ type Mutation {
   refreshToken: RefreshTokenResponseDto!
   register(input: RegisterInputDto!): MessageResponseDto!
   updateUserClub(input: UpdateUserClubDto!): UpdateUserResponseDto!
-  updateUserRole(input: UpdateUserRoleDto!): UpdateUserResponseDto!
+  updateUserRole(input: UpdateUserRoleDto!): UpdateUserRoleResponseDto!
   uploadFile(file: Upload!): UploadFileResponseDto!
   verifyEmail(input: VerifyEmailInputDto!): MessageResponseDto!
 }
@@ -89,6 +90,7 @@ type PermissionByRoleIdResponse {
   moduleName: String!
   policyId: String!
   policyName: String!
+  roleId: String!
 }
 
 type Policy {
@@ -104,9 +106,9 @@ type Query {
   getAllClubs: [Club!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
   getClubById(clubId: Float!): Club!
-  getPermissionsByRoleId: [PermissionByRoleIdResponse!]!
+  getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!
   getStepsOfUser: [Step!]!
-  getUserById(userId: Float!): User!
+  getUserById(clubId: Float, userId: Float!): UserWithRoleClub!
   getUsers: [User!]!
 }
 
@@ -130,7 +132,7 @@ type Role {
   rolePolicyModule: [ModulePolicyRole!]
   steps: [Step!]
   updatedDate: DateTime!
-  users: [User!]
+  userRoleClub: [UserRoleClub!]
 }
 
 type Step {
@@ -167,6 +169,11 @@ input UpdateUserRoleDto {
   roleId: Float!
 }
 
+type UpdateUserRoleResponseDto {
+  message: String!
+  userRoleClub: UserRoleClub!
+}
+
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
@@ -183,9 +190,23 @@ type User {
   name: String!
   otpSecret: String!
   profileImage: String
-  roles: [Role!]
   steps: [Step!]
   updated_at: DateTime!
+  userRoleClub: [UserRoleClub!]
+}
+
+type UserRoleClub {
+  club: Club
+  created_at: DateTime!
+  id: CustomID!
+  role: Role
+  updated_at: DateTime!
+  user: User
+}
+
+type UserWithRoleClub {
+  user: User!
+  userRoleClub: UserRoleClub
 }
 
 input VerifyEmailInputDto {

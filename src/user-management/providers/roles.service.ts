@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from '../entities/role.entity';
+import messages from 'src/utils/messages';
 
 @Injectable()
 export class RolesService {
@@ -19,5 +20,16 @@ export class RolesService {
       where: { id: roleId },
       relations,
     });
+  }
+
+  async update(id: number, updateUserInput: Partial<Role>): Promise<Role> {
+    const user = await this.roleRepository.preload({
+      id,
+      ...updateUserInput,
+    });
+    if (!user) {
+      throw new Error(messages.ROLE_NOT_FOUND);
+    }
+    return this.roleRepository.save(user);
   }
 }

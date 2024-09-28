@@ -5,13 +5,14 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
+  OneToMany,
   JoinTable,
 } from 'typeorm';
 import { Field, ObjectType, HideField } from '@nestjs/graphql';
 import { Club } from 'src/clubs/entities/club.entity';
-import { Role } from 'src/user-management/entities/role.entity';
 import { Step } from 'src/users-onboarding-steps/entities/step.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
+import { UserRoleClub } from 'src/user-management/entities/user-role-club.entity';
 
 @ObjectType()
 @Entity()
@@ -45,11 +46,6 @@ export class User {
   @JoinTable({ name: 'clubs_users' })
   clubs: Club[];
 
-  @Field(() => [Role], { nullable: true })
-  @ManyToMany(() => Role, (role) => role.users)
-  @JoinTable({ name: 'roles_users' })
-  roles: Role[];
-
   @Field()
   @Column('varchar')
   otpSecret: string;
@@ -58,6 +54,10 @@ export class User {
   @ManyToMany(() => Step, (step) => step.users)
   @JoinTable({ name: 'steps_users' })
   steps: Step[];
+
+  @Field(() => [UserRoleClub], { nullable: true })
+  @OneToMany(() => UserRoleClub, (userRoleClub) => userRoleClub.user)
+  userRoleClub: UserRoleClub[];
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

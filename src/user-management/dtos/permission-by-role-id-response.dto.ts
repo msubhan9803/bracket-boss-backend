@@ -6,6 +6,9 @@ export class PermissionByRoleIdResponse {
   id: string;
 
   @Field()
+  roleId: string;
+
+  @Field()
   moduleId: string;
 
   @Field()

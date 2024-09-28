@@ -9,10 +9,10 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { User } from 'src/users/entities/user.entity';
 import { ModulePolicyRole } from './modules-policies-roles.entity';
 import { Step } from 'src/users-onboarding-steps/entities/step.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
+import { UserRoleClub } from './user-role-club.entity';
 
 @ObjectType()
 @Entity()
@@ -25,10 +25,6 @@ export class Role {
   @Column('text', { unique: true })
   name: string;
 
-  @Field(() => [User], { nullable: true })
-  @ManyToMany(() => User, (user) => user.roles)
-  users: User[];
-
   @Field(() => [ModulePolicyRole], { nullable: true })
   @OneToMany(() => ModulePolicyRole, (rpm) => rpm.module)
   rolePolicyModule: ModulePolicyRole[];
@@ -37,6 +33,10 @@ export class Role {
   @ManyToMany(() => Step, (step) => step.roles)
   @JoinTable({ name: 'roles_steps' })
   steps: Step[];
+
+  @Field(() => [UserRoleClub], { nullable: true })
+  @OneToMany(() => UserRoleClub, (userRoleClub) => userRoleClub.role)
+  userRoleClub: UserRoleClub[];
 
   @Field()
   @CreateDateColumn()

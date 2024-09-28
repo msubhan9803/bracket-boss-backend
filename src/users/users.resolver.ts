@@ -12,6 +12,9 @@ import { CustomRequest } from 'src/auth/types/types';
 import { UpdateUserResponseDto } from './dtos/update-user-response.dto';
 import { UpdateUserClubDto } from './dtos/update-user-club-input.dto';
 import { ClubsService } from 'src/clubs/providers/clubs.service';
+import { UserManagementService } from 'src/user-management/providers/user-management.service';
+import { UpdateUserRoleResponseDto } from './dtos/update-user-role-response.dto';
+import { UserWithRoleClub } from './dtos/user-with-role-module.type';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -20,6 +23,7 @@ export class UsersResolver {
     private readonly rolesService: RolesService,
     private readonly usersOnboardingStepsService: UsersOnboardingStepsService,
     private readonly clubsService: ClubsService,
+    private readonly userManagementService: UserManagementService,
   ) {}
 
   @UseGuards(AuthCheckGuard)
@@ -33,23 +37,32 @@ export class UsersResolver {
   }
 
   @UseGuards(AuthCheckGuard)
-  @Query(() => User)
-  async getUserById(@Args('userId') userId: number) {
+  @Query(() => UserWithRoleClub)
+  async getUserById(
+    @Args('userId') userId: number,
+    @Args('clubId', { nullable: true }) clubId?: number,
+  ) {
     try {
       const user = await this.usersService.findOneWithRelations(userId, [
         'clubs',
-        'roles',
         'steps',
       ]);
 
-      return user;
+      const userRoleClub = await this.userManagementService.findOneUserRoleClub(
+        {
+          userId: user.id,
+          clubId: clubId ?? null,
+        },
+      );
+
+      return { user, userRoleClub };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }
   }
 
   @UseGuards(AuthCheckGuard)
-  @Mutation(() => UpdateUserResponseDto)
+  @Mutation(() => UpdateUserRoleResponseDto)
   async updateUserRole(
     @Args('input') updateUserRoleDto: UpdateUserRoleDto,
     @Context('req') req: CustomRequest,
@@ -58,11 +71,11 @@ export class UsersResolver {
     const userId = req.user.sub.id;
 
     try {
-      const role = await this.rolesService.findOne(roleId);
-
-      const updatedUser = await this.usersService.update(userId, {
-        roles: [role],
-      });
+      const userRoleClub =
+        await this.userManagementService.addOrUpdateUserRoleClub(
+          userId,
+          roleId,
+        );
 
       /**
        * Onboarding step creation
@@ -72,7 +85,10 @@ export class UsersResolver {
         StepNames.user_type_selection,
       );
 
-      return { message: messages.SUCCESS_MESSAGE, user: updatedUser };
+      return {
+        message: messages.SUCCESS_MESSAGE,
+        userRoleClub,
+      };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }
@@ -102,7 +118,25 @@ export class UsersResolver {
         StepNames.club_selection,
       );
 
-      return { message: messages.SUCCESS_MESSAGE, user: updatedUser };
+      /**
+       * Updating role based on club selection
+       */
+      const { role } = await this.userManagementService.findOneUserRoleClub({
+        userId,
+      });
+
+      const userRoleClub =
+        await this.userManagementService.addOrUpdateUserRoleClub(
+          userId,
+          role.id,
+          clubId,
+        );
+
+      return {
+        message: messages.SUCCESS_MESSAGE,
+        user: updatedUser,
+        userRoleClub,
+      };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }
