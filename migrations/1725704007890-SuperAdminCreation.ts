@@ -11,13 +11,13 @@ export class SuperAdminCreation1725706999572 implements MigrationInterface {
     // Create a super admin role if it doesn't already exist
     await queryRunner.query(`
       INSERT INTO "role" ("name", "createdDate", "updatedDate")
-      VALUES ('Super Admin', NOW(), NOW())
+      VALUES ('super_admin', NOW(), NOW())
       ON CONFLICT (name) DO NOTHING;
     `);
 
     // Fetch the Super Admin role ID
     const superAdminRole = await queryRunner.query(`
-      SELECT id FROM "role" WHERE name = 'Super Admin';
+      SELECT id FROM "role" WHERE name = 'super_admin';
     `);
 
     const superAdminRoleId = superAdminRole[0].id;
@@ -33,7 +33,7 @@ export class SuperAdminCreation1725706999572 implements MigrationInterface {
     // Insert a super admin user
     await queryRunner.query(`
       INSERT INTO "user" (name, email, password, "otpSecret", "isEmailVerified", created_at, updated_at)
-      VALUES ('Super Admin', '${process.env.APP_SUPER_ADMIN_EMAIL}', '${hashedPassword}', '${otpSecret}', '${false}', NOW(), NOW())
+      VALUES ('super_admin', '${process.env.APP_SUPER_ADMIN_EMAIL}', '${hashedPassword}', '${otpSecret}', '${true}', NOW(), NOW())
       ON CONFLICT (email) DO NOTHING;
     `);
 

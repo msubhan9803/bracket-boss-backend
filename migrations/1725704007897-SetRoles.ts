@@ -10,18 +10,19 @@ export class SetRoles1725704007897 implements MigrationInterface {
     // Predefined roles into the 'role' table
     await queryRunner.query(`
             INSERT INTO "role" ("name", "createdDate", "updatedDate") VALUES 
-            ('Super Admin', NOW(), NOW()),
-            ('Club Owner', NOW(), NOW()),
-            ('Player', NOW(), NOW()),
-            ('Tournament Organizer', NOW(), NOW()),
-            ('League Organizer', NOW(), NOW());
+            ('super_admin', NOW(), NOW()),
+            ('club_owner', NOW(), NOW()),
+            ('player', NOW(), NOW()),
+            ('tournament_organizer', NOW(), NOW()),
+            ('league_organizer', NOW(), NOW());
         `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // Remove Predefined roles from the 'role' table
     await queryRunner.query(`
-            DELETE FROM "role" WHERE "name" IN ('Super Admin', 'Club Owner', 'Player', 'Tournament Organizer', 'League Organizer');
-        `);
+      DELETE FROM "roles_users" WHERE "roleId" IN (SELECT "id" FROM "role");
+      DELETE FROM "role";
+    `);
   }
 }

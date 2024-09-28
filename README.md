@@ -20,15 +20,9 @@ $ docker-compose up -d
 # Run all migrations
 $ npm run typeorm:run-migrations:dev
 
-# Run specific migration by providing name
-$ npm run typeorm:run-migrations:dev --name=SetupUserManagement1725711761726
-
 # Create new migration by providing the name of the migration
 $ npm run typeorm:create-migration --name=SetRoles
 
 # Revert all migrations
 $ npm run typeorm:revert-migrations:dev
-
-# Revert specific migration
-$ npm run typeorm:revert-migrations:dev --name=SetupUserManagement1725711761726
 ```

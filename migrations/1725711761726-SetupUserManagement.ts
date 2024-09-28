@@ -5,45 +5,45 @@ export class SetupUserManagement1725711761726 implements MigrationInterface {
     // Insert Modules
     await queryRunner.query(`
             INSERT INTO "module" ("name", "created_at", "updated_at") VALUES 
-            ('Dashboard', NOW(), NOW()),
-            ('League Management', NOW(), NOW()),
-            ('Tournament Management', NOW(), NOW()),
-            ('Leagues', NOW(), NOW()),
-            ('Tournaments', NOW(), NOW()),
-            ('Club Management', NOW(), NOW()),
-            ('Invitations', NOW(), NOW()),
-            ('Members', NOW(), NOW()),
-            ('Customization', NOW(), NOW()),
-            ('My Club', NOW(), NOW()),
-            ('My Team', NOW(), NOW()),
-            ('My Matches', NOW(), NOW()),
-            ('Team Management', NOW(), NOW()),
-            ('Court Management', NOW(), NOW()),
-            ('Referral Management', NOW(), NOW()),
-            ('User Management', NOW(), NOW()),
-            ('Payment Management', NOW(), NOW()),
-            ('System Settings', NOW(), NOW()),
-            ('Reporting & Analytics', NOW(), NOW()),
-            ('Score & Standings', NOW(), NOW()),
-            ('Chat', NOW(), NOW()),
-            ('Account Settings', NOW(), NOW()),
-            ('Activity Logs / Error Logs', NOW(), NOW());
+            ('dashboard', NOW(), NOW()),
+            ('league_management', NOW(), NOW()),
+            ('tournament_management', NOW(), NOW()),
+            ('leagues', NOW(), NOW()),
+            ('tournaments', NOW(), NOW()),
+            ('club_management', NOW(), NOW()),
+            ('invitations', NOW(), NOW()),
+            ('members', NOW(), NOW()),
+            ('customization', NOW(), NOW()),
+            ('my_club', NOW(), NOW()),
+            ('my_team', NOW(), NOW()),
+            ('my_matches', NOW(), NOW()),
+            ('team_management', NOW(), NOW()),
+            ('court_management', NOW(), NOW()),
+            ('referral_management', NOW(), NOW()),
+            ('user_management', NOW(), NOW()),
+            ('payment_management', NOW(), NOW()),
+            ('system_settings', NOW(), NOW()),
+            ('reporting_&_analytics', NOW(), NOW()),
+            ('score_&_standings', NOW(), NOW()),
+            ('chat', NOW(), NOW()),
+            ('account_settings', NOW(), NOW()),
+            ('activity_logs', NOW(), NOW());
         `);
 
     // Insert Policies
     await queryRunner.query(`
             INSERT INTO "policy" ("name", "createdDate", "updatedDate") VALUES 
-            ('Read', NOW(), NOW()),
-            ('Read & Write', NOW(), NOW());
+            ('read', NOW(), NOW()),
+            ('read_&_write', NOW(), NOW());
         `);
 
     // Insert Actions
     await queryRunner.query(`
             INSERT INTO "action" ("name", "createdDate", "updatedDate") VALUES 
-            ('Read', NOW(), NOW()),
-            ('Write', NOW(), NOW()),
-            ('Update', NOW(), NOW()),
-            ('Delete', NOW(), NOW());
+            ('read', NOW(), NOW()),
+            ('write', NOW(), NOW()),
+            ('update', NOW(), NOW()),
+            ('delete', NOW(), NOW());
         `);
 
     // Insert mappings for actions_policies
@@ -51,10 +51,10 @@ export class SetupUserManagement1725711761726 implements MigrationInterface {
             INSERT INTO "actions_policies" ("actionId", "policyId")
             SELECT a.id, p.id
             FROM "action" a, "policy" p
-            WHERE (a.name = 'Read' AND p.name IN ('Read', 'Read & Write'))
-            OR (a.name = 'Write' AND p.name = 'Read & Write')
-            OR (a.name = 'Update' AND p.name = 'Read & Write')
-            OR (a.name = 'Delete' AND p.name = 'Read & Write');
+            WHERE (a.name = 'read' AND p.name IN ('read', 'read_&_write'))
+            OR (a.name = 'write' AND p.name = 'read_&_write')
+            OR (a.name = 'update' AND p.name = 'read_&_write')
+            OR (a.name = 'delete' AND p.name = 'read_&_write');
         `);
 
     // Role-wise access for ModulePolicyRole
@@ -88,9 +88,9 @@ export class SetupUserManagement1725711761726 implements MigrationInterface {
             INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
             SELECT r.id, m.id, p.id, NOW(), NOW()
             FROM "role" r
-            JOIN "module" m ON m.name NOT IN ('My Club', 'My Team', 'My Matches')
-            JOIN "policy" p ON p.name = 'Read & Write'
-            WHERE r.name = 'Super Admin';
+            JOIN "module" m ON m.name NOT IN ('my_club', 'my_team', 'my_matches')
+            JOIN "policy" p ON p.name = 'read_&_write'
+            WHERE r.name = 'super_admin';
         `);
 
     // Insert access for Club Owner
@@ -98,9 +98,9 @@ export class SetupUserManagement1725711761726 implements MigrationInterface {
             INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
             SELECT r.id, m.id, p.id, NOW(), NOW()
             FROM "role" r
-            JOIN "module" m ON m.name NOT IN ('My Club', 'My Team', 'My Matches')
-            JOIN "policy" p ON p.name = 'Read & Write'
-            WHERE r.name = 'Club Owner';
+            JOIN "module" m ON m.name NOT IN ('my_club', 'my_team', 'my_matches')
+            JOIN "policy" p ON p.name = 'read_&_write'
+            WHERE r.name = 'club_owner';
         `);
 
     // Insert access for Player
@@ -108,16 +108,16 @@ export class SetupUserManagement1725711761726 implements MigrationInterface {
             INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
             SELECT r.id, m.id, p.id, NOW(), NOW()
             FROM "role" r
-            JOIN "module" m ON m.name IN ('Dashboard', 'My Club', 'My Team', 'My Matches', 'Score & Standings', 'Account Settings', 'Leagues', 'Tournaments')
-            JOIN "policy" p ON p.name = 'Read'
-            WHERE r.name = 'Player';
+            JOIN "module" m ON m.name IN ('dashboard', 'my_club', 'my_team', 'my_matches', 'score_&_standings', 'account_settings', 'leagues', 'tournaments')
+            JOIN "policy" p ON p.name = 'read'
+            WHERE r.name = 'player';
 
             INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
             SELECT r.id, m.id, p.id, NOW(), NOW()
             FROM "role" r
-            JOIN "module" m ON m.name = 'Account Settings'
-            JOIN "policy" p ON p.name = 'Read & Write'
-            WHERE r.name = 'Player';
+            JOIN "module" m ON m.name = 'account_settings'
+            JOIN "policy" p ON p.name = 'read_&_write'
+            WHERE r.name = 'player';
         `);
 
     // Insert access for Tournament Organizer
@@ -125,16 +125,16 @@ export class SetupUserManagement1725711761726 implements MigrationInterface {
             INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
             SELECT r.id, m.id, p.id, NOW(), NOW()
             FROM "role" r
-            JOIN "module" m ON m.name IN ('Dashboard', 'My Club', 'Score & Standings')
-            JOIN "policy" p ON p.name = 'Read'
-            WHERE r.name = 'Tournament Organizer';
+            JOIN "module" m ON m.name IN ('dashboard', 'my_club', 'score_&_standings')
+            JOIN "policy" p ON p.name = 'read'
+            WHERE r.name = 'tournament_organizer';
 
             INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
             SELECT r.id, m.id, p.id, NOW(), NOW()
             FROM "role" r
-            JOIN "module" m ON m.name IN ('Tournament Management', 'Account Settings')
-            JOIN "policy" p ON p.name = 'Read & Write'
-            WHERE r.name = 'Tournament Organizer';
+            JOIN "module" m ON m.name IN ('tournament_management', 'account_settings')
+            JOIN "policy" p ON p.name = 'read_&_write'
+            WHERE r.name = 'tournament_organizer';
         `);
 
     // Insert access for League Organizer
@@ -142,16 +142,16 @@ export class SetupUserManagement1725711761726 implements MigrationInterface {
             INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
             SELECT r.id, m.id, p.id, NOW(), NOW()
             FROM "role" r
-            JOIN "module" m ON m.name IN ('Dashboard', 'My Club', 'Score & Standings')
-            JOIN "policy" p ON p.name = 'Read'
-            WHERE r.name = 'League Organizer';
+            JOIN "module" m ON m.name IN ('dashboard', 'my_club', 'score_&_standings')
+            JOIN "policy" p ON p.name = 'read'
+            WHERE r.name = 'league_organizer';
 
             INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
             SELECT r.id, m.id, p.id, NOW(), NOW()
             FROM "role" r
-            JOIN "module" m ON m.name IN ('League Management', 'Account Settings')
-            JOIN "policy" p ON p.name = 'Read & Write'
-            WHERE r.name = 'League Organizer';
+            JOIN "module" m ON m.name IN ('league_management', 'account_settings')
+            JOIN "policy" p ON p.name = 'read_&_write'
+            WHERE r.name = 'league_organizer';
         `);
   }
 }
