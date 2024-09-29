@@ -29,6 +29,9 @@ export class AuthService {
       },
     };
 
+    const expiresIn =
+      Math.floor(Date.now() / 1000) + this.configuration.jwt.access.expiry;
+
     return {
       user,
       authTokens: {
@@ -40,7 +43,7 @@ export class AuthService {
           expiresIn: this.configuration.jwt.refresh.expiry,
           secret: this.configuration.jwt.refresh.secretKey,
         }),
-        expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
+        expiresIn,
       },
     };
   }

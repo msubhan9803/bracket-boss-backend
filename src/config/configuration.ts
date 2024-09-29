@@ -10,16 +10,16 @@ export default () => ({
   jwt: {
     access: {
       secretKey: process.env.JWT_ACCESS_TOKEN_KEY,
-      expiry: process.env.JWT_ACCESS_EXPIRY,
+      expiry: parseInt(process.env.JWT_ACCESS_EXPIRY),
     },
     refresh: {
       secretKey: process.env.JWT_REFRESH_TOKEN_KEY,
-      expiry: process.env.JWT_REFRESH_EXPIRY,
+      expiry: parseInt(process.env.JWT_REFRESH_EXPIRY),
     },
   },
   smtp: {
     host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT, 10),
+    port: parseInt(process.env.SMTP_PORT),
     auth: {
       user: process.env.SMTP_USERNAME,
       password: process.env.SMTP_PASSWORD,
