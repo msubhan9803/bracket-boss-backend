@@ -12,6 +12,8 @@ export default {
   EMAIL_VERIFICATION_SUCCESSFULL: 'Email has been verified',
   ROLE_NOT_FOUND: 'Role not found',
   FORGOT_PASSWORD_EMAIL_SENT: 'Forgot Password Email Sent',
+  VERIFICATION_OTP_EXPIRED:
+    'OTP expired. A new OTP has been sent to your email',
 };
 
 export const emailMessages = {

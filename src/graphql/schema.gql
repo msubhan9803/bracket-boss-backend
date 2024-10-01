@@ -83,6 +83,7 @@ type Mutation {
   updateUserRole(input: UpdateUserRoleDto!): UpdateUserRoleResponseDto!
   uploadFile(file: Upload!): UploadFileResponseDto!
   verifyEmail(input: VerifyEmailInputDto!): MessageResponseDto!
+  verifyOtp(email: String!, otp: String!): MessageResponseDto!
 }
 
 type PermissionByRoleIdResponse {

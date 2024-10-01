@@ -20,6 +20,8 @@ import { UsersOnboardingStepsService } from 'src/users-onboarding-steps/provider
 import { StepNames } from 'src/users-onboarding-steps/types/step.types';
 import { AuthCheckGuard } from './guards/auth-check.guard';
 import { VerifyEmailInputDto } from './dtos/verify-email-input.dto';
+import { JwtService } from '@nestjs/jwt';
+import { TokenType } from './types/types';
 
 @Resolver()
 export class AuthResolver {
@@ -29,6 +31,7 @@ export class AuthResolver {
     private readonly emailSenderService: EmailSenderService,
     private readonly otpService: OtpService,
     private readonly usersOnboardingStepsService: UsersOnboardingStepsService,
+    private jwtService: JwtService,
   ) {}
 
   @Mutation(() => MessageResponseDto)
@@ -155,6 +158,50 @@ export class AuthResolver {
       );
 
       return { message: messages.FORGOT_PASSWORD_EMAIL_SENT };
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @Mutation(() => MessageResponseDto)
+  async verifyOtp(
+    @Args('email') email: string,
+    @Args('otp') otp: string,
+  ): Promise<MessageResponseDto> {
+    try {
+      const user = await this.usersService.findOneByEmail(email);
+      if (!user) {
+        throw new NotFoundException(messages.USER_NOT_FOUND);
+      }
+
+      const isOTPValid = this.otpService.validateOtp(otp, user.otpSecret);
+      if (!isOTPValid) {
+        /**
+         * OTP is expired
+         * Sending new verification otp
+         */
+        const verificationOtp = this.otpService.generateOtp(user.otpSecret);
+        await this.emailSenderService.sendForgotPasswordEmail(
+          user.email,
+          user.name,
+          verificationOtp,
+        );
+
+        throw new NotFoundException(messages.VERIFICATION_OTP_EXPIRED);
+      }
+
+      const token = await this.authService.generateToken(
+        {
+          username: user.email,
+          sub: {
+            id: user.id,
+            name: user.name,
+          },
+        },
+        TokenType.ACCESS,
+      );
+
+      return { message: token };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }

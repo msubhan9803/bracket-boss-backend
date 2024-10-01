@@ -7,6 +7,7 @@ import { LoginInputDto } from '../dtos/login-input.dto';
 import configuration from 'src/config/configuration';
 import { RefreshTokenResponseDto } from '../dtos/refresh-token-response.dto';
 import messages from 'src/utils/messages';
+import { TokenType } from '../types/types';
 
 const EXPIRE_TIME = 20 * 1000;
 
@@ -35,14 +36,8 @@ export class AuthService {
     return {
       user,
       authTokens: {
-        accessToken: await this.jwtService.signAsync(payload, {
-          expiresIn: this.configuration.jwt.access.expiry,
-          secret: this.configuration.jwt.access.secretKey,
-        }),
-        refreshToken: await this.jwtService.signAsync(payload, {
-          expiresIn: this.configuration.jwt.refresh.expiry,
-          secret: this.configuration.jwt.refresh.secretKey,
-        }),
+        accessToken: await this.generateToken(payload, TokenType.ACCESS),
+        refreshToken: await this.generateToken(payload, TokenType.REFRESH),
         expiresIn,
       },
     };
@@ -69,19 +64,33 @@ export class AuthService {
     };
 
     return {
-      accessToken: await this.jwtService.signAsync(payload, {
-        expiresIn: this.configuration.jwt.access.expiry,
-        secret: this.configuration.jwt.access.secretKey,
-      }),
-      refreshToken: await this.jwtService.signAsync(payload, {
-        expiresIn: this.configuration.jwt.refresh.expiry,
-        secret: this.configuration.jwt.refresh.secretKey,
-      }),
+      accessToken: await this.generateToken(payload, TokenType.ACCESS),
+      refreshToken: await this.generateToken(payload, TokenType.REFRESH),
       expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
     };
   }
 
   async verifyEmail(userId: number): Promise<void> {
     await this.userService.update(userId, { isEmailVerified: true });
+  }
+
+  async generateToken(
+    payload: Record<string, any>,
+    tokenType: TokenType,
+  ): Promise<string> {
+    const expiry =
+      tokenType === TokenType.ACCESS
+        ? this.configuration.jwt.access.expiry
+        : this.configuration.jwt.refresh.expiry;
+
+    const secretKey =
+      tokenType === TokenType.ACCESS
+        ? this.configuration.jwt.access.secretKey
+        : this.configuration.jwt.refresh.secretKey;
+
+    return this.jwtService.signAsync(payload, {
+      expiresIn: expiry,
+      secret: secretKey,
+    });
   }
 }
