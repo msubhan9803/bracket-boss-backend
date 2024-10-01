@@ -23,6 +23,7 @@ import { AuthCheckGuard } from './guards/auth-check.guard';
 import { VerifyEmailInputDto } from './dtos/verify-email-input.dto';
 import { JwtService } from '@nestjs/jwt';
 import { CustomRequest, TokenType } from './types/types';
+import { OtpVerifyResponseDto } from 'src/common/dtos/otp-verify-response.dto';
 
 @Resolver()
 export class AuthResolver {
@@ -164,11 +165,11 @@ export class AuthResolver {
     }
   }
 
-  @Mutation(() => MessageResponseDto)
+  @Mutation(() => OtpVerifyResponseDto)
   async verifyOtp(
     @Args('email') email: string,
     @Args('otp') otp: string,
-  ): Promise<MessageResponseDto> {
+  ): Promise<OtpVerifyResponseDto> {
     try {
       const user = await this.usersService.findOneByEmail(email);
       if (!user) {
@@ -202,7 +203,7 @@ export class AuthResolver {
         TokenType.ACCESS,
       );
 
-      return { message: token };
+      return { message: messages.OTP_VERIFIED_SUCCESSFULLY, token };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }

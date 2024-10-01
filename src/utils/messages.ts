@@ -13,6 +13,7 @@ export default {
   ROLE_NOT_FOUND: 'Role not found',
   VERIFICATION_OTP_EXPIRED:
     'OTP expired. A new OTP has been sent to your email',
+  OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully',
   FORGOT_PASSWORD_EMAIL_SENT: 'Forgot Password Email Sent',
   PASSWORD_RESET_SUCCESSFULLY: 'Password has been reset successfully',
 };
