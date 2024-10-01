@@ -138,4 +138,25 @@ export class AuthResolver {
       throw new InternalServerErrorException('Error: ', error.message);
     }
   }
+
+  @Mutation(() => MessageResponseDto)
+  async sendForgotPasswordEmail(@Args('email') email: string) {
+    try {
+      const user = await this.usersService.findOneByEmail(email);
+      if (!user) {
+        throw new NotFoundException(messages.USER_NOT_FOUND);
+      }
+
+      const otp = this.otpService.generateOtp(user.otpSecret);
+      await this.emailSenderService.sendForgotPasswordEmail(
+        user.email,
+        user.name,
+        otp,
+      );
+
+      return { message: messages.FORGOT_PASSWORD_EMAIL_SENT };
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
 }

@@ -18,4 +18,16 @@ export class EmailSenderService {
 
     await this.emailSenderStrategy.sendEmail(to, subject, template, data);
   }
+
+  async sendForgotPasswordEmail(
+    to: string,
+    username: string,
+    otp: string,
+  ): Promise<void> {
+    const subject = emailMessages.forgotPassword.subject;
+    const template = MailerIdentifiers.FORGOT_PASSWORD;
+    const data = { username, otp };
+
+    await this.emailSenderStrategy.sendEmail(to, subject, template, data);
+  }
 }
