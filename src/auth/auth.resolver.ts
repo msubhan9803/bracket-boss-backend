@@ -5,6 +5,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
+import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/providers/users.service';
 import { LoginInputDto } from './dtos/login-input.dto';
 import { AuthService } from './providers/auth.service';
@@ -21,7 +22,7 @@ import { StepNames } from 'src/users-onboarding-steps/types/step.types';
 import { AuthCheckGuard } from './guards/auth-check.guard';
 import { VerifyEmailInputDto } from './dtos/verify-email-input.dto';
 import { JwtService } from '@nestjs/jwt';
-import { TokenType } from './types/types';
+import { CustomRequest, TokenType } from './types/types';
 
 @Resolver()
 export class AuthResolver {
@@ -202,6 +203,28 @@ export class AuthResolver {
       );
 
       return { message: token };
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => MessageResponseDto)
+  async resetPassword(
+    @Context('req') req: CustomRequest,
+    @Args('newPassword') newPassword: string,
+  ): Promise<MessageResponseDto> {
+    try {
+      const userId = req.user.sub.id;
+      const user = await this.usersService.findOne(userId);
+      if (!user) {
+        throw new NotFoundException(messages.USER_NOT_FOUND);
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await this.usersService.update(user.id, { password: hashedPassword });
+
+      return { message: messages.PASSWORD_RESET_SUCCESSFULLY };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }
