@@ -24,6 +24,7 @@ export class CourtManagementService {
     filter?: string;
     sort?: { field: string; direction: 'ASC' | 'DESC' };
     relations?: string[];
+    clubId: number;
   }): Promise<[Court[], number]> {
     const { page, pageSize, filterBy, filter, sort } = options;
 

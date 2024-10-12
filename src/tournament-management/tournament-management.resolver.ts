@@ -2,10 +2,11 @@ import { Resolver, Mutation, Args, Query, Int } from '@nestjs/graphql';
 import { TournamentManagementService } from './providers/tournament-management.service';
 import { Tournament } from './entities/tournament.entity';
 import { CreateTournamentInputDto } from './dtos/create-tournament-input.dto';
-import { InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { UpdateTournamentInput } from './dtos/update-tournament-input.dto';
 import { TournamentListResponse } from './dtos/get-all-tournaments-response.dto';
 import { SortInput } from 'src/common/dtos/sort-input.dto';
+import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
 
 @Resolver(() => Tournament)
 export class TournamentManagementResolver {
@@ -13,6 +14,7 @@ export class TournamentManagementResolver {
     private readonly tournamentManagementService: TournamentManagementService,
   ) {}
 
+  @UseGuards(AuthCheckGuard)
   @Query(() => TournamentListResponse)
   async getAllTournaments(
     @Args('page', { type: () => Int, nullable: true }) page = 1,
@@ -41,6 +43,7 @@ export class TournamentManagementResolver {
     }
   }
 
+  @UseGuards(AuthCheckGuard)
   @Query(() => Tournament)
   async getTournamentById(@Args('tournamentId') tournamentId: number) {
     try {
@@ -55,6 +58,7 @@ export class TournamentManagementResolver {
     }
   }
 
+  @UseGuards(AuthCheckGuard)
   @Mutation(() => Tournament)
   async createTournament(
     @Args('input') createTournamentDto: CreateTournamentInputDto,
@@ -68,6 +72,7 @@ export class TournamentManagementResolver {
     }
   }
 
+  @UseGuards(AuthCheckGuard)
   @Mutation(() => Tournament)
   async updateTournament(
     @Args('input') updateTournamentInput: UpdateTournamentInput,

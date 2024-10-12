@@ -157,7 +157,7 @@ type Policy {
 type Query {
   getAllBrackets: [Bracket!]!
   getAllClubs: [Club!]!
-  getAllCourts(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): CourtListResponse!
+  getAllCourts(clubId: Int, filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): CourtListResponse!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
   getAllTournaments(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TournamentListResponse!
   getClubById(clubId: Float!): Club!

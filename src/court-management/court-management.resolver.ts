@@ -2,16 +2,20 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CourtManagementService } from './providers/court-management.service';
 import { Court } from './entities/court.entity';
 import { CreateCourtInputDto } from './dtos/create-court-input.dto';
-import { InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { CourtListResponse } from './dtos/get-all-courts-response.dto';
 import { SortInput } from 'src/common/dtos/sort-input.dto';
+import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
+import { UsersService } from 'src/users/providers/users.service';
 
 @Resolver()
 export class CourtManagementResolver {
   constructor(
     private readonly courtManagementService: CourtManagementService,
+    private readonly usersService: UsersService,
   ) {}
 
+  @UseGuards(AuthCheckGuard)
   @Query(() => CourtListResponse)
   async getAllCourts(
     @Args('page', { type: () => Int, nullable: true }) page = 1,
@@ -23,6 +27,7 @@ export class CourtManagementResolver {
       field: string;
       direction: 'ASC' | 'DESC';
     },
+    @Args('clubId', { type: () => Int, nullable: true }) clubId = 1,
   ) {
     try {
       const [courts, totalRecords] =
@@ -32,6 +37,7 @@ export class CourtManagementResolver {
           filterBy,
           filter,
           sort,
+          clubId,
         });
 
       return { courts, totalRecords };
@@ -40,6 +46,7 @@ export class CourtManagementResolver {
     }
   }
 
+  @UseGuards(AuthCheckGuard)
   @Query(() => Court)
   async getCourtById(@Args('courtId') courtId: number) {
     try {
@@ -52,6 +59,7 @@ export class CourtManagementResolver {
     }
   }
 
+  @UseGuards(AuthCheckGuard)
   @Mutation(() => Court)
   async createCourt(
     @Args('input') createCourtInputDto: CreateCourtInputDto,
