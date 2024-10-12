@@ -6,12 +6,14 @@ import {
   UpdateDateColumn,
   JoinColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Club } from 'src/clubs/entities/club.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Sport } from 'src/sport-management/entities/sport.entity';
 import { Bracket } from 'src/bracket-management/entities/bracket.entity';
+import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
 
 @ObjectType()
 @Entity()
@@ -54,6 +56,10 @@ export class Tournament {
   @Field()
   @Column('boolean')
   isPrivate: boolean;
+
+  @Field(() => [TeamsTournamentsUsers], { nullable: true })
+  @OneToMany(() => TeamsTournamentsUsers, (ttu) => ttu.tournament)
+  teamsTournamentsUsers: TeamsTournamentsUsers[];
 
   @Field()
   @CreateDateColumn()

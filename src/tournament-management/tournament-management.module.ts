@@ -22,5 +22,6 @@ import { UsersModule } from 'src/users/users.module';
     TournamentManagementResolver,
     JwtService,
   ],
+  exports: [TournamentManagementService],
 })
 export class TournamentManagementModule {}

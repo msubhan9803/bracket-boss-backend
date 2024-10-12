@@ -30,6 +30,7 @@ type Club {
   logo: String!
   name: String!
   slug: String!
+  teamsTournamentsUsers: [TeamsTournamentsUsers!]
   updatedDate: DateTime!
   userRoleClub: [UserRoleClub!]
   users: [User!]
@@ -63,6 +64,13 @@ input CreateCourtInputDto {
   clubId: Float!
   location: String!
   name: String!
+}
+
+input CreateTeamInputDto {
+  clubId: Int!
+  name: String!
+  tournamentId: Int!
+  userIds: [Int!]!
 }
 
 input CreateTournamentInputDto {
@@ -117,6 +125,7 @@ type ModulePolicyRole {
 type Mutation {
   createClub(input: CreateClubInputDto!): CreateClubResponseDto!
   createCourt(input: CreateCourtInputDto!): Court!
+  createTeam(createTeamInput: CreateTeamInputDto!): Team!
   createTournament(input: CreateTournamentInputDto!): Tournament!
   login(input: LoginInputDto!): LoginResponseDto!
   refreshToken: RefreshTokenResponseDto!
@@ -159,6 +168,7 @@ type Query {
   getAllClubs: [Club!]!
   getAllCourts(clubId: Int, filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): CourtListResponse!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
+  getAllTeams(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TeamListResponse!
   getAllTournaments(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TournamentListResponse!
   getClubById(clubId: Float!): Club!
   getCourtById(courtId: Float!): Court!
@@ -230,6 +240,31 @@ input StepsByRoleDto {
   roleId: Float!
 }
 
+type Team {
+  club: Club!
+  createdDate: DateTime!
+  id: CustomID!
+  name: String!
+  teamsTournamentsUsers: [TeamsTournamentsUsers!]
+  tournament: Tournament!
+  updatedDate: DateTime!
+}
+
+type TeamListResponse {
+  teams: [Team!]!
+  totalRecords: Int!
+}
+
+type TeamsTournamentsUsers {
+  club: Club!
+  created_at: DateTime!
+  id: CustomID!
+  team: Team!
+  tournament: Tournament!
+  updated_at: DateTime!
+  user: User!
+}
+
 type Tournament {
   bracket: Bracket!
   club: Club!
@@ -241,6 +276,7 @@ type Tournament {
   name: String!
   sport: Sport!
   start_date: DateTime!
+  teamsTournamentsUsers: [TeamsTournamentsUsers!]
   updated_at: DateTime!
 }
 
@@ -295,6 +331,7 @@ type User {
   otpSecret: String!
   profileImage: String
   steps: [Step!]
+  teamsTournamentsUsers: [TeamsTournamentsUsers!]
   updated_at: DateTime!
   userRoleClub: [UserRoleClub!]
 }

@@ -13,6 +13,7 @@ import { Club } from 'src/clubs/entities/club.entity';
 import { Step } from 'src/users-onboarding-steps/entities/step.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { UserRoleClub } from 'src/user-management/entities/user-role-club.entity';
+import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
 
 @ObjectType()
 @Entity()
@@ -58,6 +59,10 @@ export class User {
   @Field(() => [UserRoleClub], { nullable: true })
   @OneToMany(() => UserRoleClub, (userRoleClub) => userRoleClub.user)
   userRoleClub: UserRoleClub[];
+
+  @Field(() => [TeamsTournamentsUsers], { nullable: true })
+  @OneToMany(() => TeamsTournamentsUsers, (ttu) => ttu.user)
+  teamsTournamentsUsers: TeamsTournamentsUsers[];
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

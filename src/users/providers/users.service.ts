@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import messages from 'src/utils/messages';
@@ -19,6 +19,10 @@ export class UsersService {
 
   findOne(id: number): Promise<User> {
     return this.userRepository.findOneBy({ id });
+  }
+
+  findMultipleUsersById(ids: number[]): Promise<User[]> {
+    return this.userRepository.findBy({ id: In(ids) });
   }
 
   findOneWithRelations(userId: number, relations: string[]): Promise<User> {
