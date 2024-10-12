@@ -18,4 +18,8 @@ export class BracketManagementService {
   async findBracketByName(name: BracketType): Promise<Bracket> {
     return this.sportRepository.findOneBy({ name });
   }
+
+  async findAll(): Promise<Bracket[]> {
+    return this.sportRepository.find();
+  }
 }

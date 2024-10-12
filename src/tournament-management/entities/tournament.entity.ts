@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Club } from 'src/clubs/entities/club.entity';
@@ -20,17 +20,17 @@ export class Tournament {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Club)
+  @ManyToOne(() => Club)
   @JoinColumn()
   @Field(() => Club)
   club: Club;
 
-  @OneToOne(() => Sport)
+  @ManyToOne(() => Sport)
   @JoinColumn()
   @Field(() => Sport)
   sport: Sport;
 
-  @OneToOne(() => Bracket)
+  @ManyToOne(() => Bracket)
   @JoinColumn()
   @Field(() => Bracket)
   bracket: Bracket;

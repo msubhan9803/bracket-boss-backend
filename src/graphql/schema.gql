@@ -136,6 +136,7 @@ type Policy {
 }
 
 type Query {
+  getAllBrackets: [Bracket!]!
   getAllClubs: [Club!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
   getAllTournaments(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TournamentListResponse!
