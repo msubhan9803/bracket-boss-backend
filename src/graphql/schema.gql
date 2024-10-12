@@ -10,6 +10,19 @@ type Action {
   updatedDate: DateTime!
 }
 
+type Bracket {
+  created_at: DateTime!
+  id: CustomID!
+  name: BracketType!
+  updated_at: DateTime!
+}
+
+enum BracketType {
+  double_elimination
+  round_robin
+  single_elimination
+}
+
 type Club {
   createdDate: DateTime!
   description: String!
@@ -32,6 +45,16 @@ input CreateClubInputDto {
 type CreateClubResponseDto {
   club: Club!
   message: String!
+}
+
+input CreateTournamentInputDto {
+  bracketId: Float!
+  clubId: Float!
+  description: String!
+  end_date: DateTime!
+  isPrivate: Boolean!
+  name: String!
+  start_date: DateTime!
 }
 
 """A custom scalar to handle numeric IDs as integers"""
@@ -75,6 +98,7 @@ type ModulePolicyRole {
 
 type Mutation {
   createClub(input: CreateClubInputDto!): CreateClubResponseDto!
+  createTournament(input: CreateTournamentInputDto!): Tournament!
   login(input: LoginInputDto!): LoginResponseDto!
   refreshToken: RefreshTokenResponseDto!
   register(input: RegisterInputDto!): MessageResponseDto!
@@ -143,6 +167,18 @@ type Role {
   userRoleClub: [UserRoleClub!]
 }
 
+type Sport {
+  created_at: DateTime!
+  description: String!
+  id: CustomID!
+  name: SportName!
+  updated_at: DateTime!
+}
+
+enum SportName {
+  pickleball
+}
+
 type Step {
   createdDate: DateTime!
   id: ID!
@@ -162,6 +198,20 @@ enum StepNames {
 
 input StepsByRoleDto {
   roleId: Float!
+}
+
+type Tournament {
+  bracket: Bracket!
+  club: Club!
+  created_at: DateTime!
+  description: String!
+  end_date: DateTime!
+  id: CustomID!
+  isPrivate: Boolean!
+  name: String!
+  sport: Sport!
+  start_date: DateTime!
+  updated_at: DateTime!
 }
 
 input UpdateUserClubDto {

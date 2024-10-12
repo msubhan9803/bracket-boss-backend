@@ -16,6 +16,9 @@ import { OtpModule } from './otp/otp.module';
 import { UsersOnboardingStepsModule } from './users-onboarding-steps/users-onboarding-steps.module';
 import { CustomNumberIdScalar } from './common/scalars/custom-number-id.scalar';
 import { FileUploadModule } from './file-upload/file-upload.module';
+import { TournamentManagementModule } from './tournament-management/tournament-management.module';
+import { SportManagementModule } from './sport-management/sport-management.module';
+import { BracketManagementModule } from './bracket-management/bracket-management.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -59,6 +62,9 @@ const ENV = process.env.NODE_ENV;
     OtpModule,
     UsersOnboardingStepsModule,
     FileUploadModule,
+    TournamentManagementModule,
+    SportManagementModule,
+    BracketManagementModule,
   ],
   controllers: [],
   providers: [],
