@@ -18,6 +18,32 @@ export class TournamentManagementService {
     private bracketManagementService: BracketManagementService,
   ) {}
 
+  findAll(): Promise<Tournament[]> {
+    return this.tournamentRepository.find();
+  }
+
+  findAllWithRelations(
+    relations: string[] = ['sport', 'club', 'bracket'],
+  ): Promise<Tournament[]> {
+    return this.tournamentRepository.find({
+      relations,
+    });
+  }
+
+  findOne(id: number): Promise<Tournament> {
+    return this.tournamentRepository.findOneBy({ id });
+  }
+
+  findOneWithRelations(
+    tournamentId: number,
+    relations: string[] = ['sport', 'club', 'bracket'],
+  ): Promise<Tournament> {
+    return this.tournamentRepository.findOne({
+      where: { id: tournamentId },
+      relations,
+    });
+  }
+
   async createTournament(
     createTournamentDto: CreateTournamentInputDto,
   ): Promise<Tournament> {

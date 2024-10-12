@@ -137,9 +137,11 @@ type Policy {
 type Query {
   getAllClubs: [Club!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
+  getAllTournaments: [Tournament!]!
   getClubById(clubId: Float!): Club!
   getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!
   getStepsOfUser: [Step!]!
+  getTournamentById(tournamentId: Float!): Tournament!
   getUserById(clubId: Float, userId: Float!): UserWithRoleClub!
   getUsers: [User!]!
 }
