@@ -138,7 +138,7 @@ type Policy {
 type Query {
   getAllClubs: [Club!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
-  getAllTournaments: [Tournament!]!
+  getAllTournaments(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TournamentListResponse!
   getClubById(clubId: Float!): Club!
   getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!
   getStepsOfUser: [Step!]!
@@ -168,6 +168,11 @@ type Role {
   steps: [Step!]
   updatedDate: DateTime!
   userRoleClub: [UserRoleClub!]
+}
+
+input SortInput {
+  direction: String!
+  field: String!
 }
 
 type Sport {
@@ -215,6 +220,11 @@ type Tournament {
   sport: Sport!
   start_date: DateTime!
   updated_at: DateTime!
+}
+
+type TournamentListResponse {
+  totalRecords: Int!
+  tournaments: [Tournament!]!
 }
 
 input UpdateTournamentInput {

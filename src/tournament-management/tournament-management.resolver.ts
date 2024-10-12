@@ -1,9 +1,11 @@
-import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, Int } from '@nestjs/graphql';
 import { TournamentManagementService } from './providers/tournament-management.service';
 import { Tournament } from './entities/tournament.entity';
 import { CreateTournamentInputDto } from './dtos/create-tournament-input.dto';
 import { InternalServerErrorException } from '@nestjs/common';
 import { UpdateTournamentInput } from './dtos/update-tournament-input.dto';
+import { TournamentListResponse } from './dtos/get-all-tournaments-response.dto';
+import { SortInput } from './dtos/sort-input.dto';
 
 @Resolver(() => Tournament)
 export class TournamentManagementResolver {
@@ -11,10 +13,29 @@ export class TournamentManagementResolver {
     private readonly tournamentManagementService: TournamentManagementService,
   ) {}
 
-  @Query(() => [Tournament])
-  async getAllTournaments() {
+  @Query(() => TournamentListResponse)
+  async getAllTournaments(
+    @Args('page', { type: () => Int, nullable: true }) page = 1,
+    @Args('pageSize', { type: () => Int, nullable: true }) pageSize = 10,
+    @Args('filterBy', { type: () => String, nullable: true }) filterBy?: string,
+    @Args('filter', { type: () => String, nullable: true }) filter?: string,
+    @Args('sort', { type: () => SortInput, nullable: true })
+    sort?: {
+      field: string;
+      direction: 'ASC' | 'DESC';
+    },
+  ) {
     try {
-      return await this.tournamentManagementService.findAllWithRelations();
+      const [tournaments, totalRecords] =
+        await this.tournamentManagementService.findAllWithRelations({
+          page,
+          pageSize,
+          filterBy,
+          filter,
+          sort,
+        });
+
+      return { tournaments, totalRecords };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }

@@ -24,12 +24,37 @@ export class TournamentManagementService {
     return this.tournamentRepository.find();
   }
 
-  findAllWithRelations(
-    relations: string[] = ['sport', 'club', 'bracket'],
-  ): Promise<Tournament[]> {
-    return this.tournamentRepository.find({
-      relations,
-    });
+  async findAllWithRelations(options: {
+    page: number;
+    pageSize: number;
+    filterBy?: string;
+    filter?: string;
+    sort?: { field: string; direction: 'ASC' | 'DESC' };
+    relations?: string[];
+  }): Promise<[Tournament[], number]> {
+    const { page, pageSize, filterBy, filter, sort } = options;
+
+    const query = this.tournamentRepository
+      .createQueryBuilder('tournament')
+      .leftJoinAndSelect('tournament.sport', 'sport')
+      .leftJoinAndSelect('tournament.club', 'club')
+      .leftJoinAndSelect('tournament.bracket', 'bracket')
+      .skip((page - 1) * pageSize)
+      .take(pageSize);
+
+    if (filterBy && filter) {
+      query.andWhere(`tournament.${filterBy} LIKE :filter`, {
+        filter: `%${filter}%`,
+      });
+    }
+
+    if (sort) {
+      query.orderBy(`tournament.${sort.field}`, sort.direction);
+    }
+
+    const [tournaments, totalRecords] = await query.getManyAndCount();
+
+    return [tournaments, totalRecords];
   }
 
   findOne(id: number): Promise<Tournament> {
