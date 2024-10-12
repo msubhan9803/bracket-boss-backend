@@ -5,7 +5,7 @@ import { CreateTournamentInputDto } from './dtos/create-tournament-input.dto';
 import { InternalServerErrorException } from '@nestjs/common';
 import { UpdateTournamentInput } from './dtos/update-tournament-input.dto';
 import { TournamentListResponse } from './dtos/get-all-tournaments-response.dto';
-import { SortInput } from './dtos/sort-input.dto';
+import { SortInput } from 'src/common/dtos/sort-input.dto';
 
 @Resolver(() => Tournament)
 export class TournamentManagementResolver {
