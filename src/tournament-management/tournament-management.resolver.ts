@@ -3,6 +3,7 @@ import { TournamentManagementService } from './providers/tournament-management.s
 import { Tournament } from './entities/tournament.entity';
 import { CreateTournamentInputDto } from './dtos/create-tournament-input.dto';
 import { InternalServerErrorException } from '@nestjs/common';
+import { UpdateTournamentInput } from './dtos/update-tournament-input.dto';
 
 @Resolver(() => Tournament)
 export class TournamentManagementResolver {
@@ -40,6 +41,20 @@ export class TournamentManagementResolver {
     try {
       return this.tournamentManagementService.createTournament(
         createTournamentDto,
+      );
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @Mutation(() => Tournament)
+  async updateTournament(
+    @Args('input') updateTournamentInput: UpdateTournamentInput,
+  ): Promise<Tournament> {
+    try {
+      return this.tournamentManagementService.update(
+        updateTournamentInput.id,
+        updateTournamentInput,
       );
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);

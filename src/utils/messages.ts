@@ -5,6 +5,7 @@ export default {
     'You are successfully registered. Please check your email to verify your account',
   USER_ALREADY_EXISTS: 'User already exists',
   USER_NOT_FOUND: 'User not found',
+  NOT_FOUND: 'Record not found',
   USER_NOT_FOUND_BY_USER_ID: (userId: number) =>
     `User with ID ${userId} not found`,
   EMAIL_VERIFICATION_OTP_EXPIRED:

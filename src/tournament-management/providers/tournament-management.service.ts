@@ -7,6 +7,8 @@ import { SportName } from 'src/sport-management/types/sport.enums';
 import { CreateTournamentInputDto } from '../dtos/create-tournament-input.dto';
 import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { BracketManagementService } from 'src/bracket-management/providers/bracket-management.service';
+import { UpdateTournamentInput } from '../dtos/update-tournament-input.dto';
+import messages from 'src/utils/messages';
 
 @Injectable()
 export class TournamentManagementService {
@@ -69,5 +71,38 @@ export class TournamentManagementService {
     });
 
     return this.tournamentRepository.save(newTournament);
+  }
+
+  async update(
+    id: number,
+    updateTournamentInput: Partial<UpdateTournamentInput>,
+  ): Promise<Tournament> {
+    const sport = await this.sportManagementService.findSportByName(
+      SportName.pickleball,
+    );
+
+    const club = await this.clubsService.findOne(updateTournamentInput.clubId);
+
+    const bracket = await this.bracketManagementService.findOne(
+      updateTournamentInput.bracketId,
+    );
+
+    const user = await this.tournamentRepository.preload({
+      id,
+      name: updateTournamentInput.name,
+      description: updateTournamentInput.description,
+      start_date: updateTournamentInput.start_date,
+      end_date: updateTournamentInput.end_date,
+      isPrivate: updateTournamentInput.isPrivate,
+      club,
+      sport,
+      bracket,
+    });
+
+    if (!user) {
+      throw new Error(messages.NOT_FOUND);
+    }
+
+    return this.tournamentRepository.save(user);
   }
 }
