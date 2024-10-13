@@ -171,13 +171,13 @@ type Query {
   getAllTeams(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TeamListResponse!
   getAllTournaments(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TournamentListResponse!
   getAllTournamentsWithoutPagination: [Tournament!]!
+  getAllUsersWithoutPagination: [User!]!
   getClubById(clubId: Float!): Club!
   getCourtById(courtId: Float!): Court!
   getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!
   getStepsOfUser: [Step!]!
   getTournamentById(tournamentId: Float!): Tournament!
   getUserById(clubId: Float, userId: Float!): UserWithRoleClub!
-  getUsers: [User!]!
 }
 
 type RefreshTokenResponseDto {

@@ -28,7 +28,7 @@ export class UsersResolver {
 
   @UseGuards(AuthCheckGuard)
   @Query(() => [User])
-  async getUsers() {
+  async getAllUsersWithoutPagination() {
     try {
       return await this.usersService.findAll();
     } catch (error) {
