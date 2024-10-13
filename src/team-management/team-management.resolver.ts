@@ -42,7 +42,7 @@ export class TeamManagementResolver {
 
   @Mutation(() => Team)
   async createTeam(
-    @Args('createTeamInput') createTeamInput: CreateTeamInputDto,
+    @Args('input') createTeamInput: CreateTeamInputDto,
   ): Promise<Team> {
     return this.teamManagementService.createTeam(createTeamInput);
   }

@@ -125,7 +125,7 @@ type ModulePolicyRole {
 type Mutation {
   createClub(input: CreateClubInputDto!): CreateClubResponseDto!
   createCourt(input: CreateCourtInputDto!): Court!
-  createTeam(createTeamInput: CreateTeamInputDto!): Team!
+  createTeam(input: CreateTeamInputDto!): Team!
   createTournament(input: CreateTournamentInputDto!): Tournament!
   login(input: LoginInputDto!): LoginResponseDto!
   refreshToken: RefreshTokenResponseDto!
@@ -170,6 +170,7 @@ type Query {
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
   getAllTeams(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TeamListResponse!
   getAllTournaments(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TournamentListResponse!
+  getAllTournamentsWithoutPagination: [Tournament!]!
   getClubById(clubId: Float!): Club!
   getCourtById(courtId: Float!): Court!
   getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!

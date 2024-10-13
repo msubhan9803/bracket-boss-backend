@@ -14,6 +14,17 @@ export class TournamentManagementResolver {
     private readonly tournamentManagementService: TournamentManagementService,
   ) {}
 
+  @Query(() => [Tournament])
+  async getAllTournamentsWithoutPagination() {
+    try {
+      const tournaments = await this.tournamentManagementService.findAll();
+
+      return tournaments;
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
   @UseGuards(AuthCheckGuard)
   @Query(() => TournamentListResponse)
   async getAllTournaments(
