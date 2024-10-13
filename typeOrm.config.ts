@@ -15,6 +15,7 @@ import { Sport } from 'src/sport-management/entities/sport.entity';
 import { Bracket } from 'src/bracket-management/entities/bracket.entity';
 import { Court } from 'src/court-management/entities/court.entity';
 import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
+import { Team } from 'src/team-management/entities/team.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFilePath });
@@ -43,6 +44,7 @@ export default new DataSource({
     Sport,
     Bracket,
     Court,
+    Team,
     TeamsTournamentsUsers,
   ],
 });
