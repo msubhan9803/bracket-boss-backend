@@ -91,6 +91,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input GetScheduleOfTournamentInput {
+  tournamentId: Float!
+  users: [Float!]!
+}
+
 input LoginInputDto {
   email: String!
   password: String!
@@ -175,6 +180,7 @@ type Query {
   getClubById(clubId: Float!): Club!
   getCourtById(courtId: Float!): Court!
   getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!
+  getScheduleOfTournament(input: GetScheduleOfTournamentInput!): String!
   getStepsOfUser: [Step!]!
   getTournamentById(tournamentId: Float!): Tournament!
   getUserById(clubId: Float, userId: Float!): UserWithRoleClub!

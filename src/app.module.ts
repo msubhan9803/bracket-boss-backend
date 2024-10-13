@@ -21,6 +21,7 @@ import { SportManagementModule } from './sport-management/sport-management.modul
 import { BracketManagementModule } from './bracket-management/bracket-management.module';
 import { CourtManagementModule } from './court-management/court-management.module';
 import { TeamManagementModule } from './team-management/team-management.module';
+import { SchedulingModule } from './scheduling/scheduling.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -69,6 +70,7 @@ const ENV = process.env.NODE_ENV;
     BracketManagementModule,
     CourtManagementModule,
     TeamManagementModule,
+    SchedulingModule,
   ],
   controllers: [],
   providers: [],
