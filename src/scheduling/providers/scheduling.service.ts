@@ -1,14 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { BracketStrategy } from '../interface/bracket-strategy.interface';
-import { RoundRobinTeamBasedStrategy } from '../strategies/round-robin-team-based.strategy';
-import { BracketType } from 'src/bracket-management/types/bracket.enums';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
+import { StrategyTypes } from 'src/common/types/global';
 
 @Injectable()
 export class SchedulingService {
-  private strategies: { [key: string]: BracketStrategy } = {
-    [BracketType.round_robin]: new RoundRobinTeamBasedStrategy(),
-  };
+  private strategies: { [key: string]: BracketStrategy };
+
+  constructor(
+    @Inject(StrategyTypes.BRACKET_STRATEGIES)
+    strategies: BracketStrategy[],
+  ) {
+    this.strategies = strategies.reduce((acc, strategy) => {
+      acc[strategy.type] = strategy;
+      return acc;
+    }, {});
+  }
 
   async generateTeamsBasedOnStrategy(
     tournament: Tournament,

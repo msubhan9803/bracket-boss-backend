@@ -20,6 +20,7 @@ type Bracket {
 enum BracketType {
   double_elimination
   round_robin
+  round_robin_player
   single_elimination
 }
 
