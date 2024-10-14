@@ -4,9 +4,19 @@ import { SchedulingResolver } from './scheduling.resolver';
 import { TournamentManagementModule } from 'src/tournament-management/tournament-management.module';
 import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
+import { RoundRobinTeamBasedStrategy } from './strategies/round-robin-team-based.strategy';
+import { StrategyTypes } from 'src/common/types/global';
 
 @Module({
   imports: [TournamentManagementModule, UsersModule],
-  providers: [SchedulingService, SchedulingResolver, JwtService],
+  providers: [
+    SchedulingService,
+    SchedulingResolver,
+    JwtService,
+    {
+      provide: StrategyTypes.BRACKET_STRATEGIES,
+      useClass: RoundRobinTeamBasedStrategy,
+    },
+  ],
 })
 export class SchedulingModule {}
