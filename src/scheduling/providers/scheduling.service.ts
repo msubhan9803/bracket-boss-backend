@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { BracketStrategy } from '../interface/bracket-strategy.interface';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { StrategyTypes } from 'src/common/types/global';
+import { Match, Team } from '../types/common';
 
 @Injectable()
 export class SchedulingService {
@@ -19,25 +20,17 @@ export class SchedulingService {
 
   async generateTeamsBasedOnStrategy(
     tournament: Tournament,
-    users: any[],
-  ): Promise<void> {
+    users: number[],
+  ): Promise<{ matches: Match[]; teams: Team[] }> {
     const strategy = this.strategies[tournament.bracket.name];
     if (!strategy) {
       throw new Error('Invalid strategy type');
     }
 
-    await strategy.generateTeams(tournament.id, users);
-  }
+    const teams = await strategy.generateTeams(users);
 
-  async generateMatchesBasedOnStrategy(
-    tournament: Tournament,
-    teams: any[],
-  ): Promise<void> {
-    const strategy = this.strategies[tournament.bracket.name];
-    if (!strategy) {
-      throw new Error('Invalid strategy type');
-    }
+    const matches = await strategy.generateMatches(teams);
 
-    await strategy.generateMatches(tournament.id, teams);
+    return { matches, teams };
   }
 }

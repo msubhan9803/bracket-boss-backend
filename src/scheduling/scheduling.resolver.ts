@@ -2,8 +2,9 @@ import { Args, Query, Resolver } from '@nestjs/graphql';
 import { SchedulingService } from './providers/scheduling.service';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
-import { GetScheduleOfTournamentInput } from './dtos/get-schedule-of-tournament.dto';
+import { GetScheduleOfTournamentInput } from './dtos/get-schedule-of-tournament-input.dto';
 import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
+import { GetScheduleOfTournamentResponseDto } from './dtos/get-schedule-of-tournament-response.dto';
 
 @Resolver()
 export class SchedulingResolver {
@@ -13,7 +14,7 @@ export class SchedulingResolver {
   ) {}
 
   @UseGuards(AuthCheckGuard)
-  @Query(() => String)
+  @Query(() => GetScheduleOfTournamentResponseDto)
   async getScheduleOfTournament(
     @Args('input') getScheduleOfTournamentInput: GetScheduleOfTournamentInput,
   ) {
@@ -26,12 +27,13 @@ export class SchedulingResolver {
           ['bracket'],
         );
 
-      await this.schedulingService.generateTeamsBasedOnStrategy(
-        tournament,
-        users,
-      );
+      const { matches, teams } =
+        await this.schedulingService.generateTeamsBasedOnStrategy(
+          tournament,
+          users,
+        );
 
-      return 'Schedule generated successfully';
+      return { matches, teams };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }

@@ -97,6 +97,11 @@ input GetScheduleOfTournamentInput {
   users: [Float!]!
 }
 
+type GetScheduleOfTournamentResponseDto {
+  matches: [MatchType!]!
+  teams: [TeamType!]!
+}
+
 input LoginInputDto {
   email: String!
   password: String!
@@ -105,6 +110,11 @@ input LoginInputDto {
 type LoginResponseDto {
   authTokens: RefreshTokenResponseDto!
   user: User!
+}
+
+type MatchType {
+  name: String!
+  teams: [TeamType!]!
 }
 
 type MessageResponseDto {
@@ -181,7 +191,7 @@ type Query {
   getClubById(clubId: Float!): Club!
   getCourtById(courtId: Float!): Court!
   getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!
-  getScheduleOfTournament(input: GetScheduleOfTournamentInput!): String!
+  getScheduleOfTournament(input: GetScheduleOfTournamentInput!): GetScheduleOfTournamentResponseDto!
   getStepsOfUser: [Step!]!
   getTournamentById(tournamentId: Float!): Tournament!
   getUserById(clubId: Float, userId: Float!): UserWithRoleClub!
@@ -261,6 +271,11 @@ type Team {
 type TeamListResponse {
   teams: [Team!]!
   totalRecords: Int!
+}
+
+type TeamType {
+  name: String!
+  players: [Float!]!
 }
 
 type TeamsTournamentsUsers {
