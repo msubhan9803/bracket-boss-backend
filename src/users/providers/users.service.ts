@@ -13,8 +13,59 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  findAll(): Promise<User[]> {
-    return this.userRepository.find();
+  async findAll(userRole?: number): Promise<User[]> {
+    const query = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.clubs', 'clubs')
+      .leftJoinAndSelect('user.steps', 'steps')
+      .leftJoinAndSelect('user.userRoleClub', 'userRoleClub')
+      .leftJoinAndSelect('userRoleClub.role', 'role')
+      .leftJoinAndSelect('user.teamsTournamentsUsers', 'teamsTournamentsUsers');
+
+    if (userRole) {
+      query.where('role.id = :userRole', { userRole });
+    }
+
+    const users = await query.getMany();
+
+    return users;
+  }
+
+  async findAllWithRelations(options: {
+    userRole: number;
+    page: number;
+    pageSize: number;
+    filterBy?: string;
+    filter?: string;
+    sort?: { field: string; direction: 'ASC' | 'DESC' };
+    relations?: string[];
+  }): Promise<[User[], number]> {
+    const { page, pageSize, filterBy, filter, sort, userRole } = options;
+
+    const query = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.clubs', 'clubs')
+      .leftJoinAndSelect('user.steps', 'steps')
+      .leftJoinAndSelect('user.userRoleClub', 'userRoleClub')
+      .leftJoinAndSelect('userRoleClub.role', 'role')
+      .leftJoinAndSelect('user.teamsTournamentsUsers', 'teamsTournamentsUsers')
+      .where('userRoleClub.role.id = :userRole', { userRole })
+      .skip((page - 1) * pageSize)
+      .take(pageSize);
+
+    if (filterBy && filter) {
+      query.andWhere(`user.${filterBy} LIKE :filter`, {
+        filter: `%${filter}%`,
+      });
+    }
+
+    if (sort) {
+      query.orderBy(`user.${sort.field}`, sort.direction);
+    }
+
+    const [users, totalRecords] = await query.getManyAndCount();
+
+    return [users, totalRecords];
   }
 
   findOne(id: number): Promise<User> {

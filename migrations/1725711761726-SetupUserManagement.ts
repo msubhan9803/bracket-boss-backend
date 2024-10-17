@@ -24,7 +24,7 @@ export class SetupUserManagement1725711761726 implements MigrationInterface {
             ('payment_management', NOW(), NOW()),
             ('system_settings', NOW(), NOW()),
             ('reporting_&_analytics', NOW(), NOW()),
-            ('scheduling_&_scoring', NOW(), NOW()),
+            ('scheduling', NOW(), NOW()),
             ('chat', NOW(), NOW()),
             ('account_settings', NOW(), NOW()),
             ('activity_logs', NOW(), NOW());
@@ -108,7 +108,7 @@ export class SetupUserManagement1725711761726 implements MigrationInterface {
             INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
             SELECT r.id, m.id, p.id, NOW(), NOW()
             FROM "role" r
-            JOIN "module" m ON m.name IN ('dashboard', 'my_club', 'my_team', 'my_matches', 'scheduling_&_scoring', 'account_settings', 'leagues', 'tournaments')
+            JOIN "module" m ON m.name IN ('dashboard', 'my_club', 'my_team', 'my_matches', 'scheduling', 'account_settings', 'leagues', 'tournaments')
             JOIN "policy" p ON p.name = 'read'
             WHERE r.name = 'player';
         `);
@@ -118,7 +118,7 @@ export class SetupUserManagement1725711761726 implements MigrationInterface {
             INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
             SELECT r.id, m.id, p.id, NOW(), NOW()
             FROM "role" r
-            JOIN "module" m ON m.name IN ('dashboard', 'my_club', 'scheduling_&_scoring')
+            JOIN "module" m ON m.name IN ('dashboard', 'my_club', 'scheduling')
             JOIN "policy" p ON p.name = 'read'
             WHERE r.name = 'tournament_organizer';
 
@@ -135,7 +135,7 @@ export class SetupUserManagement1725711761726 implements MigrationInterface {
             INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
             SELECT r.id, m.id, p.id, NOW(), NOW()
             FROM "role" r
-            JOIN "module" m ON m.name IN ('dashboard', 'my_club', 'scheduling_&_scoring')
+            JOIN "module" m ON m.name IN ('dashboard', 'my_club', 'scheduling')
             JOIN "policy" p ON p.name = 'read'
             WHERE r.name = 'league_organizer';
 

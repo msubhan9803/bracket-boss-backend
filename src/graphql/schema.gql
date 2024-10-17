@@ -187,7 +187,8 @@ type Query {
   getAllTeams(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TeamListResponse!
   getAllTournaments(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TournamentListResponse!
   getAllTournamentsWithoutPagination: [Tournament!]!
-  getAllUsersWithoutPagination: [User!]!
+  getAllUsers(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput, userRole: Float): UserListResponse!
+  getAllUsersWithoutPagination(userRole: Float): [User!]!
   getClubById(clubId: Float!): Club!
   getCourtById(courtId: Float!): Court!
   getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!
@@ -357,6 +358,11 @@ type User {
   teamsTournamentsUsers: [TeamsTournamentsUsers!]
   updated_at: DateTime!
   userRoleClub: [UserRoleClub!]
+}
+
+type UserListResponse {
+  totalRecords: Int!
+  users: [User!]!
 }
 
 type UserRoleClub {

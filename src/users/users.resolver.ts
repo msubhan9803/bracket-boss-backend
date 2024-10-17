@@ -1,10 +1,9 @@
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { User } from './entities/user.entity';
 import { UsersService } from './providers/users.service';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
 import { UpdateUserRoleDto } from './dtos/update-user-role-input.dto';
-import { RolesService } from 'src/user-management/providers/roles.service';
 import messages from 'src/utils/messages';
 import { UsersOnboardingStepsService } from 'src/users-onboarding-steps/providers/users-onboarding-steps.service';
 import { StepNames } from 'src/users-onboarding-steps/types/step.types';
@@ -15,12 +14,13 @@ import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { UserManagementService } from 'src/user-management/providers/user-management.service';
 import { UpdateUserRoleResponseDto } from './dtos/update-user-role-response.dto';
 import { UserWithRoleClub } from './dtos/user-with-role-module.type';
+import { UserListResponse } from './dtos/get-all-users-response.dto';
+import { SortInput } from 'src/common/dtos/sort-input.dto';
 
 @Resolver(() => User)
 export class UsersResolver {
   constructor(
     private readonly usersService: UsersService,
-    private readonly rolesService: RolesService,
     private readonly usersOnboardingStepsService: UsersOnboardingStepsService,
     private readonly clubsService: ClubsService,
     private readonly userManagementService: UserManagementService,
@@ -28,9 +28,44 @@ export class UsersResolver {
 
   @UseGuards(AuthCheckGuard)
   @Query(() => [User])
-  async getAllUsersWithoutPagination() {
+  async getAllUsersWithoutPagination(
+    @Args('userRole', { type: () => Number, nullable: true })
+    userRole,
+  ) {
     try {
-      return await this.usersService.findAll();
+      return await this.usersService.findAll(userRole);
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Query(() => UserListResponse)
+  async getAllUsers(
+    @Args('userRole', { type: () => Number, nullable: true })
+    userRole,
+    @Args('page', { type: () => Int, nullable: true }) page = 1,
+    @Args('pageSize', { type: () => Int, nullable: true }) pageSize = 10,
+    @Args('filterBy', { type: () => String, nullable: true }) filterBy?: string,
+    @Args('filter', { type: () => String, nullable: true }) filter?: string,
+    @Args('sort', { type: () => SortInput, nullable: true })
+    sort?: {
+      field: string;
+      direction: 'ASC' | 'DESC';
+    },
+  ) {
+    try {
+      const [users, totalRecords] =
+        await this.usersService.findAllWithRelations({
+          userRole,
+          page,
+          pageSize,
+          filterBy,
+          filter,
+          sort,
+        });
+
+      return { users, totalRecords };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }
