@@ -40,7 +40,7 @@ export class Format {
     () => TeamGenerationType,
     (teamGenerationType) => teamGenerationType.formats,
   )
-  @JoinTable()
+  @JoinTable({ name: 'format_team_generation_types' })
   teamGenerationTypes: TeamGenerationType[];
 
   constructor(format: Partial<Format>) {
