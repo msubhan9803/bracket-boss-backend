@@ -18,7 +18,7 @@ import { CustomNumberIdScalar } from './common/scalars/custom-number-id.scalar';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { TournamentManagementModule } from './tournament-management/tournament-management.module';
 import { SportManagementModule } from './sport-management/sport-management.module';
-import { BracketManagementModule } from './bracket-management/bracket-management.module';
+import { FormatManagementModule } from './format-management/format-management.module';
 import { CourtManagementModule } from './court-management/court-management.module';
 import { TeamManagementModule } from './team-management/team-management.module';
 import { SchedulingModule } from './scheduling/scheduling.module';
@@ -67,7 +67,7 @@ const ENV = process.env.NODE_ENV;
     FileUploadModule,
     TournamentManagementModule,
     SportManagementModule,
-    BracketManagementModule,
+    FormatManagementModule,
     CourtManagementModule,
     TeamManagementModule,
     SchedulingModule,

@@ -1,8 +1,8 @@
-import { BracketType } from 'src/bracket-management/types/bracket.enums';
+import { FormatType } from 'src/format-management/types/format.enums';
 import { Match, Team } from '../types/common';
 
-export interface BracketStrategy {
-  type: BracketType;
+export interface FormatStrategy {
+  type: FormatType;
   generateTeams(users: number[]): Promise<Team[]>;
   generateMatches(teams: Team[]): Promise<Match[]>;
 }

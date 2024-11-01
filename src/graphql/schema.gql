@@ -10,20 +10,6 @@ type Action {
   updatedDate: DateTime!
 }
 
-type Bracket {
-  created_at: DateTime!
-  id: CustomID!
-  name: BracketType!
-  updated_at: DateTime!
-}
-
-enum BracketType {
-  double_elimination
-  round_robin
-  round_robin_player
-  single_elimination
-}
-
 type Club {
   createdDate: DateTime!
   description: String!
@@ -75,10 +61,10 @@ input CreateTeamInputDto {
 }
 
 input CreateTournamentInputDto {
-  bracketId: Float!
   clubId: Float!
   description: String!
   end_date: DateTime!
+  formatId: Float!
   isPrivate: Boolean!
   name: String!
   start_date: DateTime!
@@ -91,6 +77,19 @@ scalar CustomID
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type Format {
+  created_at: DateTime!
+  id: CustomID!
+  name: FormatType!
+  updated_at: DateTime!
+}
+
+enum FormatType {
+  double_elimination
+  round_robin
+  single_elimination
+}
 
 input GetScheduleOfTournamentInput {
   tournamentId: Float!
@@ -180,9 +179,9 @@ type Policy {
 }
 
 type Query {
-  getAllBrackets: [Bracket!]!
   getAllClubs: [Club!]!
   getAllCourts(clubId: Int, filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): CourtListResponse!
+  getAllFormats: [Format!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
   getAllTeams(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TeamListResponse!
   getAllTournaments(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TournamentListResponse!
@@ -290,11 +289,11 @@ type TeamsTournamentsUsers {
 }
 
 type Tournament {
-  bracket: Bracket!
   club: Club!
   created_at: DateTime!
   description: String!
   end_date: DateTime!
+  format: Format!
   id: CustomID!
   isPrivate: Boolean!
   name: String!
@@ -310,10 +309,10 @@ type TournamentListResponse {
 }
 
 input UpdateTournamentInput {
-  bracketId: Float!
   clubId: Float!
   description: String!
   end_date: DateTime!
+  formatId: Float!
   id: Float!
   isPrivate: Boolean!
   name: String!

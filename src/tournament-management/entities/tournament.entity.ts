@@ -12,7 +12,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Club } from 'src/clubs/entities/club.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Sport } from 'src/sport-management/entities/sport.entity';
-import { Bracket } from 'src/bracket-management/entities/bracket.entity';
+import { Format } from 'src/format-management/entities/format.entity';
 import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
 
 @ObjectType()
@@ -32,10 +32,10 @@ export class Tournament {
   @Field(() => Sport)
   sport: Sport;
 
-  @ManyToOne(() => Bracket)
+  @ManyToOne(() => Format)
   @JoinColumn()
-  @Field(() => Bracket)
-  bracket: Bracket;
+  @Field(() => Format)
+  format: Format;
 
   @Field()
   @Column('varchar')

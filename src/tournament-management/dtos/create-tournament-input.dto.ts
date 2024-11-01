@@ -28,6 +28,6 @@ export class CreateTournamentInputDto {
   clubId: number;
 
   @Field()
-  @IsInt({ message: 'Bracket ID must be an integer' })
-  bracketId: number;
+  @IsInt({ message: 'Format ID must be an integer' })
+  formatId: number;
 }

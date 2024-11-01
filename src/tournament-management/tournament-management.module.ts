@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Tournament } from './entities/tournament.entity';
 import { TournamentManagementResolver } from './tournament-management.resolver';
 import { SportManagementModule } from 'src/sport-management/sport-management.module';
-import { BracketManagementModule } from 'src/bracket-management/bracket-management.module';
+import { FormatManagementModule } from 'src/format-management/format-management.module';
 import { ClubsModule } from 'src/clubs/clubs.module';
 import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
@@ -13,7 +13,7 @@ import { UsersModule } from 'src/users/users.module';
   imports: [
     TypeOrmModule.forFeature([Tournament]),
     SportManagementModule,
-    BracketManagementModule,
+    FormatManagementModule,
     ClubsModule,
     UsersModule,
   ],

@@ -6,7 +6,7 @@ import { SportManagementService } from 'src/sport-management/providers/sport-man
 import { SportName } from 'src/sport-management/types/sport.enums';
 import { CreateTournamentInputDto } from '../dtos/create-tournament-input.dto';
 import { ClubsService } from 'src/clubs/providers/clubs.service';
-import { BracketManagementService } from 'src/bracket-management/providers/bracket-management.service';
+import { FormatManagementService } from 'src/format-management/providers/format-management.service';
 import { UpdateTournamentInput } from '../dtos/update-tournament-input.dto';
 import messages from 'src/utils/messages';
 
@@ -17,7 +17,7 @@ export class TournamentManagementService {
     private tournamentRepository: Repository<Tournament>,
     private sportManagementService: SportManagementService,
     private clubsService: ClubsService,
-    private bracketManagementService: BracketManagementService,
+    private formatManagementService: FormatManagementService,
   ) {}
 
   findAll(): Promise<Tournament[]> {
@@ -38,7 +38,7 @@ export class TournamentManagementService {
       .createQueryBuilder('tournament')
       .leftJoinAndSelect('tournament.sport', 'sport')
       .leftJoinAndSelect('tournament.club', 'club')
-      .leftJoinAndSelect('tournament.bracket', 'bracket')
+      .leftJoinAndSelect('tournament.format', 'format')
       .skip((page - 1) * pageSize)
       .take(pageSize);
 
@@ -63,7 +63,7 @@ export class TournamentManagementService {
 
   findOneWithRelations(
     tournamentId: number,
-    relations: string[] = ['sport', 'club', 'bracket'],
+    relations: string[] = ['sport', 'club', 'format'],
   ): Promise<Tournament> {
     return this.tournamentRepository.findOne({
       where: { id: tournamentId },
@@ -80,8 +80,8 @@ export class TournamentManagementService {
 
     const club = await this.clubsService.findOne(createTournamentDto.clubId);
 
-    const bracket = await this.bracketManagementService.findOne(
-      createTournamentDto.bracketId,
+    const format = await this.formatManagementService.findOne(
+      createTournamentDto.formatId,
     );
 
     const newTournament = this.tournamentRepository.create({
@@ -92,7 +92,7 @@ export class TournamentManagementService {
       isPrivate: createTournamentDto.isPrivate,
       club,
       sport,
-      bracket,
+      format,
     });
 
     return this.tournamentRepository.save(newTournament);
@@ -108,8 +108,8 @@ export class TournamentManagementService {
 
     const club = await this.clubsService.findOne(updateTournamentInput.clubId);
 
-    const bracket = await this.bracketManagementService.findOne(
-      updateTournamentInput.bracketId,
+    const format = await this.formatManagementService.findOne(
+      updateTournamentInput.formatId,
     );
 
     const user = await this.tournamentRepository.preload({
@@ -121,7 +121,7 @@ export class TournamentManagementService {
       isPrivate: updateTournamentInput.isPrivate,
       club,
       sport,
-      bracket,
+      format,
     });
 
     if (!user) {

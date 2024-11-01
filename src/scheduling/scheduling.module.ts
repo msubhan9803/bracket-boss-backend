@@ -6,7 +6,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
 import { RoundRobinTeamBasedStrategy } from './strategies/round-robin-team-based.strategy';
 import { StrategyTypes } from 'src/common/types/global';
-import { RoundRobinPlayerBasedStrategy } from './strategies/round-robin-player-based.strategy';
 
 @Module({
   imports: [TournamentManagementModule, UsersModule],
@@ -15,11 +14,8 @@ import { RoundRobinPlayerBasedStrategy } from './strategies/round-robin-player-b
     SchedulingResolver,
     JwtService,
     {
-      provide: StrategyTypes.BRACKET_STRATEGIES,
-      useFactory: () => [
-        new RoundRobinTeamBasedStrategy(),
-        new RoundRobinPlayerBasedStrategy(),
-      ],
+      provide: StrategyTypes.FORMAT_STRATEGIES,
+      useFactory: () => [new RoundRobinTeamBasedStrategy()],
     },
   ],
 })

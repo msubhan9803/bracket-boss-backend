@@ -12,7 +12,7 @@ import { Step } from 'src/users-onboarding-steps/entities/step.entity';
 import { UserRoleClub } from 'src/user-management/entities/user-role-club.entity';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { Sport } from 'src/sport-management/entities/sport.entity';
-import { Bracket } from 'src/bracket-management/entities/bracket.entity';
+import { Format } from 'src/format-management/entities/format.entity';
 import { Court } from 'src/court-management/entities/court.entity';
 import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
 import { Team } from 'src/team-management/entities/team.entity';
@@ -42,7 +42,7 @@ export default new DataSource({
     UserRoleClub,
     Tournament,
     Sport,
-    Bracket,
+    Format,
     Court,
     Team,
     TeamsTournamentsUsers,

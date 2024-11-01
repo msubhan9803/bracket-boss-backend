@@ -1,5 +1,5 @@
 export enum StrategyTypes {
-  BRACKET_STRATEGIES = 'BRACKET_STRATEGIES',
+  FORMAT_STRATEGIES = 'FORMAT_STRATEGIES',
 }
 
 export enum PredefinedSystemRoles {

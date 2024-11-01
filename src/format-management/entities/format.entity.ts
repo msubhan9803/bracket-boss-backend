@@ -7,22 +7,22 @@ import {
 } from 'typeorm';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
-import { BracketType } from '../types/bracket.enums';
+import { FormatType } from '../types/format.enums';
 
-registerEnumType(BracketType, {
-  name: 'BracketType',
+registerEnumType(FormatType, {
+  name: 'FormatType',
 });
 
 @ObjectType()
 @Entity()
-export class Bracket {
+export class Format {
   @Field(() => CustomNumberIdScalar)
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => BracketType)
+  @Field(() => FormatType)
   @Column('varchar', { unique: true })
-  name: BracketType;
+  name: FormatType;
 
   @Field()
   @CreateDateColumn()
@@ -32,7 +32,7 @@ export class Bracket {
   @UpdateDateColumn()
   updated_at: Date;
 
-  constructor(bracket: Partial<Bracket>) {
-    Object.assign(this, bracket);
+  constructor(format: Partial<Format>) {
+    Object.assign(this, format);
   }
 }

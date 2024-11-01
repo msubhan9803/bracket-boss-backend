@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { BracketStrategy } from '../interface/bracket-strategy.interface';
-import { BracketType } from 'src/bracket-management/types/bracket.enums';
+import { FormatStrategy } from '../interface/format-strategy.interface';
+import { FormatType } from 'src/format-management/types/format.enums';
 import { Match, Team } from '../types/common';
 
 @Injectable()
-export class RoundRobinTeamBasedStrategy implements BracketStrategy {
-  type = BracketType.round_robin;
+export class RoundRobinTeamBasedStrategy implements FormatStrategy {
+  type = FormatType.round_robin;
 
   /**
    * This function generates teams based on the round-robin strategy.
