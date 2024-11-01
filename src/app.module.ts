@@ -22,6 +22,7 @@ import { FormatManagementModule } from './format-management/format-management.mo
 import { CourtManagementModule } from './court-management/court-management.module';
 import { TeamManagementModule } from './team-management/team-management.module';
 import { SchedulingModule } from './scheduling/scheduling.module';
+import { TeamGenerationTypeManagementModule } from './team-generation-type-management/team-generation-type-management.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -68,6 +69,7 @@ const ENV = process.env.NODE_ENV;
     TournamentManagementModule,
     SportManagementModule,
     FormatManagementModule,
+    TeamGenerationTypeManagementModule,
     CourtManagementModule,
     TeamManagementModule,
     SchedulingModule,

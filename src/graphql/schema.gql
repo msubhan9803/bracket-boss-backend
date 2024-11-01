@@ -82,6 +82,7 @@ type Format {
   created_at: DateTime!
   id: CustomID!
   name: FormatType!
+  teamGenerationTypes: [TeamGenerationType!]!
   updated_at: DateTime!
 }
 
@@ -183,6 +184,7 @@ type Query {
   getAllCourts(clubId: Int, filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): CourtListResponse!
   getAllFormats: [Format!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
+  getAllTeamGenerationTypes: [TeamGenerationType!]!
   getAllTeams(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TeamListResponse!
   getAllTournaments(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TournamentListResponse!
   getAllTournamentsWithoutPagination: [Tournament!]!
@@ -268,6 +270,19 @@ type Team {
   updatedDate: DateTime!
 }
 
+type TeamGenerationType {
+  created_at: DateTime!
+  formats: [Format!]!
+  id: CustomID!
+  name: TeamGenerationTypeEnum!
+  updated_at: DateTime!
+}
+
+enum TeamGenerationTypeEnum {
+  blind_draw
+  split_switch
+}
+
 type TeamListResponse {
   teams: [Team!]!
   totalRecords: Int!
@@ -299,6 +314,7 @@ type Tournament {
   name: String!
   sport: Sport!
   start_date: DateTime!
+  teamGenerationType: TeamGenerationType!
   teamsTournamentsUsers: [TeamsTournamentsUsers!]
   updated_at: DateTime!
 }

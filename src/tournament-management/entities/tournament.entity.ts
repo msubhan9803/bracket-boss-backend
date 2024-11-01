@@ -14,6 +14,7 @@ import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar
 import { Sport } from 'src/sport-management/entities/sport.entity';
 import { Format } from 'src/format-management/entities/format.entity';
 import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
+import { TeamGenerationType } from 'src/team-generation-type-management/entities/team-generation-type.entity';
 
 @ObjectType()
 @Entity()
@@ -36,6 +37,11 @@ export class Tournament {
   @JoinColumn()
   @Field(() => Format)
   format: Format;
+
+  @ManyToOne(() => TeamGenerationType)
+  @JoinColumn()
+  @Field(() => TeamGenerationType)
+  teamGenerationType: TeamGenerationType;
 
   @Field()
   @Column('varchar')

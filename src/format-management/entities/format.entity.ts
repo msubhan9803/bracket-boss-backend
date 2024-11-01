@@ -4,10 +4,13 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { FormatType } from '../types/format.enums';
+import { TeamGenerationType } from 'src/team-generation-type-management/entities/team-generation-type.entity';
 
 registerEnumType(FormatType, {
   name: 'FormatType',
@@ -31,6 +34,14 @@ export class Format {
   @Field()
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Field(() => [TeamGenerationType])
+  @ManyToMany(
+    () => TeamGenerationType,
+    (teamGenerationType) => teamGenerationType.formats,
+  )
+  @JoinTable()
+  teamGenerationTypes: TeamGenerationType[];
 
   constructor(format: Partial<Format>) {
     Object.assign(this, format);

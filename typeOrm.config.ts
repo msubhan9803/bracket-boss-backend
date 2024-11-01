@@ -16,6 +16,7 @@ import { Format } from 'src/format-management/entities/format.entity';
 import { Court } from 'src/court-management/entities/court.entity';
 import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
 import { Team } from 'src/team-management/entities/team.entity';
+import { TeamGenerationType } from 'src/team-generation-type-management/entities/team-generation-type.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFilePath });
@@ -46,5 +47,6 @@ export default new DataSource({
     Court,
     Team,
     TeamsTournamentsUsers,
+    TeamGenerationType,
   ],
 });
