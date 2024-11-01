@@ -8,6 +8,7 @@ import { FormatManagementModule } from 'src/format-management/format-management.
 import { ClubsModule } from 'src/clubs/clubs.module';
 import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
+import { TeamGenerationTypeManagementModule } from 'src/team-generation-type-management/team-generation-type-management.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UsersModule } from 'src/users/users.module';
     FormatManagementModule,
     ClubsModule,
     UsersModule,
+    TeamGenerationTypeManagementModule,
   ],
   providers: [
     TournamentManagementService,

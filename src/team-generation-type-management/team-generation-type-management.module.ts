@@ -3,9 +3,13 @@ import { TeamGenerationTypeManagementService } from './providers/team-generation
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TeamGenerationType } from './entities/team-generation-type.entity';
 import { TeamGenerationTypeManagementResolver } from './team-generation-type-management.resolver';
+import { FormatManagementModule } from 'src/format-management/format-management.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TeamGenerationType])],
+  imports: [
+    TypeOrmModule.forFeature([TeamGenerationType]),
+    FormatManagementModule,
+  ],
   providers: [
     TeamGenerationTypeManagementService,
     TeamGenerationTypeManagementResolver,

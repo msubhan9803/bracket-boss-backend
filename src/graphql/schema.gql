@@ -68,6 +68,7 @@ input CreateTournamentInputDto {
   isPrivate: Boolean!
   name: String!
   start_date: DateTime!
+  teamGenerationTypeId: Float!
 }
 
 """A custom scalar to handle numeric IDs as integers"""
@@ -184,7 +185,7 @@ type Query {
   getAllCourts(clubId: Int, filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): CourtListResponse!
   getAllFormats: [Format!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
-  getAllTeamGenerationTypes: [TeamGenerationType!]!
+  getAllTeamGenerationTypesByFormatId(formatId: Float!): [TeamGenerationType!]!
   getAllTeams(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TeamListResponse!
   getAllTournaments(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TournamentListResponse!
   getAllTournamentsWithoutPagination: [Tournament!]!

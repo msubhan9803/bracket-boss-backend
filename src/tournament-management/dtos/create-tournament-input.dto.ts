@@ -30,4 +30,8 @@ export class CreateTournamentInputDto {
   @Field()
   @IsInt({ message: 'Format ID must be an integer' })
   formatId: number;
+
+  @Field()
+  @IsInt({ message: 'Team Generation Type is required' })
+  teamGenerationTypeId: number;
 }

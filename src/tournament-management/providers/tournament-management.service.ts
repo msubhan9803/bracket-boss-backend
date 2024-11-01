@@ -9,6 +9,7 @@ import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { FormatManagementService } from 'src/format-management/providers/format-management.service';
 import { UpdateTournamentInput } from '../dtos/update-tournament-input.dto';
 import messages from 'src/utils/messages';
+import { TeamGenerationTypeManagementService } from 'src/team-generation-type-management/providers/team-generation-type-management.service';
 
 @Injectable()
 export class TournamentManagementService {
@@ -18,6 +19,7 @@ export class TournamentManagementService {
     private sportManagementService: SportManagementService,
     private clubsService: ClubsService,
     private formatManagementService: FormatManagementService,
+    private teamGenerationTypeManagementService: TeamGenerationTypeManagementService,
   ) {}
 
   findAll(): Promise<Tournament[]> {
@@ -84,6 +86,11 @@ export class TournamentManagementService {
       createTournamentDto.formatId,
     );
 
+    const teamGenerationType =
+      await this.teamGenerationTypeManagementService.findOne(
+        createTournamentDto.teamGenerationTypeId,
+      );
+
     const newTournament = this.tournamentRepository.create({
       name: createTournamentDto.name,
       description: createTournamentDto.description,
@@ -93,6 +100,7 @@ export class TournamentManagementService {
       club,
       sport,
       format,
+      teamGenerationType,
     });
 
     return this.tournamentRepository.save(newTournament);
