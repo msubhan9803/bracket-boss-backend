@@ -24,7 +24,7 @@ export class SchedulingResolver {
       const tournament =
         await this.tournamentManagementService.findOneWithRelations(
           tournamentId,
-          ['format'],
+          ['format', 'teamGenerationType'],
         );
 
       const { matches, teams } =

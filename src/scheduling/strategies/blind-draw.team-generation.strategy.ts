@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { FormatStrategy } from '../interface/format-strategy.interface';
-import { FormatType } from 'src/format-management/types/format.enums';
-import { Match, Team } from '../types/common';
+import { Team } from '../types/common';
+import { TeamGenerationTypeEnum } from 'src/team-generation-type-management/types/team-generation-type.enums';
+import { TeamGenerationStrategy } from '../interface/team-generation-strategy.interface';
 
 @Injectable()
-export class RoundRobinTeamBasedStrategy implements FormatStrategy {
-  type = FormatType.round_robin;
+export class BlindDrawTeamGenerationStrategy implements TeamGenerationStrategy {
+  type = TeamGenerationTypeEnum.blind_draw;
 
   /**
    * This function generates teams based on the round-robin strategy.
@@ -30,20 +30,5 @@ export class RoundRobinTeamBasedStrategy implements FormatStrategy {
     }
 
     return teams;
-  }
-
-  async generateMatches(teams: Team[]): Promise<Match[]> {
-    const matches: Match[] = [];
-
-    for (let i = 0; i < teams.length; i++) {
-      for (let j = i + 1; j < teams.length; j++) {
-        matches.push({
-          name: `Match ${teams[i].name} vs ${teams[j].name}`,
-          teams: [teams[i], teams[j]],
-        });
-      }
-    }
-
-    return matches;
   }
 }

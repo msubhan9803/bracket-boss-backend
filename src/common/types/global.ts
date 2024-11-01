@@ -1,5 +1,6 @@
 export enum StrategyTypes {
   FORMAT_STRATEGIES = 'FORMAT_STRATEGIES',
+  TEAM_GENERATION_STRATEGIES = 'TEAM_GENERATION_STRATEGIES',
 }
 
 export enum PredefinedSystemRoles {

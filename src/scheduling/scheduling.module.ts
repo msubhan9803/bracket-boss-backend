@@ -4,8 +4,9 @@ import { SchedulingResolver } from './scheduling.resolver';
 import { TournamentManagementModule } from 'src/tournament-management/tournament-management.module';
 import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
-import { RoundRobinTeamBasedStrategy } from './strategies/round-robin-team-based.strategy';
+import { RoundRobinStrategy } from './strategies/round-robin.format.strategy';
 import { StrategyTypes } from 'src/common/types/global';
+import { BlindDrawTeamGenerationStrategy } from './strategies/blind-draw.team-generation.strategy';
 
 @Module({
   imports: [TournamentManagementModule, UsersModule],
@@ -15,7 +16,11 @@ import { StrategyTypes } from 'src/common/types/global';
     JwtService,
     {
       provide: StrategyTypes.FORMAT_STRATEGIES,
-      useFactory: () => [new RoundRobinTeamBasedStrategy()],
+      useFactory: () => [new RoundRobinStrategy()],
+    },
+    {
+      provide: StrategyTypes.TEAM_GENERATION_STRATEGIES,
+      useFactory: () => [new BlindDrawTeamGenerationStrategy()],
     },
   ],
 })
