@@ -41,6 +41,7 @@ export class TournamentManagementService {
       .leftJoinAndSelect('tournament.sport', 'sport')
       .leftJoinAndSelect('tournament.club', 'club')
       .leftJoinAndSelect('tournament.format', 'format')
+      .leftJoinAndSelect('tournament.teamGenerationType', 'teamGenerationType')
       .skip((page - 1) * pageSize)
       .take(pageSize);
 
