@@ -23,7 +23,8 @@
     "typeorm:run-migrations:dev": "cross-env NODE_ENV=development npm run typeorm migration:run -- -d ./typeOrm.config.ts",
     "typeorm:revert-migrations:dev": "cross-env NODE_ENV=development npm run typeorm migration:revert -- -d ./typeOrm.config.ts",
     "typeorm:run-migrations:prod": "cross-env NODE_ENV=production npm run typeorm migration:run -- -d ./typeOrm.config.ts",
-    "typeorm:revert-migrations:prod": "cross-env NODE_ENV=production npm run typeorm migration:revert -- -d ./typeOrm.config.ts"
+    "typeorm:revert-migrations:prod": "cross-env NODE_ENV=production npm run typeorm migration:revert -- -d ./typeOrm.config.ts",
+    "seed": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register ./seeders/runSeeder.ts"
   },
   "dependencies": {
     "@apollo/server": "^4.11.0",
@@ -75,7 +76,7 @@
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.0",
     "ts-loader": "^9.4.3",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3"
   },
