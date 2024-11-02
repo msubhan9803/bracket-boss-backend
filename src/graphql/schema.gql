@@ -67,6 +67,7 @@ input CreateTournamentInputDto {
   formatId: Float!
   isPrivate: Boolean!
   name: String!
+  splitSwitchGroupBy: GroupByEnum
   start_date: DateTime!
   teamGenerationTypeId: Float!
 }
@@ -106,6 +107,11 @@ input GetScheduleOfTournamentInput {
 type GetScheduleOfTournamentResponseDto {
   matches: [MatchType!]!
   teams: [TeamType!]!
+}
+
+enum GroupByEnum {
+  GENDER
+  RATING
 }
 
 input LoginInputDto {
@@ -318,6 +324,7 @@ type Tournament {
   id: CustomID!
   isPrivate: Boolean!
   name: String!
+  splitSwitchGroupBy: GroupByEnum!
   sport: Sport!
   start_date: DateTime!
   teamGenerationType: TeamGenerationType!

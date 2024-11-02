@@ -8,13 +8,18 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Club } from 'src/clubs/entities/club.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Sport } from 'src/sport-management/entities/sport.entity';
 import { Format } from 'src/format-management/entities/format.entity';
 import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
 import { TeamGenerationType } from 'src/team-generation-type-management/entities/team-generation-type.entity';
+import { GroupByEnum } from 'src/scheduling/types/common';
+
+registerEnumType(GroupByEnum, {
+  name: 'GroupByEnum',
+});
 
 @ObjectType()
 @Entity()
@@ -66,6 +71,10 @@ export class Tournament {
   @Field(() => [TeamsTournamentsUsers], { nullable: true })
   @OneToMany(() => TeamsTournamentsUsers, (ttu) => ttu.tournament)
   teamsTournamentsUsers: TeamsTournamentsUsers[];
+
+  @Field(() => GroupByEnum)
+  @Column('varchar', { nullable: true })
+  splitSwitchGroupBy: GroupByEnum;
 
   @Field()
   @CreateDateColumn()

@@ -66,7 +66,7 @@ export class TournamentManagementService {
 
   findOneWithRelations(
     tournamentId: number,
-    relations: string[] = ['sport', 'club', 'format'],
+    relations: string[] = ['sport', 'club', 'format', 'teamGenerationType'],
   ): Promise<Tournament> {
     return this.tournamentRepository.findOne({
       where: { id: tournamentId },
@@ -102,6 +102,7 @@ export class TournamentManagementService {
       sport,
       format,
       teamGenerationType,
+      splitSwitchGroupBy: createTournamentDto.splitSwitchGroupBy,
     });
 
     return this.tournamentRepository.save(newTournament);

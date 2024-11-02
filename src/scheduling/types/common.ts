@@ -9,8 +9,8 @@ export type Match = {
 };
 
 export enum GroupByEnum {
-  GENDER = 'gender',
-  RATING = 'rating',
+  GENDER = 'GENDER',
+  RATING = 'RATING',
 }
 
 export enum GenderTypes {
