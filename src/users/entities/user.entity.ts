@@ -8,13 +8,22 @@ import {
   OneToMany,
   JoinTable,
 } from 'typeorm';
-import { Field, ObjectType, HideField } from '@nestjs/graphql';
+import {
+  Field,
+  ObjectType,
+  HideField,
+  registerEnumType,
+} from '@nestjs/graphql';
 import { Club } from 'src/clubs/entities/club.entity';
 import { Step } from 'src/users-onboarding-steps/entities/step.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { UserRoleClub } from 'src/user-management/entities/user-role-club.entity';
 import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
 import { GenderTypes } from 'src/scheduling/types/common';
+
+registerEnumType(GenderTypes, {
+  name: 'GenderTypes',
+});
 
 @ObjectType()
 @Entity()

@@ -93,6 +93,11 @@ enum FormatType {
   single_elimination
 }
 
+enum GenderTypes {
+  FEMALE
+  MALE
+}
+
 input GetScheduleOfTournamentInput {
   tournamentId: Float!
   users: [Float!]!
@@ -365,7 +370,7 @@ type User {
   clubs: [Club!]
   created_at: DateTime!
   email: String!
-  gender: String
+  gender: GenderTypes!
   id: CustomID!
   isEmailVerified: Boolean!
   name: String!
