@@ -16,6 +16,7 @@ import { Format } from 'src/format-management/entities/format.entity';
 import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
 import { TeamGenerationType } from 'src/team-generation-type-management/entities/team-generation-type.entity';
 import { GroupByEnum } from 'src/scheduling/types/common';
+import { IsOptional } from 'class-validator';
 
 registerEnumType(GroupByEnum, {
   name: 'GroupByEnum',
@@ -72,7 +73,8 @@ export class Tournament {
   @OneToMany(() => TeamsTournamentsUsers, (ttu) => ttu.tournament)
   teamsTournamentsUsers: TeamsTournamentsUsers[];
 
-  @Field(() => GroupByEnum)
+  @Field(() => GroupByEnum, { nullable: true })
+  @IsOptional()
   @Column('varchar', { nullable: true })
   splitSwitchGroupBy: GroupByEnum;
 

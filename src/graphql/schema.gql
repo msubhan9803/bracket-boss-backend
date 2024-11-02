@@ -302,7 +302,7 @@ type TeamListResponse {
 
 type TeamType {
   name: String!
-  players: [Float!]!
+  players: [User!]!
 }
 
 type TeamsTournamentsUsers {
@@ -324,7 +324,7 @@ type Tournament {
   id: CustomID!
   isPrivate: Boolean!
   name: String!
-  splitSwitchGroupBy: GroupByEnum!
+  splitSwitchGroupBy: GroupByEnum
   sport: Sport!
   start_date: DateTime!
   teamGenerationType: TeamGenerationType!

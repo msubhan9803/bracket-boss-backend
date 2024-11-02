@@ -1,5 +1,11 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsString, IsBoolean, IsDate, IsInt } from 'class-validator';
+import {
+  IsString,
+  IsBoolean,
+  IsDate,
+  IsInt,
+  IsOptional,
+} from 'class-validator';
 import { GroupByEnum } from 'src/scheduling/types/common';
 
 @InputType()
@@ -37,6 +43,7 @@ export class CreateTournamentInputDto {
   teamGenerationTypeId: number;
 
   @Field(() => GroupByEnum, { nullable: true })
-  @IsString({ message: 'Split Switch Group By must be a string' })
+  @IsOptional()
+  @IsString()
   splitSwitchGroupBy?: GroupByEnum;
 }

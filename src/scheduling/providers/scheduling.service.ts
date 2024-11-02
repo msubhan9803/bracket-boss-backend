@@ -4,6 +4,7 @@ import { Tournament } from 'src/tournament-management/entities/tournament.entity
 import { StrategyTypes } from 'src/common/types/global';
 import { Match, Team } from '../types/common';
 import { TeamGenerationStrategy } from '../interface/team-generation-strategy.interface';
+import { UsersService } from 'src/users/providers/users.service';
 
 @Injectable()
 export class SchedulingService {
@@ -15,6 +16,7 @@ export class SchedulingService {
     formatStrategies: FormatStrategy[],
     @Inject(StrategyTypes.TEAM_GENERATION_STRATEGIES)
     teamGenerationStrategies: TeamGenerationStrategy[],
+    private usersService: UsersService,
   ) {
     this.formatStrategies = formatStrategies.reduce((acc, strategy) => {
       acc[strategy.type] = strategy;
@@ -51,14 +53,21 @@ export class SchedulingService {
 
   async generateTeamsBasedOnStrategy(
     tournament: Tournament,
-    users: number[],
+    userIds: number[],
   ): Promise<{ matches: Match[]; teams: Team[] }> {
     const { formatStrategy, teamGenerationStrategy } = this.getStrategy(
       tournament.format.name,
       tournament.teamGenerationType.name,
     );
 
-    const teams = await teamGenerationStrategy.generateTeams(users);
+    const users = await this.usersService.findUsersWithRelationsByUserIds(
+      userIds,
+      [],
+    );
+
+    const teams = await teamGenerationStrategy.generateTeams(users, {
+      groupBy: tournament.splitSwitchGroupBy,
+    });
     const matches = await formatStrategy.generateMatches(teams);
 
     return { matches, teams };

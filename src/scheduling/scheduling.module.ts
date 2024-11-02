@@ -7,6 +7,7 @@ import { UsersModule } from 'src/users/users.module';
 import { RoundRobinStrategy } from './strategies/round-robin.format.strategy';
 import { StrategyTypes } from 'src/common/types/global';
 import { BlindDrawTeamGenerationStrategy } from './strategies/blind-draw.team-generation.strategy';
+import { SplitSwitchTeamGenerationStrategy } from './strategies/split-switch.team-generation.strategy';
 
 @Module({
   imports: [TournamentManagementModule, UsersModule],
@@ -20,7 +21,10 @@ import { BlindDrawTeamGenerationStrategy } from './strategies/blind-draw.team-ge
     },
     {
       provide: StrategyTypes.TEAM_GENERATION_STRATEGIES,
-      useFactory: () => [new BlindDrawTeamGenerationStrategy()],
+      useFactory: () => [
+        new BlindDrawTeamGenerationStrategy(),
+        new SplitSwitchTeamGenerationStrategy(),
+      ],
     },
   ],
 })

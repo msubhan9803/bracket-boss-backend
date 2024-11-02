@@ -1,6 +1,8 @@
+import { User } from 'src/users/entities/user.entity';
+
 export type Team = {
   name: string;
-  players: number[];
+  players: User[];
 };
 
 export type Match = {

@@ -5,6 +5,7 @@ import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
 import { GetScheduleOfTournamentInput } from './dtos/get-schedule-of-tournament-input.dto';
 import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
 import { GetScheduleOfTournamentResponseDto } from './dtos/get-schedule-of-tournament-response.dto';
+import messages from 'src/utils/messages';
 
 @Resolver()
 export class SchedulingResolver {
@@ -26,6 +27,9 @@ export class SchedulingResolver {
           tournamentId,
           ['format', 'teamGenerationType'],
         );
+      if (!tournament) {
+        throw new Error(messages.NOT_FOUND);
+      }
 
       const { matches, teams } =
         await this.schedulingService.generateTeamsBasedOnStrategy(

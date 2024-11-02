@@ -5,6 +5,7 @@ import {
   TeamGenerationConfig,
   TeamGenerationStrategy,
 } from '../interface/team-generation-strategy.interface';
+import { User } from 'src/users/entities/user.entity';
 
 export interface SplitSwitchTeamGenerationConfig extends TeamGenerationConfig {
   groupBy: GroupByEnum;
@@ -20,35 +21,40 @@ export class SplitSwitchTeamGenerationStrategy
    * This function generates teams based on the split-switch strategy.
    * It splits the users into two groups and pairs players from Group 1 with players from Group 2.
    *
-   * @param users number[]
+   * @param users User[]
    * @param config SplitSwitchTeamGenerationConfig
    * @returns Team[]
    */
   async generateTeams(
-    users: any[],
-    config: SplitSwitchTeamGenerationConfig,
+    users: User[],
+    config?: SplitSwitchTeamGenerationConfig,
   ): Promise<Team[]> {
-    // const temp = config.groupBy === GroupByEnum.GENDER;
-
     const teams: Team[] = [];
-    const group1: any[] = [];
-    const group2: any[] = [];
+    const group1: User[] = [];
+    const group2: User[] = [];
 
-    // Split users into two groups based on the groupBy criteria
-    users.forEach((user, index) => {
-      if (index % 2 === 0) {
-        group1.push(user);
-      } else {
-        group2.push(user);
-      }
-    });
+    if (config?.groupBy === GroupByEnum.GENDER) {
+      users.forEach((user) => {
+        if (user.gender === 'male') {
+          group1.push(user);
+        } else if (user.gender === 'female') {
+          group2.push(user);
+        }
+      });
+    } else {
+      users.forEach((user, index) => {
+        if (index % 2 === 0) {
+          group1.push(user);
+        } else {
+          group2.push(user);
+        }
+      });
+    }
 
-    // Ensure both groups have the same number of players
     const minGroupSize = Math.min(group1.length, group2.length);
     group1.length = minGroupSize;
     group2.length = minGroupSize;
 
-    // Pair players from Group 1 with players from Group 2
     for (let i = 0; i < minGroupSize; i++) {
       teams.push({
         name: `Team ${i + 1}`,

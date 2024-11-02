@@ -97,6 +97,16 @@ export class UsersService {
     });
   }
 
+  findUsersWithRelationsByUserIds(
+    userIds: number[],
+    relations: string[],
+  ): Promise<User[]> {
+    return this.userRepository.find({
+      where: { id: In(userIds) },
+      relations,
+    });
+  }
+
   async create(createUserInput: CreateUserDto): Promise<User> {
     const hashedPassword = await bcrypt.hash(createUserInput.password, 10);
 

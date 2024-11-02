@@ -1,12 +1,13 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { User } from 'src/users/entities/user.entity';
 
 @ObjectType()
 export class TeamType {
   @Field()
   name: string;
 
-  @Field(() => [Number])
-  players: number[];
+  @Field(() => [User])
+  players: User[];
 }
 
 @ObjectType()
