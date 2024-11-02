@@ -14,6 +14,7 @@ import { Step } from 'src/users-onboarding-steps/entities/step.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { UserRoleClub } from 'src/user-management/entities/user-role-club.entity';
 import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
+import { GenderTypes } from 'src/scheduling/types/common';
 
 @ObjectType()
 @Entity()
@@ -63,6 +64,10 @@ export class User {
   @Field(() => [TeamsTournamentsUsers], { nullable: true })
   @OneToMany(() => TeamsTournamentsUsers, (ttu) => ttu.user)
   teamsTournamentsUsers: TeamsTournamentsUsers[];
+
+  @Field(() => GenderTypes)
+  @Column('varchar', { nullable: true })
+  gender: GenderTypes;
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

@@ -12,3 +12,8 @@ export enum GroupByEnum {
   GENDER = 'gender',
   RATING = 'rating',
 }
+
+export enum GenderTypes {
+  MALE = 'male',
+  FEMALE = 'female',
+}

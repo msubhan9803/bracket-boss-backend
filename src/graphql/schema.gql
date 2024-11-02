@@ -365,6 +365,7 @@ type User {
   clubs: [Club!]
   created_at: DateTime!
   email: String!
+  gender: String
   id: CustomID!
   isEmailVerified: Boolean!
   name: String!
