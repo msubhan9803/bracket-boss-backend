@@ -7,3 +7,8 @@ export type Match = {
   name: string;
   teams: Team[];
 };
+
+export enum GroupByEnum {
+  GENDER = 'gender',
+  RATING = 'rating',
+}
