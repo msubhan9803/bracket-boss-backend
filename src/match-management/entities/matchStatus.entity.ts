@@ -10,18 +10,18 @@ import {
 } from 'typeorm';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
-import { TournamentRoundStatusTypes } from '../types/common';
 import { Club } from 'src/clubs/entities/club.entity';
-import { TournamentRound } from './tournamentRound.entity';
-import { Tournament } from './tournament.entity';
+import { MatchStatusTypes } from '../types/common';
+import { Match } from './match.entity';
+import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 
-registerEnumType(TournamentRoundStatusTypes, {
-  name: 'TournamentRoundStatusTypes',
+registerEnumType(MatchStatusTypes, {
+  name: 'MatchStatusTypes',
 });
 
 @ObjectType()
 @Entity()
-export class TournamentRoundStatus {
+export class MatchStatus {
   @Field(() => CustomNumberIdScalar)
   @PrimaryGeneratedColumn()
   id: number;
@@ -31,21 +31,18 @@ export class TournamentRoundStatus {
   @JoinColumn()
   club: Club;
 
+  @Field(() => Tournament)
   @ManyToOne(() => Tournament)
   @JoinColumn()
-  @Field(() => Tournament)
   tournament: Tournament;
 
-  @Field(() => TournamentRoundStatusTypes)
+  @Field(() => MatchStatusTypes)
   @Column('varchar')
-  status: TournamentRoundStatusTypes;
+  status: MatchStatusTypes;
 
-  @Field(() => [TournamentRound])
-  @ManyToMany(
-    () => TournamentRound,
-    (tournamentRound) => tournamentRound.statuses,
-  )
-  tournamentRounds: TournamentRound[];
+  @Field(() => [Match])
+  @ManyToMany(() => Match, (match) => match.statuses)
+  matches: Match[];
 
   @Field()
   @CreateDateColumn()
@@ -55,7 +52,7 @@ export class TournamentRoundStatus {
   @UpdateDateColumn()
   updated_at: Date;
 
-  constructor(tournamentRoundStatus: Partial<TournamentRoundStatus>) {
-    Object.assign(this, tournamentRoundStatus);
+  constructor(matchStatus: Partial<MatchStatus>) {
+    Object.assign(this, matchStatus);
   }
 }

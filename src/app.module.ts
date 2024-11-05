@@ -23,6 +23,7 @@ import { CourtManagementModule } from './court-management/court-management.modul
 import { TeamManagementModule } from './team-management/team-management.module';
 import { SchedulingModule } from './scheduling/scheduling.module';
 import { TeamGenerationTypeManagementModule } from './team-generation-type-management/team-generation-type-management.module';
+import { MatchManagementModule } from './match-management/match-management.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -73,6 +74,7 @@ const ENV = process.env.NODE_ENV;
     CourtManagementModule,
     TeamManagementModule,
     SchedulingModule,
+    MatchManagementModule,
   ],
   controllers: [],
   providers: [],

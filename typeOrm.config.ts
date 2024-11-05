@@ -18,6 +18,10 @@ import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tourna
 import { Team } from 'src/team-management/entities/team.entity';
 import { TeamGenerationType } from 'src/team-generation-type-management/entities/team-generation-type.entity';
 import { TournamentStatus } from 'src/tournament-management/entities/tournamentStatus.entity';
+import { TournamentRound } from 'src/tournament-management/entities/tournamentRound.entity';
+import { TournamentRoundStatus } from 'src/tournament-management/entities/tournamentRoundStatus.entity';
+import { Match } from 'src/match-management/entities/match.entity';
+import { MatchStatus } from 'src/match-management/entities/matchStatus.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFilePath });
@@ -49,6 +53,11 @@ export default new DataSource({
     Team,
     TeamsTournamentsUsers,
     TeamGenerationType,
+    Tournament,
     TournamentStatus,
+    TournamentRound,
+    TournamentRoundStatus,
+    Match,
+    MatchStatus,
   ],
 });

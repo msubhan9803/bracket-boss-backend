@@ -27,6 +27,7 @@ type Court {
   club: Club!
   id: CustomID!
   location: String!
+  matches: [Match!]!
   name: String!
 }
 
@@ -122,6 +123,39 @@ input LoginInputDto {
 type LoginResponseDto {
   authTokens: RefreshTokenResponseDto!
   user: User!
+}
+
+type Match {
+  awayTeam: Team!
+  club: Club!
+  courts: [Court!]!
+  created_at: DateTime!
+  homeTeam: Team!
+  id: CustomID!
+  match_date: DateTime!
+  statuses: [MatchStatus!]!
+  tournament: Tournament!
+  tournamentRound: TournamentRound!
+  updated_at: DateTime!
+  winnerTeam: Team
+}
+
+type MatchStatus {
+  club: Club!
+  created_at: DateTime!
+  id: CustomID!
+  matches: [Match!]!
+  status: MatchStatusTypes!
+  tournament: Tournament!
+  updated_at: DateTime!
+}
+
+enum MatchStatusTypes {
+  completed
+  in_progress
+  not_started
+  paused
+  void
 }
 
 type MatchType {
@@ -356,6 +390,7 @@ type TournamentRoundStatus {
   created_at: DateTime!
   id: CustomID!
   status: TournamentRoundStatusTypes!
+  tournament: Tournament!
   tournamentRounds: [TournamentRound!]!
   updated_at: DateTime!
 }
