@@ -141,12 +141,10 @@ type Match {
 }
 
 type MatchStatus {
-  club: Club!
   created_at: DateTime!
   id: CustomID!
   matches: [Match!]!
   status: MatchStatusTypes!
-  tournament: Tournament!
   updated_at: DateTime!
 }
 
@@ -386,11 +384,9 @@ type TournamentRound {
 }
 
 type TournamentRoundStatus {
-  club: Club!
   created_at: DateTime!
   id: CustomID!
   status: TournamentRoundStatusTypes!
-  tournament: Tournament!
   tournamentRounds: [TournamentRound!]!
   updated_at: DateTime!
 }
@@ -402,7 +398,6 @@ enum TournamentRoundStatusTypes {
 }
 
 type TournamentStatus {
-  club: Club!
   created_at: DateTime!
   id: CustomID!
   status: TournamentStatusTypes!

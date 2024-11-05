@@ -5,15 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
-  JoinColumn,
-  ManyToOne,
 } from 'typeorm';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
-import { Club } from 'src/clubs/entities/club.entity';
 import { MatchStatusTypes } from '../types/common';
 import { Match } from './match.entity';
-import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 
 registerEnumType(MatchStatusTypes, {
   name: 'MatchStatusTypes',
@@ -25,16 +21,6 @@ export class MatchStatus {
   @Field(() => CustomNumberIdScalar)
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Field(() => Club)
-  @ManyToOne(() => Club)
-  @JoinColumn()
-  club: Club;
-
-  @Field(() => Tournament)
-  @ManyToOne(() => Tournament)
-  @JoinColumn()
-  tournament: Tournament;
 
   @Field(() => MatchStatusTypes)
   @Column('varchar')
