@@ -17,6 +17,7 @@ import { Court } from 'src/court-management/entities/court.entity';
 import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
 import { Team } from 'src/team-management/entities/team.entity';
 import { TeamGenerationType } from 'src/team-generation-type-management/entities/team-generation-type.entity';
+import { TournamentStatus } from 'src/tournament-management/entities/tournamentStatus.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFilePath });
@@ -48,5 +49,6 @@ export default new DataSource({
     Team,
     TeamsTournamentsUsers,
     TeamGenerationType,
+    TournamentStatus,
   ],
 });

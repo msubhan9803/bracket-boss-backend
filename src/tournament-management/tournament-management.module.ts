@@ -9,10 +9,11 @@ import { ClubsModule } from 'src/clubs/clubs.module';
 import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
 import { TeamGenerationTypeManagementModule } from 'src/team-generation-type-management/team-generation-type-management.module';
+import { TournamentStatus } from './entities/tournamentStatus.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Tournament]),
+    TypeOrmModule.forFeature([Tournament, TournamentStatus]),
     SportManagementModule,
     FormatManagementModule,
     ClubsModule,

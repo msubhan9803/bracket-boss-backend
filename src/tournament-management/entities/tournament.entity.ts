@@ -7,6 +7,8 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Club } from 'src/clubs/entities/club.entity';
@@ -17,6 +19,7 @@ import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tourna
 import { TeamGenerationType } from 'src/team-generation-type-management/entities/team-generation-type.entity';
 import { GroupByEnum } from 'src/scheduling/types/common';
 import { IsOptional } from 'class-validator';
+import { TournamentStatus } from './tournamentStatus.entity';
 
 registerEnumType(GroupByEnum, {
   name: 'GroupByEnum',
@@ -38,16 +41,6 @@ export class Tournament {
   @JoinColumn()
   @Field(() => Sport)
   sport: Sport;
-
-  @ManyToOne(() => Format)
-  @JoinColumn()
-  @Field(() => Format)
-  format: Format;
-
-  @ManyToOne(() => TeamGenerationType)
-  @JoinColumn()
-  @Field(() => TeamGenerationType)
-  teamGenerationType: TeamGenerationType;
 
   @Field()
   @Column('varchar')
@@ -73,10 +66,37 @@ export class Tournament {
   @OneToMany(() => TeamsTournamentsUsers, (ttu) => ttu.tournament)
   teamsTournamentsUsers: TeamsTournamentsUsers[];
 
+  @ManyToOne(() => Format)
+  @JoinColumn()
+  @Field(() => Format)
+  format: Format;
+
+  @ManyToOne(() => TeamGenerationType)
+  @JoinColumn()
+  @Field(() => TeamGenerationType)
+  teamGenerationType: TeamGenerationType;
+
   @Field(() => GroupByEnum, { nullable: true })
   @IsOptional()
   @Column('varchar', { nullable: true })
   splitSwitchGroupBy: GroupByEnum;
+
+  @ManyToOne(() => Format)
+  @JoinColumn()
+  @Field(() => Format)
+  playOffMatchesType: Format;
+
+  @Field()
+  @Column('int')
+  bestOfRounds: number;
+
+  @Field(() => [TournamentStatus])
+  @ManyToMany(
+    () => TournamentStatus,
+    (tournamentStatus) => tournamentStatus.tournaments,
+  )
+  @JoinTable()
+  statuses: TournamentStatus[];
 
   @Field()
   @CreateDateColumn()

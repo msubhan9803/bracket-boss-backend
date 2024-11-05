@@ -5,6 +5,7 @@ import { RoleSeeder } from 'seeders/scripts/RoleSeeder';
 import { SuperAdminSeeder } from 'seeders/scripts/SuperAdminSeeder';
 import { UserManagementSeeder } from 'seeders/scripts/UserManagementSeeder';
 import { AddFormatsAndTeamGenerationTypesSeeder } from './scripts/AddFormatsAndTeamGenerationTypesSeeder';
+import { AddTournamentStatusSeeder } from './scripts/AddTournamentStatusSeeder';
 
 async function runSeeder() {
   await dataSource
@@ -18,6 +19,7 @@ async function runSeeder() {
   await OnboardingStepsSeeder.seed(dataSource);
   await AddPickleballSportSeeder.seed(dataSource);
   await AddFormatsAndTeamGenerationTypesSeeder.seed(dataSource);
+  await AddTournamentStatusSeeder.seed(dataSource);
 
   await dataSource.destroy();
 }

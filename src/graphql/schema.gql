@@ -316,6 +316,7 @@ type TeamsTournamentsUsers {
 }
 
 type Tournament {
+  bestOfRounds: Float!
   club: Club!
   created_at: DateTime!
   description: String!
@@ -324,9 +325,11 @@ type Tournament {
   id: CustomID!
   isPrivate: Boolean!
   name: String!
+  playOffMatchesType: Format!
   splitSwitchGroupBy: GroupByEnum
   sport: Sport!
   start_date: DateTime!
+  statuses: [TournamentStatus!]!
   teamGenerationType: TeamGenerationType!
   teamsTournamentsUsers: [TeamsTournamentsUsers!]
   updated_at: DateTime!
@@ -335,6 +338,20 @@ type Tournament {
 type TournamentListResponse {
   totalRecords: Int!
   tournaments: [Tournament!]!
+}
+
+type TournamentStatus {
+  created_at: DateTime!
+  id: CustomID!
+  status: TournamentStatusTypes!
+  tournaments: [Tournament!]!
+  updated_at: DateTime!
+}
+
+enum TournamentStatusTypes {
+  completed
+  in_progress
+  not_started
 }
 
 input UpdateTournamentInput {
