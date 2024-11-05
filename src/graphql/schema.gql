@@ -340,7 +340,34 @@ type TournamentListResponse {
   tournaments: [Tournament!]!
 }
 
+type TournamentRound {
+  club: Club!
+  created_at: DateTime!
+  id: CustomID!
+  roundNumber: Float!
+  roundType: Format!
+  statuses: [TournamentRoundStatus!]!
+  tournament: Tournament!
+  updated_at: DateTime!
+}
+
+type TournamentRoundStatus {
+  club: Club!
+  created_at: DateTime!
+  id: CustomID!
+  status: TournamentRoundStatusTypes!
+  tournamentRounds: [TournamentRound!]!
+  updated_at: DateTime!
+}
+
+enum TournamentRoundStatusTypes {
+  completed
+  in_progress
+  not_started
+}
+
 type TournamentStatus {
+  club: Club!
   created_at: DateTime!
   id: CustomID!
   status: TournamentStatusTypes!
