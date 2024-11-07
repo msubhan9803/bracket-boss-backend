@@ -22,6 +22,8 @@ import { TournamentRound } from 'src/tournament-management/entities/tournamentRo
 import { TournamentRoundStatus } from 'src/tournament-management/entities/tournamentRoundStatus.entity';
 import { Match } from 'src/match-management/entities/match.entity';
 import { MatchStatus } from 'src/match-management/entities/matchStatus.entity';
+import { MatchRound } from 'src/match-management/entities/matchRound.entity';
+import { MatchRoundStatus } from 'src/match-management/entities/matchRoundStatus.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFilePath });
@@ -59,5 +61,7 @@ export default new DataSource({
     TournamentRoundStatus,
     Match,
     MatchStatus,
+    MatchRound,
+    MatchRoundStatus,
   ],
 });

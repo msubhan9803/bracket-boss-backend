@@ -140,6 +140,36 @@ type Match {
   winnerTeam: Team
 }
 
+type MatchRound {
+  club: Club!
+  created_at: DateTime!
+  endTime: DateTime!
+  id: CustomID!
+  match: Match!
+  matchRoundNumber: Float!
+  startTime: DateTime!
+  statuses: [MatchRoundStatus!]!
+  tournament: Tournament!
+  updated_at: DateTime!
+  winnerTeam: Team
+}
+
+type MatchRoundStatus {
+  created_at: DateTime!
+  id: CustomID!
+  matchRounds: [MatchRound!]!
+  status: MatchRoundStatusTypes!
+  updated_at: DateTime!
+}
+
+enum MatchRoundStatusTypes {
+  completed
+  in_progress
+  not_started
+  paused
+  void
+}
+
 type MatchStatus {
   created_at: DateTime!
   id: CustomID!

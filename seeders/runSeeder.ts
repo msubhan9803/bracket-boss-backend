@@ -8,6 +8,7 @@ import { AddFormatsAndTeamGenerationTypesSeeder } from './scripts/AddFormatsAndT
 import { AddTournamentStatusSeeder } from './scripts/AddTournamentStatusSeeder';
 import { AddMatchStatusSeeder } from './scripts/AddMatchStatusSeeder';
 import { AddTournamentRoundStatusSeeder } from './scripts/AddTournamentRoundStatusSeeder';
+import { AddMatchRoundStatusSeeder } from './scripts/AddMatchRoundStatusSeeder';
 
 async function runSeeder() {
   await dataSource
@@ -24,6 +25,7 @@ async function runSeeder() {
   await AddTournamentStatusSeeder.seed(dataSource);
   await AddMatchStatusSeeder.seed(dataSource);
   await AddTournamentRoundStatusSeeder.seed(dataSource);
+  await AddMatchRoundStatusSeeder.seed(dataSource);
 
   await dataSource.destroy();
 }
