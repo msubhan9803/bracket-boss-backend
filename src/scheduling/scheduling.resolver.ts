@@ -1,4 +1,4 @@
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { SchedulingService } from './providers/scheduling.service';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
@@ -42,4 +42,14 @@ export class SchedulingResolver {
       throw new InternalServerErrorException('Error: ', error.message);
     }
   }
+
+  // @UseGuards(AuthCheckGuard)
+  // @Mutation()
+  // async createSchedule(@Args('input') createScheduleDto: any): Promise<any> {
+  //   try {
+  //     return this.schedulingService.createSchedule(createScheduleDto);
+  //   } catch (error) {
+  //     throw new InternalServerErrorException('Error: ', error.message);
+  //   }
+  // }
 }

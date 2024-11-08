@@ -72,4 +72,96 @@ export class SchedulingService {
 
     return { matches, teams };
   }
+
+  async createSchedule(
+    tournament: Tournament,
+    matches: {
+      name: string;
+      teams: {
+        name: string;
+        players: { name: string }[];
+      }[];
+    }[],
+    matchDate: Date,
+  ): Promise<void> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Extract unique teams
+      const uniqueTeamsMap = new Map<string, Team>();
+
+      for (const match of matches) {
+        for (const team of match.teams) {
+          if (!uniqueTeamsMap.has(team.name)) {
+            const newTeam = new Team({
+              name: team.name,
+              players: team.players.map((player) => ({ name: player.name })),
+            });
+            uniqueTeamsMap.set(team.name, newTeam);
+          }
+        }
+      }
+
+      // Save unique teams to the database
+      const uniqueTeams = Array.from(uniqueTeamsMap.values());
+      await queryRunner.manager.save(uniqueTeams);
+
+      // Create Tournament Round
+      const tournamentRound = new TournamentRound({
+        roundNumber: 1,
+        roundType: tournament.format,
+        tournament,
+        statuses: [
+          new TournamentRoundStatus({
+            status: 'not_started',
+          }),
+        ],
+      });
+      await queryRunner.manager.save(tournamentRound);
+
+      // Create Matches
+      for (const match of matches) {
+        const homeTeam = uniqueTeamsMap.get(match.teams[0].name);
+        const awayTeam = uniqueTeamsMap.get(match.teams[1].name);
+
+        const newMatch = new Match({
+          match_date: matchDate,
+          tournamentRound,
+          homeTeam,
+          awayTeam,
+          statuses: [
+            new MatchStatus({
+              status: 'not_started',
+            }),
+          ],
+        });
+        await queryRunner.manager.save(newMatch);
+
+        // Create Match Rounds
+        for (let i = 1; i <= tournament.bestOfRounds; i++) {
+          const matchRound = new MatchRound({
+            match: newMatch,
+            matchRoundNumber: i,
+            startTime: matchDate,
+            endTime: matchDate,
+            statuses: [
+              new MatchRoundStatus({
+                status: 'not_started',
+              }),
+            ],
+          });
+          await queryRunner.manager.save(matchRound);
+        }
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
 }
