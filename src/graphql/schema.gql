@@ -17,7 +17,6 @@ type Club {
   logo: String!
   name: String!
   slug: String!
-  teamsTournamentsUsers: [TeamsTournamentsUsers!]
   updatedDate: DateTime!
   userRoleClub: [UserRoleClub!]
   users: [User!]
@@ -339,9 +338,9 @@ type Team {
   createdDate: DateTime!
   id: CustomID!
   name: String!
-  teamsTournamentsUsers: [TeamsTournamentsUsers!]
   tournament: Tournament!
   updatedDate: DateTime!
+  users: [User!]
 }
 
 type TeamGenerationType {
@@ -367,16 +366,6 @@ type TeamType {
   players: [User!]!
 }
 
-type TeamsTournamentsUsers {
-  club: Club!
-  created_at: DateTime!
-  id: CustomID!
-  team: Team!
-  tournament: Tournament!
-  updated_at: DateTime!
-  user: User!
-}
-
 type Tournament {
   bestOfRounds: Float!
   club: Club!
@@ -393,7 +382,6 @@ type Tournament {
   start_date: DateTime!
   statuses: [TournamentStatus!]!
   teamGenerationType: TeamGenerationType!
-  teamsTournamentsUsers: [TeamsTournamentsUsers!]
   updated_at: DateTime!
 }
 
@@ -488,7 +476,7 @@ type User {
   otpSecret: String!
   profileImage: String
   steps: [Step!]
-  teamsTournamentsUsers: [TeamsTournamentsUsers!]
+  teams: [Team!]
   updated_at: DateTime!
   userRoleClub: [UserRoleClub!]
 }

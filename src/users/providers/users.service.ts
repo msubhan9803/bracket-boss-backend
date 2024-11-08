@@ -19,8 +19,7 @@ export class UsersService {
       .leftJoinAndSelect('user.clubs', 'clubs')
       .leftJoinAndSelect('user.steps', 'steps')
       .leftJoinAndSelect('user.userRoleClub', 'userRoleClub')
-      .leftJoinAndSelect('userRoleClub.role', 'role')
-      .leftJoinAndSelect('user.teamsTournamentsUsers', 'teamsTournamentsUsers');
+      .leftJoinAndSelect('userRoleClub.role', 'role');
 
     if (userRole) {
       query.where('role.id = :userRole', { userRole });
@@ -48,7 +47,6 @@ export class UsersService {
       .leftJoinAndSelect('user.steps', 'steps')
       .leftJoinAndSelect('user.userRoleClub', 'userRoleClub')
       .leftJoinAndSelect('userRoleClub.role', 'role')
-      .leftJoinAndSelect('user.teamsTournamentsUsers', 'teamsTournamentsUsers')
       .where('userRoleClub.role.id = :userRole', { userRole })
       .skip((page - 1) * pageSize)
       .take(pageSize);

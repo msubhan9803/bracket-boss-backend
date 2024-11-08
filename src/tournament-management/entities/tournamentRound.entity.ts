@@ -47,7 +47,7 @@ export class TournamentRound {
     () => TournamentRoundStatus,
     (tournamentRoundStatus) => tournamentRoundStatus.tournamentRounds,
   )
-  @JoinTable()
+  @JoinTable({ name: 'tournament_round_tournament_round_statuses' })
   statuses: TournamentRoundStatus[];
 
   @Field()

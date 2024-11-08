@@ -6,15 +6,12 @@ import { Team } from '../entities/team.entity';
 import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
 import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { UsersService } from 'src/users/providers/users.service';
-import { TeamsTournamentsUsers } from '../entities/teams-tournaments-users.entity';
 
 @Injectable()
 export class TeamManagementService {
   constructor(
     @InjectRepository(Team)
     private readonly teamRepository: Repository<Team>,
-    @InjectRepository(TeamsTournamentsUsers)
-    private readonly teamsTournamentsUsersRepository: Repository<TeamsTournamentsUsers>,
     private readonly tournamentManagementService: TournamentManagementService,
     private readonly clubsService: ClubsService,
     private readonly usersService: UsersService,
@@ -34,6 +31,7 @@ export class TeamManagementService {
       .createQueryBuilder('team')
       .leftJoinAndSelect('team.club', 'club')
       .leftJoinAndSelect('team.tournament', 'tournament')
+      .leftJoinAndSelect('team.users', 'users')
       .skip((page - 1) * pageSize)
       .take(pageSize);
 
@@ -68,20 +66,10 @@ export class TeamManagementService {
       name,
       tournament,
       club,
+      users,
     });
 
     const savedTeam = await this.teamRepository.save(newTeam);
-
-    const teamsTournamentsUsers = userIds.map((userId) => {
-      return this.teamsTournamentsUsersRepository.create({
-        team: savedTeam,
-        tournament,
-        club,
-        user: users.find((user) => user.id === userId),
-      });
-    });
-
-    await this.teamsTournamentsUsersRepository.save(teamsTournamentsUsers);
 
     return savedTeam;
   }

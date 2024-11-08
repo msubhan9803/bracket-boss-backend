@@ -65,7 +65,7 @@ export class Match {
 
   @Field(() => [MatchStatus])
   @ManyToMany(() => MatchStatus, (matchStatus) => matchStatus.matches)
-  @JoinTable()
+  @JoinTable({ name: 'match_match_statuses' })
   statuses: MatchStatus[];
 
   @Field()

@@ -6,7 +6,6 @@ import {
   UpdateDateColumn,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   ManyToMany,
   JoinTable,
 } from 'typeorm';
@@ -15,7 +14,6 @@ import { Club } from 'src/clubs/entities/club.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Sport } from 'src/sport-management/entities/sport.entity';
 import { Format } from 'src/format-management/entities/format.entity';
-import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
 import { TeamGenerationType } from 'src/team-generation-type-management/entities/team-generation-type.entity';
 import { GroupByEnum } from 'src/scheduling/types/common';
 import { IsOptional } from 'class-validator';
@@ -62,10 +60,6 @@ export class Tournament {
   @Column('boolean')
   isPrivate: boolean;
 
-  @Field(() => [TeamsTournamentsUsers], { nullable: true })
-  @OneToMany(() => TeamsTournamentsUsers, (ttu) => ttu.tournament)
-  teamsTournamentsUsers: TeamsTournamentsUsers[];
-
   @ManyToOne(() => Format)
   @JoinColumn()
   @Field(() => Format)
@@ -95,7 +89,7 @@ export class Tournament {
     () => TournamentStatus,
     (tournamentStatus) => tournamentStatus.tournaments,
   )
-  @JoinTable()
+  @JoinTable({ name: 'tournament_tournament_statuses' })
   statuses: TournamentStatus[];
 
   @Field()

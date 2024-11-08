@@ -6,13 +6,14 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Club } from 'src/clubs/entities/club.entity';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
-import { TeamsTournamentsUsers } from './teams-tournaments-users.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @ObjectType()
 @Entity()
@@ -35,9 +36,10 @@ export class Team {
   @Field(() => Tournament)
   tournament: Tournament;
 
-  @Field(() => [TeamsTournamentsUsers], { nullable: true })
-  @OneToMany(() => TeamsTournamentsUsers, (ttu) => ttu.team)
-  teamsTournamentsUsers: TeamsTournamentsUsers[];
+  @Field(() => [User], { nullable: true })
+  @ManyToMany(() => User, (user) => user.teams)
+  @JoinTable({ name: 'team_users' })
+  users: User[];
 
   @Field()
   @CreateDateColumn()
@@ -47,7 +49,7 @@ export class Team {
   @UpdateDateColumn()
   updatedDate: Date;
 
-  constructor(club: Partial<Club>) {
-    Object.assign(this, club);
+  constructor(team: Partial<Team>) {
+    Object.assign(this, team);
   }
 }

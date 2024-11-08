@@ -18,8 +18,8 @@ import { Club } from 'src/clubs/entities/club.entity';
 import { Step } from 'src/users-onboarding-steps/entities/step.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { UserRoleClub } from 'src/user-management/entities/user-role-club.entity';
-import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
 import { GenderTypes } from 'src/scheduling/types/common';
+import { Team } from 'src/team-management/entities/team.entity';
 
 registerEnumType(GenderTypes, {
   name: 'GenderTypes',
@@ -70,13 +70,13 @@ export class User {
   @OneToMany(() => UserRoleClub, (userRoleClub) => userRoleClub.user)
   userRoleClub: UserRoleClub[];
 
-  @Field(() => [TeamsTournamentsUsers], { nullable: true })
-  @OneToMany(() => TeamsTournamentsUsers, (ttu) => ttu.user)
-  teamsTournamentsUsers: TeamsTournamentsUsers[];
-
   @Field(() => GenderTypes)
   @Column('varchar', { nullable: true })
   gender: GenderTypes;
+
+  @Field(() => [Team], { nullable: true })
+  @ManyToMany(() => Team, (team) => team.users)
+  teams: Team[];
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

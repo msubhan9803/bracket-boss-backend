@@ -11,7 +11,6 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { User } from 'src/users/entities/user.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { UserRoleClub } from 'src/user-management/entities/user-role-club.entity';
-import { TeamsTournamentsUsers } from 'src/team-management/entities/teams-tournaments-users.entity';
 
 @ObjectType()
 @Entity()
@@ -43,10 +42,6 @@ export class Club {
   @Field(() => [UserRoleClub], { nullable: true })
   @OneToMany(() => UserRoleClub, (userRoleClub) => userRoleClub.club)
   userRoleClub: UserRoleClub[];
-
-  @Field(() => [TeamsTournamentsUsers], { nullable: true })
-  @OneToMany(() => TeamsTournamentsUsers, (ttu) => ttu.club)
-  teamsTournamentsUsers: TeamsTournamentsUsers[];
 
   @Field()
   @CreateDateColumn()
