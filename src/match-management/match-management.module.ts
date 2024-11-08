@@ -4,6 +4,7 @@ import { Match } from './entities/match.entity';
 import { MatchStatus } from './entities/matchStatus.entity';
 import { MatchRound } from './entities/matchRound.entity';
 import { MatchRoundStatus } from './entities/matchRoundStatus.entity';
+import { MatchRoundScore } from './entities/matchRoundScore';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { MatchRoundStatus } from './entities/matchRoundStatus.entity';
       Match,
       MatchStatus,
       MatchRound,
+      MatchRoundScore,
       MatchRoundStatus,
     ]),
   ],
