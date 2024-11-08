@@ -338,6 +338,7 @@ type Team {
   createdDate: DateTime!
   id: CustomID!
   name: String!
+  statuses: [TeamStatus!]!
   tournament: Tournament!
   updatedDate: DateTime!
   users: [User!]
@@ -359,6 +360,23 @@ enum TeamGenerationTypeEnum {
 type TeamListResponse {
   teams: [Team!]!
   totalRecords: Int!
+}
+
+type TeamStatus {
+  created_at: DateTime!
+  id: CustomID!
+  status: TeamStatusTypes!
+  teams: [Team!]!
+  updated_at: DateTime!
+}
+
+enum TeamStatusTypes {
+  coming_up
+  disqualified
+  idle
+  not_assigned
+  playing
+  removed
 }
 
 type TeamType {

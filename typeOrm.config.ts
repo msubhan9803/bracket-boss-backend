@@ -24,6 +24,7 @@ import { MatchStatus } from 'src/match-management/entities/matchStatus.entity';
 import { MatchRound } from 'src/match-management/entities/matchRound.entity';
 import { MatchRoundStatus } from 'src/match-management/entities/matchRoundStatus.entity';
 import { MatchRoundScore } from 'src/match-management/entities/matchRoundScore';
+import { TeamStatus } from 'src/team-management/entities/teamStatus.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFilePath });
@@ -53,6 +54,7 @@ export default new DataSource({
     Format,
     Court,
     Team,
+    TeamStatus,
     TeamGenerationType,
     Tournament,
     TournamentStatus,
