@@ -26,3 +26,17 @@ $ npm run typeorm:create-migration --name=SetRoles
 # Revert all migrations
 $ npm run typeorm:revert-migrations:dev
 ```
+
+
+
+## DB Setup
+```bash
+# Dump
+$ PGPASSWORD="Password123" pg_dump -U dbuser -h localhost -d bracket_boss > bracket_boss_backup.sql
+
+# Restore
+$ PGPASSWORD="Password123" psql -U dbuser -h localhost -d bracket_boss -f bracket_boss_backup.sql
+
+# Public Schema permissions
+$ GRANT ALL ON SCHEMA public TO dbuser;
+```
