@@ -6,13 +6,15 @@ import { GetScheduleOfTournamentInput } from './dtos/get-schedule-of-tournament-
 import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
 import { GetScheduleOfTournamentResponseDto } from './dtos/get-schedule-of-tournament-response.dto';
 import messages from 'src/utils/messages';
+import { CreateScheduleInputDto } from './dtos/create-schedule-input.dto';
+import { CreateScheduleResponseDto } from './dtos/create-schedule-response.dto';
 
 @Resolver()
 export class SchedulingResolver {
   constructor(
     private readonly schedulingService: SchedulingService,
     private readonly tournamentManagementService: TournamentManagementService,
-  ) {}
+  ) { }
 
   @UseGuards(AuthCheckGuard)
   @Query(() => GetScheduleOfTournamentResponseDto)
@@ -43,13 +45,13 @@ export class SchedulingResolver {
     }
   }
 
-  // @UseGuards(AuthCheckGuard)
-  // @Mutation()
-  // async createSchedule(@Args('input') createScheduleDto: any): Promise<any> {
-  //   try {
-  //     return this.schedulingService.createSchedule(createScheduleDto);
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Error: ', error.message);
-  //   }
-  // }
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => CreateScheduleResponseDto)
+  async createSchedule(@Args('input') createScheduleDto: CreateScheduleInputDto): Promise<CreateScheduleResponseDto> {
+    try {
+      return this.schedulingService.createSchedule(createScheduleDto);
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
 }

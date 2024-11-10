@@ -2,9 +2,19 @@ import { Inject, Injectable } from '@nestjs/common';
 import { FormatStrategy } from '../interface/format-strategy.interface';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { StrategyTypes } from 'src/common/types/global';
-import { Match, Team } from '../types/common';
+import { Match as MatchEntity, Team as TeamEntity } from '../types/common';
 import { TeamGenerationStrategy } from '../interface/team-generation-strategy.interface';
 import { UsersService } from 'src/users/providers/users.service';
+import { TournamentRound } from 'src/tournament-management/entities/tournamentRound.entity';
+import { TournamentRoundStatus } from 'src/tournament-management/entities/tournamentRoundStatus.entity';
+import { Match } from 'src/match-management/entities/match.entity';
+import { MatchStatus } from 'src/match-management/entities/matchStatus.entity';
+import { MatchRound } from 'src/match-management/entities/matchRound.entity';
+import { MatchRoundStatus } from 'src/match-management/entities/matchRoundStatus.entity';
+import { Team } from 'src/team-management/entities/team.entity';
+import { CreateScheduleInputDto } from '../dtos/create-schedule-input.dto';
+import { CreateScheduleResponseDto } from '../dtos/create-schedule-response.dto';
+import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
 
 @Injectable()
 export class SchedulingService {
@@ -17,6 +27,7 @@ export class SchedulingService {
     @Inject(StrategyTypes.TEAM_GENERATION_STRATEGIES)
     teamGenerationStrategies: TeamGenerationStrategy[],
     private usersService: UsersService,
+    private readonly tournamentManagementService: TournamentManagementService,
   ) {
     this.formatStrategies = formatStrategies.reduce((acc, strategy) => {
       acc[strategy.type] = strategy;
@@ -54,7 +65,7 @@ export class SchedulingService {
   async generateTeamsBasedOnStrategy(
     tournament: Tournament,
     userIds: number[],
-  ): Promise<{ matches: Match[]; teams: Team[] }> {
+  ): Promise<{ matches: MatchEntity[]; teams: TeamEntity[] }> {
     const { formatStrategy, teamGenerationStrategy } = this.getStrategy(
       tournament.format.name,
       tournament.teamGenerationType.name,
@@ -73,95 +84,15 @@ export class SchedulingService {
     return { matches, teams };
   }
 
-  async createSchedule(
-    tournament: Tournament,
-    matches: {
-      name: string;
-      teams: {
-        name: string;
-        players: { name: string }[];
-      }[];
-    }[],
-    matchDate: Date,
-  ): Promise<void> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+  async createSchedule(createScheduleInputDto: CreateScheduleInputDto): Promise<CreateScheduleResponseDto> {
+    const { tournamentId } = createScheduleInputDto;
 
-    try {
-      // Extract unique teams
-      const uniqueTeamsMap = new Map<string, Team>();
+    const tournament = await this.tournamentManagementService.findOne(tournamentId);
 
-      for (const match of matches) {
-        for (const team of match.teams) {
-          if (!uniqueTeamsMap.has(team.name)) {
-            const newTeam = new Team({
-              name: team.name,
-              players: team.players.map((player) => ({ name: player.name })),
-            });
-            uniqueTeamsMap.set(team.name, newTeam);
-          }
-        }
-      }
-
-      // Save unique teams to the database
-      const uniqueTeams = Array.from(uniqueTeamsMap.values());
-      await queryRunner.manager.save(uniqueTeams);
-
-      // Create Tournament Round
-      const tournamentRound = new TournamentRound({
-        roundNumber: 1,
-        roundType: tournament.format,
+    return {
+      schedule: {
         tournament,
-        statuses: [
-          new TournamentRoundStatus({
-            status: 'not_started',
-          }),
-        ],
-      });
-      await queryRunner.manager.save(tournamentRound);
-
-      // Create Matches
-      for (const match of matches) {
-        const homeTeam = uniqueTeamsMap.get(match.teams[0].name);
-        const awayTeam = uniqueTeamsMap.get(match.teams[1].name);
-
-        const newMatch = new Match({
-          match_date: matchDate,
-          tournamentRound,
-          homeTeam,
-          awayTeam,
-          statuses: [
-            new MatchStatus({
-              status: 'not_started',
-            }),
-          ],
-        });
-        await queryRunner.manager.save(newMatch);
-
-        // Create Match Rounds
-        for (let i = 1; i <= tournament.bestOfRounds; i++) {
-          const matchRound = new MatchRound({
-            match: newMatch,
-            matchRoundNumber: i,
-            startTime: matchDate,
-            endTime: matchDate,
-            statuses: [
-              new MatchRoundStatus({
-                status: 'not_started',
-              }),
-            ],
-          });
-          await queryRunner.manager.save(matchRound);
-        }
       }
-
-      await queryRunner.commitTransaction();
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
     }
   }
 }

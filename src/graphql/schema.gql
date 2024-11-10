@@ -53,6 +53,14 @@ input CreateCourtInputDto {
   name: String!
 }
 
+input CreateScheduleInputDto {
+  tournamentId: Float!
+}
+
+type CreateScheduleResponseDto {
+  schedule: ScheduleDto!
+}
+
 input CreateTeamInputDto {
   clubId: Int!
   name: String!
@@ -214,6 +222,7 @@ type ModulePolicyRole {
 type Mutation {
   createClub(input: CreateClubInputDto!): CreateClubResponseDto!
   createCourt(input: CreateCourtInputDto!): Court!
+  createSchedule(input: CreateScheduleInputDto!): CreateScheduleResponseDto!
   createTeam(input: CreateTeamInputDto!): Team!
   createTournament(input: CreateTournamentInputDto!): Tournament!
   login(input: LoginInputDto!): LoginResponseDto!
@@ -293,6 +302,10 @@ type Role {
   steps: [Step!]
   updatedDate: DateTime!
   userRoleClub: [UserRoleClub!]
+}
+
+type ScheduleDto {
+  tournament: Tournament!
 }
 
 input SortInput {
