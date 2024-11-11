@@ -40,7 +40,7 @@ export class TournamentRound {
   @ManyToOne(() => Format)
   @JoinColumn()
   @Field(() => Format)
-  roundType: Format;
+  roundFormat: Format;
 
   @Field(() => [TournamentRoundStatus])
   @ManyToMany(

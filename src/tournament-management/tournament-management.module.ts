@@ -12,6 +12,8 @@ import { TeamGenerationTypeManagementModule } from 'src/team-generation-type-man
 import { TournamentStatus } from './entities/tournamentStatus.entity';
 import { TournamentRound } from './entities/tournamentRound.entity';
 import { TournamentRoundStatus } from './entities/tournamentRoundStatus.entity';
+import { TournamentRoundService } from './providers/tournament-round.service';
+import { TournamentRoundStatusService } from './providers/tournament-round-status.service';
 
 @Module({
   imports: [
@@ -31,7 +33,9 @@ import { TournamentRoundStatus } from './entities/tournamentRoundStatus.entity';
     TournamentManagementService,
     TournamentManagementResolver,
     JwtService,
+    TournamentRoundService,
+    TournamentRoundStatusService
   ],
-  exports: [TournamentManagementService],
+  exports: [TournamentManagementService, TournamentRoundService],
 })
 export class TournamentManagementModule {}

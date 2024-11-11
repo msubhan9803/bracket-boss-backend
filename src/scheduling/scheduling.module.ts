@@ -8,9 +8,11 @@ import { RoundRobinStrategy } from './strategies/round-robin.format.strategy';
 import { StrategyTypes } from 'src/common/types/global';
 import { BlindDrawTeamGenerationStrategy } from './strategies/blind-draw.team-generation.strategy';
 import { SplitSwitchTeamGenerationStrategy } from './strategies/split-switch.team-generation.strategy';
+import { ClubsModule } from 'src/clubs/clubs.module';
+import { TeamManagementModule } from 'src/team-management/team-management.module';
 
 @Module({
-  imports: [TournamentManagementModule, UsersModule],
+  imports: [TournamentManagementModule, UsersModule, ClubsModule, TeamManagementModule],
   providers: [
     SchedulingService,
     SchedulingResolver,

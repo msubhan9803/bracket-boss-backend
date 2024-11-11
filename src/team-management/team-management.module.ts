@@ -17,5 +17,6 @@ import { TeamStatus } from './entities/teamStatus.entity';
     TournamentManagementModule,
   ],
   providers: [TeamManagementResolver, TeamManagementService, JwtService],
+  exports: [TeamManagementService]
 })
 export class TeamManagementModule {}

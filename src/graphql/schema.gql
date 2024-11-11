@@ -54,6 +54,8 @@ input CreateCourtInputDto {
 }
 
 input CreateScheduleInputDto {
+  clubId: Float!
+  matches: [MatchInput!]!
   tournamentId: Float!
 }
 
@@ -145,6 +147,11 @@ type Match {
   tournamentRound: TournamentRound!
   updated_at: DateTime!
   winnerTeam: Team
+}
+
+input MatchInput {
+  matchDate: DateTime!
+  teams: [TeamInput!]!
 }
 
 type MatchRound {
@@ -370,6 +377,11 @@ enum TeamGenerationTypeEnum {
   split_switch
 }
 
+input TeamInput {
+  name: String!
+  userIds: [Float!]!
+}
+
 type TeamListResponse {
   teams: [Team!]!
   totalRecords: Int!
@@ -425,8 +437,8 @@ type TournamentRound {
   club: Club!
   created_at: DateTime!
   id: CustomID!
+  roundFormat: Format!
   roundNumber: Float!
-  roundType: Format!
   statuses: [TournamentRoundStatus!]!
   tournament: Tournament!
   updated_at: DateTime!
