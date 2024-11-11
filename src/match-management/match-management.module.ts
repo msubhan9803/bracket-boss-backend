@@ -8,6 +8,8 @@ import { MatchRoundScore } from './entities/matchRoundScore';
 import { MatchCommentary } from './entities/matchCommentary.entity';
 import { MatchService } from './providers/match.service';
 import { MatchStatusService } from './providers/match-status.service';
+import { MatchRoundService } from './providers/match-round.service';
+import { MatchRoundStatusService } from './providers/match-round-status.service';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { MatchStatusService } from './providers/match-status.service';
       MatchCommentary,
     ]),
   ],
-  providers: [MatchService, MatchStatusService],
-  exports: [MatchService, MatchStatusService]
+  providers: [MatchService, MatchStatusService, MatchRoundService, MatchRoundStatusService],
+  exports: [MatchService, MatchStatusService, MatchRoundService, MatchRoundStatusService]
 })
 export class MatchManagementModule {}

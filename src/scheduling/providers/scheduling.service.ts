@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { FormatStrategy } from '../interface/format-strategy.interface';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { StrategyTypes } from 'src/common/types/global';
-import { Match as MatchEntity, Team as TeamEntity } from '../types/common';
+import { Match as MatchEntity, Team as TeamEntityType } from '../types/common';
 import { TeamGenerationStrategy } from '../interface/team-generation-strategy.interface';
 import { UsersService } from 'src/users/providers/users.service';
 import { CreateScheduleInputDto } from '../dtos/create-schedule-input.dto';
@@ -14,7 +14,9 @@ import { TeamManagementService } from 'src/team-management/providers/team-manage
 import { CourtManagementService } from 'src/court-management/providers/court-management.service';
 import { MatchService } from 'src/match-management/providers/match.service';
 import { MatchStatusService } from 'src/match-management/providers/match-status.service';
-import { MatchStatusTypes } from 'src/match-management/types/common';
+import { MatchRoundStatusTypes, MatchStatusTypes } from 'src/match-management/types/common';
+import { MatchRoundService } from 'src/match-management/providers/match-round.service';
+import { MatchRoundStatusService } from 'src/match-management/providers/match-round-status.service';
 
 @Injectable()
 export class SchedulingService {
@@ -34,6 +36,8 @@ export class SchedulingService {
     private readonly courtManagementService: CourtManagementService,
     private readonly matchService: MatchService,
     private readonly matchStatusService: MatchStatusService,
+    private readonly matchRoundService: MatchRoundService,
+    private readonly matchRoundStatusService: MatchRoundStatusService,
   ) {
     this.formatStrategies = formatStrategies.reduce((acc, strategy) => {
       acc[strategy.type] = strategy;
@@ -71,7 +75,7 @@ export class SchedulingService {
   async generateTeamsBasedOnStrategy(
     tournament: Tournament,
     userIds: number[],
-  ): Promise<{ matches: MatchEntity[]; teams: TeamEntity[] }> {
+  ): Promise<{ matches: MatchEntity[]; teams: TeamEntityType[] }> {
     const { formatStrategy, teamGenerationStrategy } = this.getStrategy(
       tournament.format.name,
       tournament.teamGenerationType.name,
@@ -132,6 +136,7 @@ export class SchedulingService {
          * Court assingment
          */
         const court = await this.courtManagementService.findAll();
+        const selectedCourt = court[0];
 
         const homeTeam = teamMap.get(JSON.stringify(match.teams[0].userIds.sort()));
         const awayTeam = teamMap.get(JSON.stringify(match.teams[1].userIds.sort()));
@@ -145,7 +150,7 @@ export class SchedulingService {
         const matchEntity = {
           club,
           tournament,
-          courts: [court[0]],
+          courts: [selectedCourt],
           matchDate: match.matchDate,
           tournamentRound: createdTournamentRound,
           homeTeam,
@@ -156,6 +161,29 @@ export class SchedulingService {
         return this.matchService.createMatch(matchEntity as any);
       }),
     );
+
+    /**
+     * Creating Matche Rouinds
+     */
+    let createdMatchRounds = [];
+    const notStartedMatchRoundStatus = await this.matchRoundStatusService.findMatchStatusByStatusName(MatchRoundStatusTypes.not_started);
+    for (let index = 0; index < createdMatches.length; index++) {
+      const match = createdMatches[index];
+
+      for (let index = 1; index <= tournament.bestOfRounds; index++) {
+        const createdMatchRound = await this.matchRoundService.createMatchRound({
+          club,
+          tournament,
+          match,
+          startTime: match.matchDate,
+          endTime: match.matchDate,
+          matchRoundNumber: index,
+          statuses: [notStartedMatchRoundStatus],
+        })
+
+        createdMatchRounds.push(createdMatchRound);
+      }
+    }
 
     return {
       schedule: {
