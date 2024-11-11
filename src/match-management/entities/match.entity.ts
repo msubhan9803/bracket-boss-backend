@@ -36,12 +36,12 @@ export class Match {
 
   @Field(() => [Court])
   @ManyToMany(() => Court, (court) => court.matches)
-  @JoinColumn()
+  @JoinTable({ name: 'match_courts' })
   courts: Court[];
 
   @Field()
   @CreateDateColumn()
-  match_date: Date;
+  matchDate: Date;
 
   @Field(() => TournamentRound)
   @ManyToOne(() => TournamentRound)

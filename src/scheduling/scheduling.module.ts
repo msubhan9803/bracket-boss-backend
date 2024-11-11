@@ -10,9 +10,11 @@ import { BlindDrawTeamGenerationStrategy } from './strategies/blind-draw.team-ge
 import { SplitSwitchTeamGenerationStrategy } from './strategies/split-switch.team-generation.strategy';
 import { ClubsModule } from 'src/clubs/clubs.module';
 import { TeamManagementModule } from 'src/team-management/team-management.module';
+import { CourtManagementModule } from 'src/court-management/court-management.module';
+import { MatchManagementModule } from 'src/match-management/match-management.module';
 
 @Module({
-  imports: [TournamentManagementModule, UsersModule, ClubsModule, TeamManagementModule],
+  imports: [TournamentManagementModule, UsersModule, ClubsModule, TeamManagementModule, CourtManagementModule, MatchManagementModule],
   providers: [
     SchedulingService,
     SchedulingResolver,

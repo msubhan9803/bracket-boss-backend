@@ -141,7 +141,7 @@ type Match {
   created_at: DateTime!
   homeTeam: Team!
   id: CustomID!
-  match_date: DateTime!
+  matchDate: DateTime!
   statuses: [MatchStatus!]!
   tournament: Tournament!
   tournamentRound: TournamentRound!

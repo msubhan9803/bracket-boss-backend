@@ -10,5 +10,6 @@ import { JwtService } from '@nestjs/jwt';
 @Module({
   imports: [TypeOrmModule.forFeature([Court]), ClubsModule, UsersModule],
   providers: [CourtManagementService, CourtManagementResolver, JwtService],
+  exports: [CourtManagementService]
 })
 export class CourtManagementModule {}
