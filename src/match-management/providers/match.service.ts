@@ -16,8 +16,10 @@ export class MatchService {
         tournament: Tournament,
         relations: string[] = [
             'awayTeam',
+            'awayTeam.users',
             'homeTeam',
-            'courts',
+            'homeTeam.users',
+            'courts'
         ]
     ): Promise<Match[]> {
         return this.matchRepository.find({
