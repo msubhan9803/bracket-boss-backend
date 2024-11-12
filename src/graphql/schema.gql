@@ -111,10 +111,18 @@ enum GenderTypes {
 
 input GetScheduleOfTournamentInput {
   tournamentId: Float!
-  users: [Float!]!
 }
 
 type GetScheduleOfTournamentResponseDto {
+  schedule: ScheduleDto!
+}
+
+input GetSchedulePreperationDataOfTournamentInput {
+  tournamentId: Float!
+  users: [Float!]!
+}
+
+type GetSchedulePreperationDataOfTournamentResponseDto {
   matches: [MatchType!]!
   teams: [TeamType!]!
 }
@@ -162,11 +170,24 @@ type MatchRound {
   id: CustomID!
   match: Match!
   matchRoundNumber: Float!
+  matchRoundScores: [MatchRoundScore!]!
   startTime: DateTime!
   statuses: [MatchRoundStatus!]!
   tournament: Tournament!
   updated_at: DateTime!
   winnerTeam: Team
+}
+
+type MatchRoundScore {
+  club: Club!
+  created_at: DateTime!
+  id: CustomID!
+  matchRound: MatchRound!
+  player: User!
+  score: Float!
+  team: Team!
+  tournament: Tournament!
+  updated_at: DateTime!
 }
 
 type MatchRoundStatus {
@@ -284,6 +305,7 @@ type Query {
   getCourtById(courtId: Float!): Court!
   getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!
   getScheduleOfTournament(input: GetScheduleOfTournamentInput!): GetScheduleOfTournamentResponseDto!
+  getSchedulePreperationDataOfTournament(input: GetSchedulePreperationDataOfTournamentInput!): GetSchedulePreperationDataOfTournamentResponseDto!
   getStepsOfUser: [Step!]!
   getTournamentById(tournamentId: Float!): Tournament!
   getUserById(clubId: Float, userId: Float!): UserWithRoleClub!
@@ -317,7 +339,7 @@ type ScheduleDto {
   matches: [Match!]!
   teams: [Team!]!
   tournament: Tournament!
-  tournamentRound: TournamentRound!
+  tournamentRounds: [TournamentRound!]!
 }
 
 input SortInput {
@@ -430,6 +452,7 @@ type Tournament {
   start_date: DateTime!
   statuses: [TournamentStatus!]!
   teamGenerationType: TeamGenerationType!
+  tournamentRounds: [TournamentRound!]!
   updated_at: DateTime!
 }
 
@@ -442,6 +465,7 @@ type TournamentRound {
   club: Club!
   created_at: DateTime!
   id: CustomID!
+  matches: [Match!]!
   roundFormat: Format!
   roundNumber: Float!
   statuses: [TournamentRoundStatus!]!

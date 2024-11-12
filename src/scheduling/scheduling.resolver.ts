@@ -2,12 +2,14 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { SchedulingService } from './providers/scheduling.service';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
-import { GetScheduleOfTournamentInput } from './dtos/get-schedule-of-tournament-input.dto';
+import { GetSchedulePreperationDataOfTournamentInput } from './dtos/get-schedule-preperation-data-of-tournament-input.dto';
 import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
-import { GetScheduleOfTournamentResponseDto } from './dtos/get-schedule-of-tournament-response.dto';
+import { GetSchedulePreperationDataOfTournamentResponseDto } from './dtos/get-schedule-preperation-data-of-tournament-response.dto';
 import messages from 'src/utils/messages';
 import { CreateScheduleInputDto } from './dtos/create-schedule-input.dto';
 import { CreateScheduleResponseDto } from './dtos/create-schedule-response.dto';
+import { GetScheduleOfTournamentInput } from './dtos/get-schedule-of-tournament-input.dto';
+import { GetScheduleOfTournamentResponseDto } from './dtos/get-schedule-of-tournament-response.dto';
 
 @Resolver()
 export class SchedulingResolver {
@@ -17,12 +19,12 @@ export class SchedulingResolver {
   ) { }
 
   @UseGuards(AuthCheckGuard)
-  @Query(() => GetScheduleOfTournamentResponseDto)
-  async getScheduleOfTournament(
-    @Args('input') getScheduleOfTournamentInput: GetScheduleOfTournamentInput,
+  @Query(() => GetSchedulePreperationDataOfTournamentResponseDto)
+  async getSchedulePreperationDataOfTournament(
+    @Args('input') getSchedulePreperationDataOfTournamentInput: GetSchedulePreperationDataOfTournamentInput,
   ) {
     try {
-      const { tournamentId, users } = getScheduleOfTournamentInput;
+      const { tournamentId, users } = getSchedulePreperationDataOfTournamentInput;
 
       const tournament =
         await this.tournamentManagementService.findOneWithRelations(
@@ -40,6 +42,24 @@ export class SchedulingResolver {
         );
 
       return { matches, teams };
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Query(() => GetScheduleOfTournamentResponseDto)
+  async getScheduleOfTournament(
+    @Args('input') getScheduleOfTournamentInput: GetScheduleOfTournamentInput,
+  ) {
+    try {
+      const { tournamentId } = getScheduleOfTournamentInput;
+
+      const schedule = await this.schedulingService.getScheduleOfTournament(
+        tournamentId,
+      );
+
+      return { schedule }
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }

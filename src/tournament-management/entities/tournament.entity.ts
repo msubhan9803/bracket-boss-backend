@@ -8,6 +8,7 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Club } from 'src/clubs/entities/club.entity';
@@ -18,6 +19,7 @@ import { TeamGenerationType } from 'src/team-generation-type-management/entities
 import { GroupByEnum } from 'src/scheduling/types/common';
 import { IsOptional } from 'class-validator';
 import { TournamentStatus } from './tournamentStatus.entity';
+import { TournamentRound } from './tournamentRound.entity';
 
 registerEnumType(GroupByEnum, {
   name: 'GroupByEnum',
@@ -91,6 +93,10 @@ export class Tournament {
   )
   @JoinTable({ name: 'tournament_tournament_statuses' })
   statuses: TournamentStatus[];
+
+  @OneToMany(() => TournamentRound, (tournamentRound) => tournamentRound.tournament)
+  @Field(() => [TournamentRound])
+  tournamentRounds: TournamentRound[];
 
   @Field()
   @CreateDateColumn()

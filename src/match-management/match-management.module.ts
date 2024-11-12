@@ -4,7 +4,7 @@ import { Match } from './entities/match.entity';
 import { MatchStatus } from './entities/matchStatus.entity';
 import { MatchRound } from './entities/matchRound.entity';
 import { MatchRoundStatus } from './entities/matchRoundStatus.entity';
-import { MatchRoundScore } from './entities/matchRoundScore';
+import { MatchRoundScore } from './entities/matchRoundScore.entity';
 import { MatchCommentary } from './entities/matchCommentary.entity';
 import { MatchService } from './providers/match.service';
 import { MatchStatusService } from './providers/match-status.service';

@@ -23,7 +23,7 @@ import { Match } from 'src/match-management/entities/match.entity';
 import { MatchStatus } from 'src/match-management/entities/matchStatus.entity';
 import { MatchRound } from 'src/match-management/entities/matchRound.entity';
 import { MatchRoundStatus } from 'src/match-management/entities/matchRoundStatus.entity';
-import { MatchRoundScore } from 'src/match-management/entities/matchRoundScore';
+import { MatchRoundScore } from 'src/match-management/entities/matchRoundScore.entity';
 import { TeamStatus } from 'src/team-management/entities/teamStatus.entity';
 import { MatchCommentary } from 'src/match-management/entities/matchCommentary.entity';
 

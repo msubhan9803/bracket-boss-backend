@@ -17,6 +17,7 @@ import { MatchStatusService } from 'src/match-management/providers/match-status.
 import { MatchRoundStatusTypes, MatchStatusTypes } from 'src/match-management/types/common';
 import { MatchRoundService } from 'src/match-management/providers/match-round.service';
 import { MatchRoundStatusService } from 'src/match-management/providers/match-round-status.service';
+import { ScheduleDto } from '../dtos/schedule.dto';
 
 @Injectable()
 export class SchedulingService {
@@ -188,11 +189,27 @@ export class SchedulingService {
     return {
       schedule: {
         tournament,
-        tournamentRound: createdTournamentRound,
+        tournamentRounds: [createdTournamentRound],
         teams: createdTeams,
         matches: createdMatches,
         matchRounds: createdMatchRounds,
       }
+    }
+  }
+
+  async getScheduleOfTournament(tournamentId: number): Promise<ScheduleDto> {
+    const tournament = await this.tournamentManagementService.findOne(tournamentId);
+    const tournamentRounds = await this.tournamentRoundService.findTournamentRoundsByTournament(tournament);
+    const teams = await this.teamManagementService.findTeamsByTournament(tournament)
+    const matches = await this.matchService.findMatchesByTournament(tournament)
+    const matchRounds = await this.matchRoundService.findMatchRoundsByTournament(tournament);
+
+    return {
+      tournament,
+      tournamentRounds,
+      teams,
+      matches,
+      matchRounds,
     }
   }
 }

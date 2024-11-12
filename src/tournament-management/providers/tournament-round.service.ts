@@ -11,18 +11,31 @@ import { Club } from 'src/clubs/entities/club.entity';
 export class TournamentRoundService {
     constructor(
         @InjectRepository(TournamentRound)
-        private tournamentRepository: Repository<TournamentRound>,
+        private tournamentRoundRepository: Repository<TournamentRound>,
         private tournamentRoundStatusService: TournamentRoundStatusService
     ) { }
 
-    findRoundsByTournamentId(tournament: Tournament) {
-        return this.tournamentRepository.find({
-            where: { tournament },
+    findTournamentRoundsByTournament(tournament: Tournament,
+        relations: string[] = [
+            'club',
+            'tournament',
+            'statuses',
+            'matches',
+            'matches.matchRounds',
+            'matches.matchRounds.matchRoundScores',
+            'matches.homeTeam',
+            'matches.awayTeam',
+            'matches.courts',
+            'roundFormat'
+        ]) {
+        return this.tournamentRoundRepository.find({
+            where: { tournament: { id: tournament.id } },
+            relations,
         });
     }
 
     async createTournamentRound(club: Club, tournament: Tournament) {
-        const currentTournamentRounds = await this.findRoundsByTournamentId(tournament);
+        const currentTournamentRounds = await this.findTournamentRoundsByTournament(tournament);
         const notStartedTournamentRoundStatus = await this.tournamentRoundStatusService.findRoundStatusByStatusName(TournamentRoundStatusTypes.not_started);
 
         const round = new TournamentRound({
@@ -33,6 +46,6 @@ export class TournamentRoundService {
             statuses: [notStartedTournamentRoundStatus]
         });
 
-        return this.tournamentRepository.save(round);
+        return this.tournamentRoundRepository.save(round);
     }
 }

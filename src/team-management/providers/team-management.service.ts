@@ -8,6 +8,7 @@ import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { UsersService } from 'src/users/providers/users.service';
 import { TeamStatus } from '../entities/teamStatus.entity';
 import { TeamStatusTypes } from '../types/common';
+import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 
 @Injectable()
 export class TeamManagementService {
@@ -52,6 +53,12 @@ export class TeamManagementService {
     const [teams, totalRecords] = await query.getManyAndCount();
 
     return [teams, totalRecords];
+  }
+
+  async findTeamsByTournament(tournament: Tournament): Promise<Team[]> {
+    return this.teamRepository.find({
+      where: { tournament: { id: tournament.id } },
+    });
   }
 
   async createTeam(createTeamInput: CreateTeamInputDto): Promise<Team> {

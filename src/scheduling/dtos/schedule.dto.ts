@@ -10,8 +10,8 @@ export class ScheduleDto {
   @Field(() => Tournament)
   tournament: Tournament;
 
-  @Field(() => TournamentRound)
-  tournamentRound: TournamentRound;
+  @Field(() => [TournamentRound])
+  tournamentRounds: TournamentRound[];
 
   @Field(() => [Team])
   teams: Team[];
