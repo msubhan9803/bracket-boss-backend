@@ -142,6 +142,7 @@ type Match {
   homeTeam: Team!
   id: CustomID!
   matchDate: DateTime!
+  matchRounds: [MatchRound!]!
   statuses: [MatchStatus!]!
   tournament: Tournament!
   tournamentRound: TournamentRound!
@@ -312,7 +313,11 @@ type Role {
 }
 
 type ScheduleDto {
+  matchRounds: [MatchRound!]!
+  matches: [Match!]!
+  teams: [Team!]!
   tournament: Tournament!
+  tournamentRound: TournamentRound!
 }
 
 input SortInput {

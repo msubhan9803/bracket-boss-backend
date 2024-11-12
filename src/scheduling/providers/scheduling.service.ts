@@ -188,6 +188,10 @@ export class SchedulingService {
     return {
       schedule: {
         tournament,
+        tournamentRound: createdTournamentRound,
+        teams: createdTeams,
+        matches: createdMatches,
+        matchRounds: createdMatchRounds,
       }
     }
   }
