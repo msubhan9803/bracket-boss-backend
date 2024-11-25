@@ -30,6 +30,9 @@ export class TournamentRoundStatus {
   @ManyToMany(
     () => TournamentRound,
     (tournamentRound) => tournamentRound.statuses,
+    {
+      onDelete: "CASCADE",
+    }
   )
   tournamentRounds: TournamentRound[];
 

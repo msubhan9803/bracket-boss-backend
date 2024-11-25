@@ -37,7 +37,9 @@ export class MatchRound {
   tournament: Tournament;
 
   @Field(() => Match)
-  @ManyToOne(() => Match)
+  @ManyToOne(() => Match, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   match: Match;
 

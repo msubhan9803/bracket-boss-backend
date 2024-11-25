@@ -36,7 +36,10 @@ export class TournamentRound {
   tournament: Tournament;
 
   @Field(() => [Match])
-  @OneToMany(() => Match, (match) => match.tournamentRound)
+  @OneToMany(() => Match, (match) => match.tournamentRound, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   matches: Match[];
 
   @Field()
@@ -52,6 +55,10 @@ export class TournamentRound {
   @ManyToMany(
     () => TournamentRoundStatus,
     (tournamentRoundStatus) => tournamentRoundStatus.tournamentRounds,
+    {
+      cascade: true,
+      onDelete: "CASCADE",
+    }
   )
   @JoinTable({ name: 'tournament_round_tournament_round_statuses' })
   statuses: TournamentRoundStatus[];

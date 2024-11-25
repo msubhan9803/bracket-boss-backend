@@ -42,7 +42,10 @@ export class Match {
   courts: Court[];
 
   @Field(() => [MatchRound])
-  @OneToMany(() => MatchRound, (matchRound) => matchRound.match)
+  @OneToMany(() => MatchRound, (matchRound) => matchRound.match, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   matchRounds: MatchRound[];
 
   @Field()
@@ -50,7 +53,9 @@ export class Match {
   matchDate: Date;
 
   @Field(() => TournamentRound)
-  @ManyToOne(() => TournamentRound)
+  @ManyToOne(() => TournamentRound, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   tournamentRound: TournamentRound;
 
@@ -70,7 +75,9 @@ export class Match {
   winnerTeam?: Team;
 
   @Field(() => [MatchStatus])
-  @ManyToMany(() => MatchStatus, (matchStatus) => matchStatus.matches)
+  @ManyToMany(() => MatchStatus, (matchStatus) => matchStatus.matches, {
+    cascade: true,
+  })
   @JoinTable({ name: 'match_match_statuses' })
   statuses: MatchStatus[];
 
