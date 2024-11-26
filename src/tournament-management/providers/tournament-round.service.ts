@@ -48,4 +48,8 @@ export class TournamentRoundService {
 
         return this.tournamentRoundRepository.save(round);
     }
+
+    async deleteTournamentRound(tournament: Tournament) {
+        await this.tournamentRoundRepository.delete({ tournament: { id: tournament.id } });
+    }
 }

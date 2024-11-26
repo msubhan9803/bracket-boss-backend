@@ -90,6 +90,14 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input DeleteScheduleInputDto {
+  tournamentId: Float!
+}
+
+type DeleteScheduleResponseDto {
+  message: String!
+}
+
 type Format {
   created_at: DateTime!
   id: CustomID!
@@ -254,6 +262,7 @@ type Mutation {
   createSchedule(input: CreateScheduleInputDto!): CreateScheduleResponseDto!
   createTeam(input: CreateTeamInputDto!): Team!
   createTournament(input: CreateTournamentInputDto!): Tournament!
+  deleteSchedule(input: DeleteScheduleInputDto!): DeleteScheduleResponseDto!
   login(input: LoginInputDto!): LoginResponseDto!
   refreshToken: RefreshTokenResponseDto!
   register(input: RegisterInputDto!): MessageResponseDto!

@@ -18,6 +18,7 @@ import { MatchRoundStatusTypes, MatchStatusTypes } from 'src/match-management/ty
 import { MatchRoundService } from 'src/match-management/providers/match-round.service';
 import { MatchRoundStatusService } from 'src/match-management/providers/match-round-status.service';
 import { ScheduleDto } from '../dtos/schedule.dto';
+import { DeleteScheduleResponseDto } from '../dtos/delete-schedule-response.dto';
 
 @Injectable()
 export class SchedulingService {
@@ -211,5 +212,11 @@ export class SchedulingService {
       matches,
       matchRounds,
     }
+  }
+
+  async deleteScheduleOfTournament(tournamentId: number) {
+    const tournament = await this.tournamentManagementService.findOne(tournamentId);
+    await this.tournamentRoundService.deleteTournamentRound(tournament);
+    await this.teamManagementService.deleteTeamsByTournament(tournament);
   }
 }

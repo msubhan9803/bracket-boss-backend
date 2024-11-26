@@ -27,9 +27,7 @@ export class MatchStatus {
   status: MatchStatusTypes;
 
   @Field(() => [Match])
-  @ManyToMany(() => Match, (match) => match.statuses, {
-    cascade: true,
-  })
+  @ManyToMany(() => Match, (match) => match.statuses)
   matches: Match[];
 
   @Field()

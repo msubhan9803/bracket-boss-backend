@@ -89,4 +89,8 @@ export class TeamManagementService {
 
     return savedTeam;
   }
+
+  async deleteTeamsByTournament(tournament: Tournament) {
+    await this.teamRepository.delete({ tournament: { id: tournament.id } });
+  }
 }

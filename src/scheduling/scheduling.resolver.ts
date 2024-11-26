@@ -10,6 +10,8 @@ import { CreateScheduleInputDto } from './dtos/create-schedule-input.dto';
 import { CreateScheduleResponseDto } from './dtos/create-schedule-response.dto';
 import { GetScheduleOfTournamentInput } from './dtos/get-schedule-of-tournament-input.dto';
 import { GetScheduleOfTournamentResponseDto } from './dtos/get-schedule-of-tournament-response.dto';
+import { DeleteScheduleInputDto } from './dtos/delete-schedule-input.dto';
+import { DeleteScheduleResponseDto } from './dtos/delete-schedule-response.dto';
 
 @Resolver()
 export class SchedulingResolver {
@@ -70,6 +72,20 @@ export class SchedulingResolver {
   async createSchedule(@Args('input') createScheduleDto: CreateScheduleInputDto): Promise<CreateScheduleResponseDto> {
     try {
       return this.schedulingService.createSchedule(createScheduleDto);
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => DeleteScheduleResponseDto)
+  async deleteSchedule(@Args('input') deleteScheduleInputDto: DeleteScheduleInputDto): Promise<DeleteScheduleResponseDto> {
+    try {
+      await this.schedulingService.deleteScheduleOfTournament(deleteScheduleInputDto.tournamentId);
+
+      return {
+        message: messages.SUCCESS_MESSAGE
+      };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }
