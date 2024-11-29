@@ -18,7 +18,6 @@ import { MatchRoundStatusTypes, MatchStatusTypes } from 'src/match-management/ty
 import { MatchRoundService } from 'src/match-management/providers/match-round.service';
 import { MatchRoundStatusService } from 'src/match-management/providers/match-round-status.service';
 import { ScheduleDto } from '../dtos/schedule.dto';
-import { DeleteScheduleResponseDto } from '../dtos/delete-schedule-response.dto';
 
 @Injectable()
 export class SchedulingService {

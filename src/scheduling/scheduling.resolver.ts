@@ -1,4 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import * as path from 'path';
+import { writeToPath, write, writeToBuffer } from '@fast-csv/format';
 import { SchedulingService } from './providers/scheduling.service';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
@@ -12,12 +14,17 @@ import { GetScheduleOfTournamentInput } from './dtos/get-schedule-of-tournament-
 import { GetScheduleOfTournamentResponseDto } from './dtos/get-schedule-of-tournament-response.dto';
 import { DeleteScheduleInputDto } from './dtos/delete-schedule-input.dto';
 import { DeleteScheduleResponseDto } from './dtos/delete-schedule-response.dto';
+import { UsersService } from 'src/users/providers/users.service';
+import { PredefinedSystemRoles } from 'src/common/types/global';
 
 @Resolver()
 export class SchedulingResolver {
+  private readonly uploadDir = path.resolve('uploads');
+
   constructor(
     private readonly schedulingService: SchedulingService,
     private readonly tournamentManagementService: TournamentManagementService,
+    private usersService: UsersService,
   ) { }
 
   @UseGuards(AuthCheckGuard)
@@ -88,6 +95,33 @@ export class SchedulingResolver {
       };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => String, { description: 'Download user data for schedule' })
+  async downloadUserDataForSchedule() {
+    try {
+      const users = await this.usersService.findAll(PredefinedSystemRoles.player);
+
+      if (!users || users.length === 0) {
+        throw new Error('No users found for the given tournament.');
+      }
+
+      const userCsvBuffer = await writeToBuffer(
+        users
+          .map(user => ({ name: user.name, userId: user.id, email: user.email }))
+          .map(item => Object.values(item)),
+        {
+          headers: ['Name', 'User Id', 'Email']
+        }
+      );
+
+      const base64 = userCsvBuffer.toString('base64');
+
+      return base64;
+    } catch (error) {
+      throw new Error(`Error generating CSV: ${error.message}`);
     }
   }
 }

@@ -263,6 +263,9 @@ type Mutation {
   createTeam(input: CreateTeamInputDto!): Team!
   createTournament(input: CreateTournamentInputDto!): Tournament!
   deleteSchedule(input: DeleteScheduleInputDto!): DeleteScheduleResponseDto!
+
+  """Download user data for schedule"""
+  downloadUserDataForSchedule: String!
   login(input: LoginInputDto!): LoginResponseDto!
   refreshToken: RefreshTokenResponseDto!
   register(input: RegisterInputDto!): MessageResponseDto!
