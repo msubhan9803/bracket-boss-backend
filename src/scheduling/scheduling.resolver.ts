@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import * as path from 'path';
-import { writeToPath, write, writeToBuffer } from '@fast-csv/format';
+import { Workbook, Worksheet } from 'exceljs';
 import { SchedulingService } from './providers/scheduling.service';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
@@ -102,26 +102,138 @@ export class SchedulingResolver {
   @Mutation(() => String, { description: 'Download user data for schedule' })
   async downloadUserDataForSchedule() {
     try {
+      const backgroundColor = '9cccff';
+
       const users = await this.usersService.findAll(PredefinedSystemRoles.player);
 
       if (!users || users.length === 0) {
         throw new Error('No users found for the given tournament.');
       }
 
-      const userCsvBuffer = await writeToBuffer(
-        users
-          .map(user => ({ name: user.name, userId: user.id, email: user.email }))
-          .map(item => Object.values(item)),
-        {
-          headers: ['Name', 'User Id', 'Email']
-        }
-      );
+      const workbook = new Workbook();
+      const worksheet = workbook.addWorksheet('Users');
 
-      const base64 = userCsvBuffer.toString('base64');
+      const headers = ['Name', 'User Id', 'Email'];
+      const headerRow = worksheet.addRow(headers);
 
-      return base64;
+      headerRow.eachCell((cell) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: backgroundColor },
+        };
+      });
+
+      users.forEach(user => {
+        worksheet.addRow([user.name, user.id, user.email]);
+      });
+
+      worksheet.columns.forEach(column => {
+        let maxLength = 0;
+        column.eachCell({ includeEmpty: true }, cell => {
+          const cellValue = cell.value ? cell.value.toString() : '';
+          maxLength = Math.max(maxLength, cellValue.length);
+        });
+        column.width = maxLength + 2;
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const base64String = (buffer as Buffer).toString("base64");
+
+      return base64String;
     } catch (error) {
-      throw new Error(`Error generating CSV: ${error.message}`);
+      throw new Error(`Error generating Excel file: ${error.message}`);
     }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => String, { description: 'Download empty schedule template' })
+  async downloadEmptyScheduleTemplate() {
+    try {
+      const clubId = 1;
+      const tournamentId = 4;
+
+      const backgroundColor = '9cccff';
+      const disabledBackgroundColor = 'b5b5b5';
+
+      const workbook = new Workbook();
+      const worksheet = workbook.addWorksheet('Users');
+
+      /**
+       * Club & Tournament Ids
+       */
+      const clubTournamentIdHeader = ['Club Id', 'Tournament Id'];
+      const headerRow = worksheet.addRow(clubTournamentIdHeader);
+
+      headerRow.eachCell((cell) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: backgroundColor },
+        };
+      });
+
+      const clubTournamentIdData = worksheet.addRow([clubId, tournamentId]);
+      clubTournamentIdData.eachCell((cell) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: disabledBackgroundColor },
+        };
+      });
+
+      this.addEmptyRow(worksheet);
+
+      /**
+       * Match Heading
+       */
+      const matchHeadingRow = worksheet.addRow(['Matches']);
+      matchHeadingRow.eachCell((cell) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: backgroundColor },
+        };
+      });
+
+      /**
+       * Match Heading
+       */
+      const matchHeaders = ['Match Date', 'Team 1 Name', 'Team 1 User 1', 'Team 1 User 2', 'Team 2 Name', 'Team 2 User 1', 'Team 2 User 2'];
+      const matchHeadersRow = worksheet.addRow(matchHeaders);
+      matchHeadersRow.eachCell((cell) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: backgroundColor },
+        };
+      });
+
+      /**
+       * Set column width based on the maximum length of the cell value
+       */
+      worksheet.columns.forEach(column => {
+        let maxLength = 0;
+        column.eachCell({ includeEmpty: true }, cell => {
+          const cellValue = cell.value ? cell.value.toString() : '';
+          maxLength = Math.max(maxLength, cellValue.length);
+        });
+        column.width = maxLength + 2;
+      });
+
+      /**
+       * Convert workbook to base64 string
+       */
+      const buffer = await workbook.xlsx.writeBuffer();
+      const base64String = (buffer as Buffer).toString("base64");
+
+      return base64String;
+    } catch (error) {
+      throw new Error(`Error generating Excel file: ${error.message}`);
+    }
+  }
+
+  async addEmptyRow(worksheet: Worksheet) {
+    worksheet.addRow(['']);
   }
 }

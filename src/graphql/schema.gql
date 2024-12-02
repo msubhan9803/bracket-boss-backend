@@ -264,6 +264,9 @@ type Mutation {
   createTournament(input: CreateTournamentInputDto!): Tournament!
   deleteSchedule(input: DeleteScheduleInputDto!): DeleteScheduleResponseDto!
 
+  """Download empty schedule template"""
+  downloadEmptyScheduleTemplate: String!
+
   """Download user data for schedule"""
   downloadUserDataForSchedule: String!
   login(input: LoginInputDto!): LoginResponseDto!
