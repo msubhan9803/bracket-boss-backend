@@ -10,6 +10,10 @@ type Action {
   updatedDate: DateTime!
 }
 
+type BulkMatchImportResponseDto {
+  message: String!
+}
+
 type Club {
   createdDate: DateTime!
   description: String!
@@ -257,6 +261,7 @@ type ModulePolicyRole {
 }
 
 type Mutation {
+  bulkMatchImport(file: Upload!): BulkMatchImportResponseDto!
   createClub(input: CreateClubInputDto!): CreateClubResponseDto!
   createCourt(input: CreateCourtInputDto!): Court!
   createSchedule(input: CreateScheduleInputDto!): CreateScheduleResponseDto!

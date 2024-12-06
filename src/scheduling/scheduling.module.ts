@@ -12,6 +12,7 @@ import { ClubsModule } from 'src/clubs/clubs.module';
 import { TeamManagementModule } from 'src/team-management/team-management.module';
 import { CourtManagementModule } from 'src/court-management/court-management.module';
 import { MatchManagementModule } from 'src/match-management/match-management.module';
+import { ScheduleSpreadsheetHandlerService } from './providers/schedule-spreadsheet-handler.service';
 
 @Module({
   imports: [TournamentManagementModule, UsersModule, ClubsModule, TeamManagementModule, CourtManagementModule, MatchManagementModule],
@@ -30,6 +31,7 @@ import { MatchManagementModule } from 'src/match-management/match-management.mod
         new SplitSwitchTeamGenerationStrategy(),
       ],
     },
+    ScheduleSpreadsheetHandlerService,
   ],
 })
 export class SchedulingModule {}

@@ -47,8 +47,8 @@ const ENV = process.env.NODE_ENV;
           database: configService.getOrThrow<string>('DB_NAME'),
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           synchronize: ENV === 'development',
-          logging: true,
-          logger: 'advanced-console',
+          // logging: true,
+          // logger: 'advanced-console',
         };
       },
       inject: [ConfigService],

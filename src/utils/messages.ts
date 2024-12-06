@@ -17,6 +17,7 @@ export default {
   OTP_VERIFIED_SUCCESSFULLY: 'OTP verified successfully',
   FORGOT_PASSWORD_EMAIL_SENT: 'Forgot Password Email Sent',
   PASSWORD_RESET_SUCCESSFULLY: 'Password has been reset successfully',
+  MATCH_SCHEDULE_CREATED_SUCCESSFULLY: 'Match schedule created successfully',
 };
 
 export const emailMessages = {
