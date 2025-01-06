@@ -24,6 +24,7 @@ import { TeamManagementModule } from './team-management/team-management.module';
 import { SchedulingModule } from './scheduling/scheduling.module';
 import { TeamGenerationTypeManagementModule } from './team-generation-type-management/team-generation-type-management.module';
 import { MatchManagementModule } from './match-management/match-management.module';
+import { CommonModule } from './common/common.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -77,6 +78,7 @@ const ENV = process.env.NODE_ENV;
     TeamManagementModule,
     SchedulingModule,
     MatchManagementModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [],

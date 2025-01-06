@@ -6,9 +6,10 @@ import { Court } from './entities/court.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'src/users/users.module';
 import { JwtService } from '@nestjs/jwt';
+import { CourtSchedule } from './entities/court-schedule.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Court]), ClubsModule, UsersModule],
+  imports: [TypeOrmModule.forFeature([Court, CourtSchedule]), ClubsModule, UsersModule],
   providers: [CourtManagementService, CourtManagementResolver, JwtService],
   exports: [CourtManagementService]
 })

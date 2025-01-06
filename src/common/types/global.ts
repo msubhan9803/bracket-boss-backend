@@ -10,3 +10,13 @@ export enum PredefinedSystemRoles {
   tournamentOrganizer = 4,
   leagueOrganizer = 5,
 }
+
+export enum DayName {
+  MONDAY = 'Monday',
+  TUESDAY = 'Tuesday',
+  WEDNESDAY = 'Wednesday',
+  THURSDAY = 'Thursday',
+  FRIDAY = 'Friday',
+  SATURDAY = 'Saturday',
+  SUNDAY = 'Sunday',
+}

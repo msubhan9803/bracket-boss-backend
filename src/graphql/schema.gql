@@ -39,6 +39,15 @@ type CourtListResponse {
   totalRecords: Int!
 }
 
+type CourtSchedule {
+  court: Court!
+  createdAt: DateTime!
+  day: Day!
+  id: Float!
+  timeSlot: TimeSlots!
+  updatedAt: DateTime!
+}
+
 input CreateClubInputDto {
   description: String!
   logo: String!
@@ -93,6 +102,23 @@ scalar CustomID
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type Day {
+  createdAt: DateTime!
+  id: Float!
+  name: DayName!
+  updatedAt: DateTime!
+}
+
+enum DayName {
+  FRIDAY
+  MONDAY
+  SATURDAY
+  SUNDAY
+  THURSDAY
+  TUESDAY
+  WEDNESDAY
+}
 
 input DeleteScheduleInputDto {
   tournamentId: Float!
@@ -454,6 +480,14 @@ enum TeamStatusTypes {
 type TeamType {
   name: String!
   players: [User!]!
+}
+
+type TimeSlots {
+  createdAt: DateTime!
+  endTime: String!
+  id: Float!
+  startTime: String!
+  updatedAt: DateTime!
 }
 
 type Tournament {
