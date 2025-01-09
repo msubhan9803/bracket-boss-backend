@@ -28,6 +28,8 @@ type Club {
 
 type Court {
   club: Club!
+  courtLength: Float!
+  courtWidth: Float!
   id: CustomID!
   location: String!
   matches: [Match!]!
@@ -97,6 +99,11 @@ input CreateTournamentInputDto {
 
 """A custom scalar to handle numeric IDs as integers"""
 scalar CustomID
+
+input DailyScheduleInputDto {
+  day: String!
+  scheduleTimings: [ScheduleTimingInputDto!]! = []
+}
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
@@ -305,6 +312,7 @@ type Mutation {
   register(input: RegisterInputDto!): MessageResponseDto!
   resetPassword(newPassword: String!): MessageResponseDto!
   sendForgotPasswordEmail(email: String!): MessageResponseDto!
+  updateCourt(input: UpdateCourtInputDto!): Court!
   updateTournament(input: UpdateTournamentInput!): Tournament!
   updateUserClub(input: UpdateUserClubDto!): UpdateUserResponseDto!
   updateUserRole(input: UpdateUserRoleDto!): UpdateUserRoleResponseDto!
@@ -386,6 +394,11 @@ type ScheduleDto {
   teams: [Team!]!
   tournament: Tournament!
   tournamentRounds: [TournamentRound!]!
+}
+
+input ScheduleTimingInputDto {
+  endTime: String!
+  startTime: String!
 }
 
 input SortInput {
@@ -553,6 +566,15 @@ enum TournamentStatusTypes {
   completed
   in_progress
   not_started
+}
+
+input UpdateCourtInputDto {
+  courtId: Float!
+  courtLength: Float
+  courtWidth: Float
+  dailySchedule: [DailyScheduleInputDto!]
+  location: String
+  name: String
 }
 
 input UpdateTournamentInput {

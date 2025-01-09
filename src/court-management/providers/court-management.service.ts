@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCourtInputDto } from '../dtos/create-court-input.dto';
 import { ClubsService } from 'src/clubs/providers/clubs.service';
+import { UpdateCourtInputDto } from '../dtos/update-court-input.dto';
 
 @Injectable()
 export class CourtManagementService {
@@ -11,7 +12,7 @@ export class CourtManagementService {
     @InjectRepository(Court)
     private courtRepository: Repository<Court>,
     private clubsService: ClubsService,
-  ) {}
+  ) { }
 
   findAll(): Promise<Court[]> {
     return this.courtRepository.find();
@@ -73,5 +74,21 @@ export class CourtManagementService {
     });
 
     return this.courtRepository.save(newCourt);
+  }
+
+  async updateCourt(updateCourtInputDto: UpdateCourtInputDto): Promise<Court> {
+    await this.courtRepository.update(updateCourtInputDto.courtId, {
+      name: updateCourtInputDto.name,
+      location: updateCourtInputDto.location,
+      courtLength: updateCourtInputDto.courtLength,
+      courtWidth: updateCourtInputDto.courtWidth,
+    });
+
+    const court = await this.courtRepository.findOne({
+      where: { id: updateCourtInputDto.courtId },
+      relations: ['club'],
+    });
+
+    return court;
   }
 }

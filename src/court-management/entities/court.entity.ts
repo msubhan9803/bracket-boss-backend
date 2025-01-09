@@ -26,6 +26,14 @@ export class Court {
   @Column('text')
   location: string;
 
+  @Field()
+  @Column('float', { default: 0 })
+  courtLength: number;
+
+  @Field()
+  @Column('float', { default: 0 })
+  courtWidth: number;
+
   @ManyToOne(() => Club)
   @JoinColumn()
   @Field(() => Club)

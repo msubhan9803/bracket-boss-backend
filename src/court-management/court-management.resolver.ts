@@ -7,13 +7,14 @@ import { CourtListResponse } from './dtos/get-all-courts-response.dto';
 import { SortInput } from 'src/common/dtos/sort-input.dto';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
 import { UsersService } from 'src/users/providers/users.service';
+import { UpdateCourtInputDto } from './dtos/update-court-input.dto';
 
 @Resolver()
 export class CourtManagementResolver {
   constructor(
     private readonly courtManagementService: CourtManagementService,
     private readonly usersService: UsersService,
-  ) {}
+  ) { }
 
   @UseGuards(AuthCheckGuard)
   @Query(() => CourtListResponse)
@@ -69,5 +70,19 @@ export class CourtManagementResolver {
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => Court)
+  async updateCourt(
+    @Args('input') updateCourtInputDto: UpdateCourtInputDto,
+  ): Promise<Court> {
+    {
+      try {
+        return await this.courtManagementService.updateCourt(updateCourtInputDto);
+      } catch (error) {
+        throw new InternalServerErrorException('Error: ', error.message);
+      }
+    } 
   }
 }
