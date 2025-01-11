@@ -5,13 +5,20 @@ import { Repository } from 'typeorm';
 import { CreateCourtInputDto } from '../dtos/create-court-input.dto';
 import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { UpdateCourtInputDto } from '../dtos/update-court-input.dto';
+import { Day } from 'src/common/entities/day.entity';
+import { TimeSlots } from 'src/common/entities/time.entity';
+import { CourtSchedule } from '../entities/court-schedule.entity';
+import { DateTimeService } from 'src/common/providers/date-time.service';
 
 @Injectable()
 export class CourtManagementService {
   constructor(
     @InjectRepository(Court)
     private courtRepository: Repository<Court>,
+    @InjectRepository(CourtSchedule)
+    private courtScheduleRepository: Repository<CourtSchedule>,
     private clubsService: ClubsService,
+    private dateTimeService: DateTimeService,
   ) { }
 
   findAll(): Promise<Court[]> {
@@ -88,6 +95,29 @@ export class CourtManagementService {
       where: { id: updateCourtInputDto.courtId },
       relations: ['club'],
     });
+
+    if (updateCourtInputDto.dailySchedule) {
+      await this.courtScheduleRepository.delete({ court });
+
+      for (const dailySchedule of updateCourtInputDto.dailySchedule) {
+        const day = await this.dateTimeService.findOrCreateDay(dailySchedule.day);
+
+        for (const scheduleTiming of dailySchedule.scheduleTimings) {
+          const timeSlot = await this.dateTimeService.findOrCreateTimeSlot(
+            scheduleTiming.startTime,
+            scheduleTiming.endTime,
+          );
+
+          const courtSchedule = this.courtScheduleRepository.create({
+            court,
+            day,
+            timeSlot,
+          });
+
+          await this.courtScheduleRepository.save(courtSchedule);
+        }
+      }
+    }
 
     return court;
   }

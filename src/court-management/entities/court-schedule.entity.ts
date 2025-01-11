@@ -19,7 +19,7 @@ export class CourtSchedule {
     id: number;
 
     @Field(() => Court)
-    @ManyToOne(() => Court)
+    @ManyToOne(() => Court, (court) => court.courtSchedules)
     @JoinColumn({ name: 'courtId' })
     court: Court;
 

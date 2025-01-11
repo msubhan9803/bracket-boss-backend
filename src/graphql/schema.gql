@@ -29,6 +29,7 @@ type Club {
 type Court {
   club: Club!
   courtLength: Float!
+  courtSchedules: [CourtSchedule!]!
   courtWidth: Float!
   id: CustomID!
   location: String!
@@ -118,13 +119,13 @@ type Day {
 }
 
 enum DayName {
-  FRIDAY
-  MONDAY
-  SATURDAY
-  SUNDAY
-  THURSDAY
-  TUESDAY
-  WEDNESDAY
+  friday
+  monday
+  saturday
+  sunday
+  thursday
+  tuesday
+  wednesday
 }
 
 input DeleteScheduleInputDto {

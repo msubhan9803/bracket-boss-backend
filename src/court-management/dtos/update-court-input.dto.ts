@@ -1,6 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsString, IsInt, IsOptional, IsArray, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import { DayName } from 'src/common/types/global';
 
 @InputType()
 class ScheduleTimingInputDto {
@@ -17,7 +18,7 @@ class ScheduleTimingInputDto {
 class DailyScheduleInputDto {
   @Field()
   @IsString({ message: 'Day is required' })
-  day: string;
+  day: DayName;
 
   @Field(() => [ScheduleTimingInputDto], { defaultValue: [] })
   @IsArray()
