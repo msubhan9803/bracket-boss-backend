@@ -5,8 +5,6 @@ import { Repository } from 'typeorm';
 import { CreateCourtInputDto } from '../dtos/create-court-input.dto';
 import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { UpdateCourtInputDto } from '../dtos/update-court-input.dto';
-import { Day } from 'src/common/entities/day.entity';
-import { TimeSlots } from 'src/common/entities/time.entity';
 import { CourtSchedule } from '../entities/court-schedule.entity';
 import { DateTimeService } from 'src/common/providers/date-time.service';
 
@@ -39,6 +37,9 @@ export class CourtManagementService {
     const query = this.courtRepository
       .createQueryBuilder('court')
       .leftJoinAndSelect('court.club', 'club')
+      .leftJoinAndSelect('court.courtSchedules', 'courtSchedules')
+      .leftJoinAndSelect('courtSchedules.day', 'day')
+      .leftJoinAndSelect('courtSchedules.timeSlot', 'timeSlot')
       .skip((page - 1) * pageSize)
       .take(pageSize);
 
