@@ -399,6 +399,7 @@ type ScheduleDto {
 
 input ScheduleTimingInputDto {
   endTime: String!
+  id: Float
   startTime: String!
 }
 

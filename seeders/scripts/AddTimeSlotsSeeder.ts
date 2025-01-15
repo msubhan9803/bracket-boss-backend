@@ -13,7 +13,7 @@ export class AddTimeSlotsSeeder {
         try {
             // Clear the table with cascade and restart identity
             await queryRunner.query(`
-                TRUNCATE TABLE "time_slots" RESTART IDENTITY CASCADE;
+                TRUNCATE TABLE "time_slot" RESTART IDENTITY CASCADE;
             `);
 
             // Insert Time Slots with 1-hour difference

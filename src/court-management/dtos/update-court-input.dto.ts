@@ -5,6 +5,10 @@ import { DayName } from 'src/common/types/global';
 
 @InputType()
 class ScheduleTimingInputDto {
+  @Field(() => Number, { nullable: true })
+  @IsOptional()
+  id?: number;
+
   @Field()
   @IsString({ message: 'Start time is required' })
   startTime: string;

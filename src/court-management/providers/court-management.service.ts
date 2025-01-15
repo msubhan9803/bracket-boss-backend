@@ -98,24 +98,39 @@ export class CourtManagementService {
     });
 
     if (updateCourtInputDto.dailySchedule) {
-      await this.courtScheduleRepository.delete({ court });
-
       for (const dailySchedule of updateCourtInputDto.dailySchedule) {
         const day = await this.dateTimeService.findOrCreateDay(dailySchedule.day);
 
         for (const scheduleTiming of dailySchedule.scheduleTimings) {
-          const timeSlot = await this.dateTimeService.findOrCreateTimeSlot(
-            scheduleTiming.startTime,
-            scheduleTiming.endTime,
-          );
+          if (scheduleTiming.id) {
+            const existingCourtSchedule = await this.courtScheduleRepository.findOne({
+              where: { id: scheduleTiming.id as number },
+              relations: ['timeSlot'],
+            });
 
-          const courtSchedule = this.courtScheduleRepository.create({
-            court,
-            day,
-            timeSlot,
-          });
+            if (existingCourtSchedule) {
+              const updatedTimeSlot = await this.dateTimeService.findOrCreateTimeSlot(
+                scheduleTiming.startTime,
+                scheduleTiming.endTime,
+              );
 
-          await this.courtScheduleRepository.save(courtSchedule);
+              existingCourtSchedule.timeSlot = updatedTimeSlot;
+              await this.courtScheduleRepository.save(existingCourtSchedule);
+            }
+          } else {
+            const newTimeSlot = await this.dateTimeService.findOrCreateTimeSlot(
+              scheduleTiming.startTime,
+              scheduleTiming.endTime,
+            );
+
+            const newCourtSchedule = this.courtScheduleRepository.create({
+              court,
+              day,
+              timeSlot: newTimeSlot,
+            });
+
+            await this.courtScheduleRepository.save(newCourtSchedule);
+          }
         }
       }
     }
