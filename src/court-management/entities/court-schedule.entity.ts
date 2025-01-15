@@ -9,7 +9,7 @@ import {
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Court } from './court.entity';
 import { Day } from 'src/common/entities/day.entity';
-import { TimeSlots } from 'src/common/entities/time.entity';
+import { TimeSlot } from 'src/common/entities/time-slot.entity';
 
 @ObjectType()
 @Entity()
@@ -28,10 +28,10 @@ export class CourtSchedule {
     @JoinColumn({ name: 'dayId' })
     day: Day;
 
-    @Field(() => TimeSlots)
-    @ManyToOne(() => TimeSlots)
+    @Field(() => TimeSlot)
+    @ManyToOne(() => TimeSlot)
     @JoinColumn({ name: 'timeSlotId' })
-    timeSlot: TimeSlots;
+    timeSlot: TimeSlot;
 
     @Field()
     @CreateDateColumn()

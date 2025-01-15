@@ -9,7 +9,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 @Entity()
-export class TimeSlots {
+export class TimeSlot {
     @Field(() => Number)
     @PrimaryGeneratedColumn()
     id: number;
@@ -30,7 +30,7 @@ export class TimeSlots {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    constructor(timeSlot: Partial<TimeSlots>) {
+    constructor(timeSlot: Partial<TimeSlot>) {
         Object.assign(this, timeSlot);
     }
 }

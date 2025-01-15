@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Day } from '../entities/day.entity';
-import { TimeSlots } from '../entities/time.entity';
+import { TimeSlot } from '../entities/time-slot.entity';
 import { DayName } from '../types/global';
 
 @Injectable()
@@ -10,8 +10,8 @@ export class DateTimeService {
   constructor(
     @InjectRepository(Day)
     private dayRepository: Repository<Day>,
-    @InjectRepository(TimeSlots)
-    private timeSlotsRepository: Repository<TimeSlots>,
+    @InjectRepository(TimeSlot)
+    private timeSlotsRepository: Repository<TimeSlot>,
   ) {}
 
   async findOrCreateDay(dayName: DayName): Promise<Day> {
@@ -23,7 +23,7 @@ export class DateTimeService {
     return day;
   }
 
-  async findOrCreateTimeSlot(startTime: string, endTime: string): Promise<TimeSlots> {
+  async findOrCreateTimeSlot(startTime: string, endTime: string): Promise<TimeSlot> {
     let timeSlot = await this.timeSlotsRepository.findOne({
       where: { startTime, endTime },
     });

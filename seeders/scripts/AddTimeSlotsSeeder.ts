@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { TimeSlots } from 'src/common/entities/time.entity';
+import { TimeSlot } from 'src/common/entities/time-slot.entity';
 
 export class AddTimeSlotsSeeder {
     public static async seed(dataSource: DataSource): Promise<void> {
@@ -29,7 +29,7 @@ export class AddTimeSlotsSeeder {
                 });
             }
 
-            await queryRunner.manager.getRepository(TimeSlots).save(timeSlots);
+            await queryRunner.manager.getRepository(TimeSlot).save(timeSlots);
 
             await queryRunner.commitTransaction();
         } catch (error) {

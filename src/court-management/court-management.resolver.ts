@@ -13,7 +13,6 @@ import { UpdateCourtInputDto } from './dtos/update-court-input.dto';
 export class CourtManagementResolver {
   constructor(
     private readonly courtManagementService: CourtManagementService,
-    private readonly usersService: UsersService,
   ) { }
 
   @UseGuards(AuthCheckGuard)
@@ -83,6 +82,6 @@ export class CourtManagementResolver {
       } catch (error) {
         throw new InternalServerErrorException('Error: ', error.message);
       }
-    } 
+    }
   }
 }

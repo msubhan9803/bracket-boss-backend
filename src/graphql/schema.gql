@@ -47,7 +47,7 @@ type CourtSchedule {
   createdAt: DateTime!
   day: Day!
   id: Float!
-  timeSlot: TimeSlots!
+  timeSlot: TimeSlot!
   updatedAt: DateTime!
 }
 
@@ -496,7 +496,7 @@ type TeamType {
   players: [User!]!
 }
 
-type TimeSlots {
+type TimeSlot {
   createdAt: DateTime!
   endTime: String!
   id: Float!
