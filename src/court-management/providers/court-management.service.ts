@@ -91,50 +91,63 @@ export class CourtManagementService {
       courtLength: updateCourtInputDto.courtLength,
       courtWidth: updateCourtInputDto.courtWidth,
     });
-
+  
     const court = await this.courtRepository.findOne({
       where: { id: updateCourtInputDto.courtId },
-      relations: ['club'],
+      relations: ['club', 'courtSchedules', 'courtSchedules.timeSlot', 'courtSchedules.day'],
     });
-
+  
     if (updateCourtInputDto.dailySchedule) {
+      const updatedScheduleIds: number[] = [];
+  
       for (const dailySchedule of updateCourtInputDto.dailySchedule) {
         const day = await this.dateTimeService.findOrCreateDay(dailySchedule.day);
-
+  
         for (const scheduleTiming of dailySchedule.scheduleTimings) {
           if (scheduleTiming.id) {
             const existingCourtSchedule = await this.courtScheduleRepository.findOne({
               where: { id: scheduleTiming.id as number },
               relations: ['timeSlot'],
             });
-
+  
             if (existingCourtSchedule) {
               const updatedTimeSlot = await this.dateTimeService.findOrCreateTimeSlot(
                 scheduleTiming.startTime,
                 scheduleTiming.endTime,
               );
-
+  
               existingCourtSchedule.timeSlot = updatedTimeSlot;
               await this.courtScheduleRepository.save(existingCourtSchedule);
+              updatedScheduleIds.push(existingCourtSchedule.id);
             }
           } else {
             const newTimeSlot = await this.dateTimeService.findOrCreateTimeSlot(
               scheduleTiming.startTime,
               scheduleTiming.endTime,
             );
-
+  
             const newCourtSchedule = this.courtScheduleRepository.create({
               court,
               day,
               timeSlot: newTimeSlot,
             });
-
-            await this.courtScheduleRepository.save(newCourtSchedule);
+  
+            const savedSchedule = await this.courtScheduleRepository.save(newCourtSchedule);
+            updatedScheduleIds.push(savedSchedule.id);
           }
         }
       }
+  
+      const schedulesToDelete = court.courtSchedules.filter(
+        (schedule) => !updatedScheduleIds.includes(schedule.id),
+      );
+  
+      for (const schedule of schedulesToDelete) {
+        await this.courtScheduleRepository.delete(schedule.id);
+      }
     }
-
+  
     return court;
   }
+  
 }
