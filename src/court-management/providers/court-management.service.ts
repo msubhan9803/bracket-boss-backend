@@ -7,6 +7,7 @@ import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { UpdateCourtInputDto } from '../dtos/update-court-input.dto';
 import { CourtSchedule } from '../entities/court-schedule.entity';
 import { DateTimeService } from 'src/common/providers/date-time.service';
+import { UpsertCourtInputDto } from '../dtos/upsert-court-input.dto';
 
 @Injectable()
 export class CourtManagementService {
@@ -91,31 +92,31 @@ export class CourtManagementService {
       courtLength: updateCourtInputDto.courtLength,
       courtWidth: updateCourtInputDto.courtWidth,
     });
-  
+
     const court = await this.courtRepository.findOne({
       where: { id: updateCourtInputDto.courtId },
       relations: ['club', 'courtSchedules', 'courtSchedules.timeSlot', 'courtSchedules.day'],
     });
-  
+
     if (updateCourtInputDto.dailySchedule) {
       const updatedScheduleIds: number[] = [];
-  
+
       for (const dailySchedule of updateCourtInputDto.dailySchedule) {
         const day = await this.dateTimeService.findOrCreateDay(dailySchedule.day);
-  
+
         for (const scheduleTiming of dailySchedule.scheduleTimings) {
           if (scheduleTiming.id) {
             const existingCourtSchedule = await this.courtScheduleRepository.findOne({
               where: { id: scheduleTiming.id as number },
               relations: ['timeSlot'],
             });
-  
+
             if (existingCourtSchedule) {
               const updatedTimeSlot = await this.dateTimeService.findOrCreateTimeSlot(
                 scheduleTiming.startTime,
                 scheduleTiming.endTime,
               );
-  
+
               existingCourtSchedule.timeSlot = updatedTimeSlot;
               await this.courtScheduleRepository.save(existingCourtSchedule);
               updatedScheduleIds.push(existingCourtSchedule.id);
@@ -125,29 +126,118 @@ export class CourtManagementService {
               scheduleTiming.startTime,
               scheduleTiming.endTime,
             );
-  
+
             const newCourtSchedule = this.courtScheduleRepository.create({
               court,
               day,
               timeSlot: newTimeSlot,
             });
-  
+
             const savedSchedule = await this.courtScheduleRepository.save(newCourtSchedule);
             updatedScheduleIds.push(savedSchedule.id);
           }
         }
       }
-  
+
       const schedulesToDelete = court.courtSchedules.filter(
         (schedule) => !updatedScheduleIds.includes(schedule.id),
       );
-  
+
       for (const schedule of schedulesToDelete) {
         await this.courtScheduleRepository.delete(schedule.id);
       }
     }
-  
+
     return court;
   }
-  
+
+  async upsertCourt(upsertCourtInputDto: UpsertCourtInputDto): Promise<Court> {
+    let court: Court;
+
+    if (upsertCourtInputDto.courtId) {
+      // Update existing court
+      await this.courtRepository.update(upsertCourtInputDto.courtId, {
+        name: upsertCourtInputDto.name,
+        location: upsertCourtInputDto.location,
+        courtLength: upsertCourtInputDto.courtLength,
+        courtWidth: upsertCourtInputDto.courtWidth,
+      });
+
+      court = await this.courtRepository.findOne({
+        where: { id: upsertCourtInputDto.courtId },
+        relations: ['club', 'courtSchedules', 'courtSchedules.timeSlot', 'courtSchedules.day'],
+      });
+
+      if (!court) {
+        throw new Error('Court not found for update');
+      }
+    } else {
+      // Create new court
+      const club = await this.clubsService.findOne(upsertCourtInputDto.clubId);
+
+      court = this.courtRepository.create({
+        name: upsertCourtInputDto.name,
+        location: upsertCourtInputDto.location,
+        club,
+        courtLength: upsertCourtInputDto.courtLength,
+        courtWidth: upsertCourtInputDto.courtWidth,
+      });
+
+      court = await this.courtRepository.save(court);
+    }
+
+    if (upsertCourtInputDto.dailySchedule) {
+      const updatedScheduleIds: number[] = [];
+
+      for (const dailySchedule of upsertCourtInputDto.dailySchedule) {
+        const day = await this.dateTimeService.findOrCreateDay(dailySchedule.day);
+
+        for (const scheduleTiming of dailySchedule.scheduleTimings) {
+          if (scheduleTiming.id) {
+            const existingCourtSchedule = await this.courtScheduleRepository.findOne({
+              where: { id: scheduleTiming.id },
+              relations: ['timeSlot'],
+            });
+
+            if (existingCourtSchedule) {
+              const updatedTimeSlot = await this.dateTimeService.findOrCreateTimeSlot(
+                scheduleTiming.startTime,
+                scheduleTiming.endTime,
+              );
+
+              existingCourtSchedule.timeSlot = updatedTimeSlot;
+              await this.courtScheduleRepository.save(existingCourtSchedule);
+              updatedScheduleIds.push(existingCourtSchedule.id);
+            }
+          } else {
+            const newTimeSlot = await this.dateTimeService.findOrCreateTimeSlot(
+              scheduleTiming.startTime,
+              scheduleTiming.endTime,
+            );
+
+            const newCourtSchedule = this.courtScheduleRepository.create({
+              court,
+              day,
+              timeSlot: newTimeSlot,
+            });
+
+            const savedSchedule = await this.courtScheduleRepository.save(newCourtSchedule);
+            updatedScheduleIds.push(savedSchedule.id);
+          }
+        }
+      }
+
+      if (court.courtSchedules) {
+        const schedulesToDelete = court.courtSchedules.filter(
+          (schedule) => !updatedScheduleIds.includes(schedule.id),
+        );
+
+        for (const schedule of schedulesToDelete) {
+          await this.courtScheduleRepository.delete(schedule.id);
+        }
+      }
+    }
+
+    return court;
+  }
 }

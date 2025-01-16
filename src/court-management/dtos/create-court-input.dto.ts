@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsString, IsInt } from 'class-validator';
+import { IsString, IsInt, IsOptional } from 'class-validator';
 
 @InputType()
 export class CreateCourtInputDto {
@@ -14,4 +14,14 @@ export class CreateCourtInputDto {
   @Field()
   @IsInt({ message: 'Club ID must be an integer' })
   clubId: number;
+
+  @Field({ nullable: true })
+  @IsInt({ message: 'Court length must be an integer' })
+  @IsOptional()
+  courtLength?: number;
+
+  @Field({ nullable: true })
+  @IsInt({ message: 'Court width must be an integer' })
+  @IsOptional()
+  courtWidth?: number;
 }

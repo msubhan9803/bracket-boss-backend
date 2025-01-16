@@ -1,13 +1,11 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CourtManagementService } from './providers/court-management.service';
 import { Court } from './entities/court.entity';
-import { CreateCourtInputDto } from './dtos/create-court-input.dto';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { CourtListResponse } from './dtos/get-all-courts-response.dto';
 import { SortInput } from 'src/common/dtos/sort-input.dto';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
-import { UsersService } from 'src/users/providers/users.service';
-import { UpdateCourtInputDto } from './dtos/update-court-input.dto';
+import { UpsertCourtInputDto } from './dtos/upsert-court-input.dto';
 
 @Resolver()
 export class CourtManagementResolver {
@@ -61,27 +59,13 @@ export class CourtManagementResolver {
 
   @UseGuards(AuthCheckGuard)
   @Mutation(() => Court)
-  async createCourt(
-    @Args('input') createCourtInputDto: CreateCourtInputDto,
+  async upsertCourt(
+    @Args('input') upsertCourtInputDto: UpsertCourtInputDto,
   ): Promise<Court> {
     try {
-      return this.courtManagementService.createCourt(createCourtInputDto);
+      return this.courtManagementService.upsertCourt(upsertCourtInputDto);
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
-    }
-  }
-
-  @UseGuards(AuthCheckGuard)
-  @Mutation(() => Court)
-  async updateCourt(
-    @Args('input') updateCourtInputDto: UpdateCourtInputDto,
-  ): Promise<Court> {
-    {
-      try {
-        return await this.courtManagementService.updateCourt(updateCourtInputDto);
-      } catch (error) {
-        throw new InternalServerErrorException('Error: ', error.message);
-      }
     }
   }
 }

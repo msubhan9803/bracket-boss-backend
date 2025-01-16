@@ -63,12 +63,6 @@ type CreateClubResponseDto {
   message: String!
 }
 
-input CreateCourtInputDto {
-  clubId: Float!
-  location: String!
-  name: String!
-}
-
 input CreateScheduleInputDto {
   clubId: Float!
   matches: [MatchInput!]!
@@ -297,7 +291,6 @@ type ModulePolicyRole {
 type Mutation {
   bulkMatchImport(file: Upload!): BulkMatchImportResponseDto!
   createClub(input: CreateClubInputDto!): CreateClubResponseDto!
-  createCourt(input: CreateCourtInputDto!): Court!
   createSchedule(input: CreateScheduleInputDto!): CreateScheduleResponseDto!
   createTeam(input: CreateTeamInputDto!): Team!
   createTournament(input: CreateTournamentInputDto!): Tournament!
@@ -313,11 +306,11 @@ type Mutation {
   register(input: RegisterInputDto!): MessageResponseDto!
   resetPassword(newPassword: String!): MessageResponseDto!
   sendForgotPasswordEmail(email: String!): MessageResponseDto!
-  updateCourt(input: UpdateCourtInputDto!): Court!
   updateTournament(input: UpdateTournamentInput!): Tournament!
   updateUserClub(input: UpdateUserClubDto!): UpdateUserResponseDto!
   updateUserRole(input: UpdateUserRoleDto!): UpdateUserRoleResponseDto!
   uploadFile(file: Upload!): UploadFileResponseDto!
+  upsertCourt(input: UpsertCourtInputDto!): Court!
   verifyEmail(input: VerifyEmailInputDto!): MessageResponseDto!
   verifyOtp(email: String!, otp: String!): OtpVerifyResponseDto!
 }
@@ -570,15 +563,6 @@ enum TournamentStatusTypes {
   not_started
 }
 
-input UpdateCourtInputDto {
-  courtId: Float!
-  courtLength: Float
-  courtWidth: Float
-  dailySchedule: [DailyScheduleInputDto!]
-  location: String
-  name: String
-}
-
 input UpdateTournamentInput {
   clubId: Float!
   description: String!
@@ -613,6 +597,16 @@ scalar Upload
 
 type UploadFileResponseDto {
   url: String!
+}
+
+input UpsertCourtInputDto {
+  clubId: Float!
+  courtId: Float
+  courtLength: Float
+  courtWidth: Float
+  dailySchedule: [DailyScheduleInputDto!]
+  location: String
+  name: String
 }
 
 type User {
