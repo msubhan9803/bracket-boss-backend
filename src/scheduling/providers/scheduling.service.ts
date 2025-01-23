@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { FormatStrategy } from '../interface/format-strategy.interface';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { StrategyTypes } from 'src/common/types/global';
@@ -101,6 +101,12 @@ export class SchedulingService {
     const club = await this.clubsService.findOne(clubId);
     const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
 
+    try {
+      const availableCourts = await this.courtManagementService.getCourtsWithSchedule(tournament.start_date, tournament.end_date)
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+
     /**
      * Create a tournament round
      */
@@ -135,6 +141,7 @@ export class SchedulingService {
       matches.map(async (match) => {
         /**
          * Court assingment
+         * 🌺 Update court assignment logic here
          */
         const court = await this.courtManagementService.findAll();
         const selectedCourt = court[0];
