@@ -1,4 +1,5 @@
 import { User } from 'src/users/entities/user.entity';
+import { MatchInput } from '../dtos/create-schedule-input.dto';
 
 export type Team = {
   name: string;
@@ -19,3 +20,11 @@ export enum GenderTypes {
   MALE = 'male',
   FEMALE = 'female',
 }
+
+export type SingleMatchGroup = {
+  matches: MatchInput[];
+}
+
+export type GroupedMatches = {
+  [key: string]: SingleMatchGroup;
+};

@@ -16,7 +16,7 @@ export class TeamInput {
 export class MatchInput {
   @Field(() => Date)
   @IsDate()
-  matchDate: Date;
+  matchDate?: Date;
 
   @Field(() => [TeamInput])
   @IsArray({ each: true })

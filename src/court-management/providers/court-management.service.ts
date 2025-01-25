@@ -8,6 +8,8 @@ import { UpdateCourtInputDto } from '../dtos/update-court-input.dto';
 import { CourtSchedule } from '../entities/court-schedule.entity';
 import { DateTimeService } from 'src/common/providers/date-time.service';
 import { UpsertCourtInputDto } from '../dtos/upsert-court-input.dto';
+import { DayName } from 'src/common/types/global';
+import { TimeSlotWithCourts } from '../types';
 
 @Injectable()
 export class CourtManagementService {
@@ -241,6 +243,54 @@ export class CourtManagementService {
     return court;
   }
 
+  courtScheduleModifier(courts: Court[]): TimeSlotWithCourts[] {
+    const result: TimeSlotWithCourts[] = [];
+
+    courts.forEach((court) => {
+      Object.keys(court.courtSchedules).forEach((day) => {
+        const { timeslots, dateList } = court.courtSchedules[day];
+
+        dateList.forEach((date) => {
+          timeslots.forEach((slot) => {
+            const { startTime, endTime } = slot.timeSlot;
+
+            // Check if the timeslot for the same date and time already exists
+            let existingEntry = result.find(
+              (entry) =>
+                entry.date === new Date(date).toISOString().split("T")[0] &&
+                entry.startTime === startTime &&
+                entry.endTime === endTime
+            );
+
+            if (!existingEntry) {
+              existingEntry = {
+                date: new Date(date).toISOString().split("T")[0],
+                startTime,
+                endTime,
+                courts: [],
+              };
+              result.push(existingEntry);
+            }
+
+            // Add the court ID to the courts list for this timeslot
+            existingEntry.courts.push(court.id);
+          });
+        });
+      });
+    });
+
+    // Sort the result by date and startTime
+    result.sort((a, b) => {
+      const dateComparison = a.date.localeCompare(b.date); // Compare dates
+      if (dateComparison === 0) {
+        return a.startTime.localeCompare(b.startTime); // Compare start times if dates are equal
+      }
+      return dateComparison;
+    });
+
+    return result;
+  }
+
   /**
    * [x] We will provide start and end date
    * [x] It'll fetch all of the courts with their schedules
@@ -250,14 +300,14 @@ export class CourtManagementService {
    * We need to somehow map start/end date for each generic day and filter out the courts
    * 
    * 🔥 Tasks:
-   *  - For each fetched court, create schedule for dates within start/end date
+   *  [x] For each fetched court, create schedule for dates within start/end date
    *  - Check if Court has already assigned for given date schedule of the tournament
    *    then remove that timeslot & if fully booked then remove the court
    * @param startDate 
    * @param endDate 
    * @returns 
    */
-  async getCourtsWithSchedule(startDate?: Date, endDate?: Date): Promise<Court[]> {
+  async getCourtsWithSchedule(startDate?: Date, endDate?: Date) {
     const query = this.courtRepository
       .createQueryBuilder('court')
       .leftJoinAndSelect('court.courtSchedules', 'courtSchedules')
@@ -266,18 +316,29 @@ export class CourtManagementService {
 
     const courts = await query.getMany();
 
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
+    const groupedCourts = courts.map(court => {
+      let groupedSchedules = court.courtSchedules.reduce((acc, schedule) => {
+        const dayName = schedule.day.name;
+        if (!acc[dayName]) {
+          acc[dayName] = { timeslots: [] };
+        }
+        acc[dayName].timeslots.push(schedule);
+        return acc;
+      }, {});
 
-      courts.forEach(court => {
-        court.courtSchedules = court.courtSchedules.filter(schedule => {
-          const scheduleDate = new Date(schedule.day.name);
-          return scheduleDate >= start && scheduleDate <= end;
-        });
-      });
-    }
+      for (let index = 0; index < Object.keys(groupedSchedules).length; index++) {
+        const day = Object.keys(groupedSchedules)[index];
+        const dateList = this.dateTimeService.getAllDatesForDayInRange(startDate, endDate, day as DayName);
 
-    return courts;
+        groupedSchedules[day].dateList = dateList;
+      }
+
+      return {
+        ...court,
+        courtSchedules: groupedSchedules
+      };
+    });
+
+    return this.courtScheduleModifier(groupedCourts as Court[]);
   }
 }

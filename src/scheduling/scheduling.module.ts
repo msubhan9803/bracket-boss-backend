@@ -13,6 +13,8 @@ import { TeamManagementModule } from 'src/team-management/team-management.module
 import { CourtManagementModule } from 'src/court-management/court-management.module';
 import { MatchManagementModule } from 'src/match-management/match-management.module';
 import { ScheduleSpreadsheetHandlerService } from './providers/schedule-spreadsheet-handler.service';
+import { MatchGroupingService } from './providers/match-grouping.service';
+import { CreateScheduleHelperService } from './providers/create-schedule-helper.service';
 
 @Module({
   imports: [TournamentManagementModule, UsersModule, ClubsModule, TeamManagementModule, CourtManagementModule, MatchManagementModule],
@@ -32,6 +34,8 @@ import { ScheduleSpreadsheetHandlerService } from './providers/schedule-spreadsh
       ],
     },
     ScheduleSpreadsheetHandlerService,
+    MatchGroupingService,
+    CreateScheduleHelperService,
   ],
 })
 export class SchedulingModule {}
