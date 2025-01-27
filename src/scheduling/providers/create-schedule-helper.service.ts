@@ -27,10 +27,23 @@ export class CreateScheduleHelperService {
         private readonly matchRoundStatusService: MatchRoundStatusService,
     ) { }
 
+    /**
+     * Creates a tournament round for a given club and tournament.
+     * @param club - The club associated with the tournament.
+     * @param tournament - The tournament for which the round is being created.
+     * @returns The created tournament round.
+     */
     async createTournamentRound(club: Club, tournament: Tournament) {
         return this.tournamentRoundService.createTournamentRound(club, tournament);
     }
 
+    /**
+     * Creates teams based on the provided team inputs and associates them with a tournament and club.
+     * @param teams - An array of team inputs containing team details.
+     * @param tournamentId - The ID of the tournament the teams belong to.
+     * @param clubId - The ID of the club the teams belong to.
+     * @returns A map of teams, keyed by a stringified sorted array of user IDs.
+     */
     async createTeams(teams: TeamInput[], tournamentId: number, clubId: number) {
         const createdTeams = await Promise.all(
             teams.map((team) =>
@@ -43,7 +56,6 @@ export class CreateScheduleHelperService {
             ),
         );
 
-        // Map createdTeams for quick lookup by userIds
         const teamMap = new Map<string, Team>();
         createdTeams.forEach((team) => {
             const key = JSON.stringify(team.users.map(user => user.id).sort());
@@ -53,10 +65,26 @@ export class CreateScheduleHelperService {
         return teamMap;
     }
 
+    /**
+     * Retrieves available courts within a specified date range.
+     * @param startDate - The start date of the range.
+     * @param endDate - The end date of the range.
+     * @returns A list of courts with their schedules within the specified date range.
+     */
     async getAvailableCourts(startDate: Date, endDate: Date) {
-        return this.courtManagementService.getCourtsWithSchedule(startDate, endDate);
+        return this.courtManagementService.getCourtsGroupedByScheduleTimeslots(startDate, endDate);
     }
 
+    /**
+     * Creates matches for a tournament based on grouped matches, available courts, and teams.
+     * @param groupedMatches - Matches grouped by a specific key (e.g., group or round).
+     * @param teamMap - A map of teams keyed by a stringified sorted array of user IDs.
+     * @param club - The club associated with the tournament.
+     * @param tournament - The tournament for which matches are being created.
+     * @param createdTournamentRound - The tournament round associated with the matches.
+     * @param timeSlotWithCourts - Available time slots with associated courts.
+     * @returns A list of created matches.
+     */
     async createMatches(
         groupedMatches: GroupedMatches,
         teamMap: Map<string, Team>,
@@ -74,6 +102,7 @@ export class CreateScheduleHelperService {
             const group = groupedMatches[groupKey];
             const numberOfMatches = group.matches.length;
 
+            // ❌ Incorrect: No need to match length of group match with no. of matches in this group
             const timeSlotIndex = availableTimeSlots.findIndex(ts => ts.courts.length >= numberOfMatches);
             if (timeSlotIndex === -1) {
                 throw new Error(`No available time slot with at least ${numberOfMatches} courts found for group ${groupKey}`);
@@ -121,6 +150,14 @@ export class CreateScheduleHelperService {
         return createdMatches;
     }
 
+    /**
+     * Creates match rounds for a list of matches, based on the best-of-rounds format.
+     * @param createdMatches - A list of matches for which rounds are being created.
+     * @param tournament - The tournament associated with the matches.
+     * @param club - The club associated with the tournament.
+     * @param bestOfRounds - The number of rounds to create for each match (best-of format).
+     * @returns A list of created match rounds.
+     */
     async createMatchRounds(
         createdMatches: any[],
         tournament: Tournament,

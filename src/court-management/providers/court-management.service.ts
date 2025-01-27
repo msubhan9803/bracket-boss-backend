@@ -292,22 +292,23 @@ export class CourtManagementService {
   }
 
   /**
-   * [x] We will provide start and end date
-   * [x] It'll fetch all of the courts with their schedules
-   * 
-   * In our system, courts have generic weekly schedule so we get monday, tuesday et...
-   * along with timings for each generic day
-   * We need to somehow map start/end date for each generic day and filter out the courts
-   * 
-   * 🔥 Tasks:
-   *  [x] For each fetched court, create schedule for dates within start/end date
-   *  - Check if Court has already assigned for given date schedule of the tournament
-   *    then remove that timeslot & if fully booked then remove the court
    * @param startDate 
    * @param endDate 
    * @returns 
    */
-  async getCourtsWithSchedule(startDate?: Date, endDate?: Date) {
+  /**
+   * Retrieves courts along with their schedules within a specified date range.
+   *
+   * This method fetches courts and their associated schedules from the database,
+   * groups the schedules by day, and adds a list of dates for each day within the
+   * provided date range. The schedules are then modified using the `courtScheduleModifier`
+   * method before being returned.
+   *
+   * @param {Date} [startDate] - The start date of the range to filter schedules.
+   * @param {Date} [endDate] - The end date of the range to filter schedules.
+   * @returns {Promise<Court[]>} - A promise that resolves to an array of courts with their schedules.
+   */
+  async getCourtsGroupedByScheduleTimeslots(startDate?: Date, endDate?: Date) {
     const query = this.courtRepository
       .createQueryBuilder('court')
       .leftJoinAndSelect('court.courtSchedules', 'courtSchedules')

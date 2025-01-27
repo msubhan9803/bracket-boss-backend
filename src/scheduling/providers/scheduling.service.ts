@@ -115,7 +115,7 @@ export class SchedulingService {
     const timeSlotWithCourts = await this.createScheduleHelperService.getAvailableCourts(tournament.start_date, tournament.end_date);
 
     /**
-     * Fetching available courts for the tournament duration
+     * Grouping matches by uniqueness
      */
     const groupedMatches = this.matchGroupingService.groupMatchesByUniqueness(matches);
 
