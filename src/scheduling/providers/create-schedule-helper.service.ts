@@ -95,61 +95,61 @@ export class CreateScheduleHelperService {
     ) {
         let createdMatches = [];
         const notStartedMatchStatus = await this.matchStatusService.findMatchStatusByStatusName(MatchStatusTypes.not_started);
-    
+
         let availableTimeSlots = [...timeSlotWithCourts];
-    
+
         for (const groupKey of Object.keys(groupedMatches)) {
             const group = groupedMatches[groupKey];
-    
+
             for (const match of group.matches) {
                 // Find the first available time slot with at least one court
                 const timeSlotIndex = availableTimeSlots.findIndex(ts => ts.courts.length > 0);
                 if (timeSlotIndex === -1) {
                     throw new Error(`No available time slots with courts found for group ${groupKey}`);
                 }
-    
+
                 const selectedTimeSlot = availableTimeSlots[timeSlotIndex];
-    
+                const courtSchedule = selectedTimeSlot.courtSchedule as any;
+
                 const courtId = selectedTimeSlot.courts.shift();
                 if (!courtId) {
                     throw new Error(`No courts available in the selected time slot for group ${groupKey}`);
                 }
-    
+
                 const selectedCourt = await this.courtManagementService.findOne(courtId);
                 if (!selectedCourt) {
                     throw new Error(`Court with ID ${courtId} not found`);
                 }
-    
+
                 const homeTeam = teamMap.get(JSON.stringify(match.teams[0].userIds.sort()));
                 const awayTeam = teamMap.get(JSON.stringify(match.teams[1].userIds.sort()));
-    
+
                 if (!homeTeam || !awayTeam) {
                     throw new Error("Team not found for one or both match teams");
                 }
-    
+
                 const matchDate = new Date(`${selectedTimeSlot.date}T${selectedTimeSlot.startTime}`);
-    
-                const matchEntity = {
+
+                const createdMatch = await this.matchService.createMatch({
                     club,
                     tournament,
                     courts: [selectedCourt],
+                    courtSchedules: [courtSchedule],
                     matchDate,
                     tournamentRound: createdTournamentRound,
                     homeTeam,
                     awayTeam,
                     statuses: [notStartedMatchStatus],
-                };
-    
-                const createdMatch = await this.matchService.createMatch(matchEntity as any);
+                });
                 createdMatches.push(createdMatch);
-    
+
                 // If the current time slot has no more courts, remove it from availableTimeSlots
                 if (selectedTimeSlot.courts.length === 0) {
                     availableTimeSlots.splice(timeSlotIndex, 1);
                 }
             }
         }
-    
+
         return createdMatches;
     }
 

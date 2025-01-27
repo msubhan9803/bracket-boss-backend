@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { FormatStrategy } from '../interface/format-strategy.interface';
 import { FormatType } from 'src/format-management/types/format.enums';
-import { Match, Team } from '../types/common';
+import { Match, MatchTeam } from '../types/common';
 
 @Injectable()
 export class RoundRobinStrategy implements FormatStrategy {
   type = FormatType.round_robin;
 
-  async generateMatches(teams: Team[]): Promise<Match[]> {
+  async generateMatches(teams: MatchTeam[]): Promise<Match[]> {
     const matches: Match[] = [];
 
     for (let i = 0; i < teams.length; i++) {

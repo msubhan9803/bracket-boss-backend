@@ -1,7 +1,7 @@
 import { FormatType } from 'src/format-management/types/format.enums';
-import { Match, Team } from '../types/common';
+import { Match, MatchTeam } from '../types/common';
 
 export interface FormatStrategy {
   type: FormatType;
-  generateMatches(teams: Team[]): Promise<Match[]>;
+  generateMatches(teams: MatchTeam[]): Promise<Match[]>;
 }

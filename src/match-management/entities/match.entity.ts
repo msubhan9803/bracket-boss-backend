@@ -18,6 +18,7 @@ import { TournamentRound } from 'src/tournament-management/entities/tournamentRo
 import { Team } from 'src/team-management/entities/team.entity';
 import { MatchStatus } from './matchStatus.entity';
 import { MatchRound } from './matchRound.entity';
+import { CourtSchedule } from 'src/court-management/entities/court-schedule.entity';
 
 @ObjectType()
 @Entity()
@@ -40,6 +41,11 @@ export class Match {
   @ManyToMany(() => Court, (court) => court.matches)
   @JoinTable({ name: 'match_courts' })
   courts: Court[];
+
+  @Field(() => [CourtSchedule])
+  @ManyToMany(() => CourtSchedule)
+  @JoinTable({ name: 'match_court_schedules' })
+  courtSchedules: CourtSchedule[];
 
   @Field(() => [MatchRound])
   @OneToMany(() => MatchRound, (matchRound) => matchRound.match, {

@@ -9,7 +9,7 @@ import { CourtSchedule } from '../entities/court-schedule.entity';
 import { DateTimeService } from 'src/common/providers/date-time.service';
 import { UpsertCourtInputDto } from '../dtos/upsert-court-input.dto';
 import { DayName } from 'src/common/types/global';
-import { TimeSlotWithCourts } from '../types';
+import { CourtScheduleElem, TimeSlotWithCourts } from '../types';
 
 @Injectable()
 export class CourtManagementService {
@@ -248,11 +248,12 @@ export class CourtManagementService {
 
     courts.forEach((court) => {
       Object.keys(court.courtSchedules).forEach((day) => {
-        const { timeslots, dateList } = court.courtSchedules[day];
+        const { timeslots, dateList } = court.courtSchedules[day] as CourtScheduleElem;
 
         dateList.forEach((date) => {
           timeslots.forEach((slot) => {
-            const { startTime, endTime } = slot.timeSlot;
+            const courtSchedule = slot;
+            const { startTime, endTime } = courtSchedule.timeSlot;
 
             // Check if the timeslot for the same date and time already exists
             let existingEntry = result.find(
@@ -264,6 +265,7 @@ export class CourtManagementService {
 
             if (!existingEntry) {
               existingEntry = {
+                courtSchedule,
                 date: new Date(date).toISOString().split("T")[0],
                 startTime,
                 endTime,
@@ -336,7 +338,7 @@ export class CourtManagementService {
 
       return {
         ...court,
-        courtSchedules: groupedSchedules
+        courtSchedules: groupedSchedules as CourtSchedule[]
       };
     });
 

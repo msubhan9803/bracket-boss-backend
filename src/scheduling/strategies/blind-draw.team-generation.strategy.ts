@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Team } from '../types/common';
+import { MatchTeam } from '../types/common';
 import { TeamGenerationTypeEnum } from 'src/team-generation-type-management/types/team-generation-type.enums';
 import { TeamGenerationStrategy } from '../interface/team-generation-strategy.interface';
 import { User } from 'src/users/entities/user.entity';
@@ -19,8 +19,8 @@ export class BlindDrawTeamGenerationStrategy implements TeamGenerationStrategy {
    * @param users number[]
    * @returns Team[]
    */
-  async generateTeams(users: User[]): Promise<Team[]> {
-    const teams: Team[] = [];
+  async generateTeams(users: User[]): Promise<MatchTeam[]> {
+    const teams: MatchTeam[] = [];
     const teamSize = 2;
 
     for (let i = 0; i < users.length; i += teamSize) {

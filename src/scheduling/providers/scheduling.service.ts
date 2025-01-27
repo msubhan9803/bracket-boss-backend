@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { FormatStrategy } from '../interface/format-strategy.interface';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { StrategyTypes } from 'src/common/types/global';
-import { Match as MatchEntity, Team as TeamEntityType } from '../types/common';
+import { Match as MatchEntity, MatchTeam } from '../types/common';
 import { TeamGenerationStrategy } from '../interface/team-generation-strategy.interface';
 import { UsersService } from 'src/users/providers/users.service';
 import { CreateScheduleInputDto } from '../dtos/create-schedule-input.dto';
@@ -73,7 +73,7 @@ export class SchedulingService {
   async generateTeamsBasedOnStrategy(
     tournament: Tournament,
     userIds: number[],
-  ): Promise<{ matches: MatchEntity[]; teams: TeamEntityType[] }> {
+  ): Promise<{ matches: MatchEntity[]; teams: MatchTeam[] }> {
     const { formatStrategy, teamGenerationStrategy } = this.getStrategy(
       tournament.format.name,
       tournament.teamGenerationType.name,

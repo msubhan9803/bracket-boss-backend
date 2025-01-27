@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GroupByEnum, Team } from '../types/common';
+import { GroupByEnum, MatchTeam } from '../types/common';
 import { TeamGenerationTypeEnum } from 'src/team-generation-type-management/types/team-generation-type.enums';
 import {
   TeamGenerationConfig,
@@ -28,8 +28,8 @@ export class SplitSwitchTeamGenerationStrategy
   async generateTeams(
     users: User[],
     config?: SplitSwitchTeamGenerationConfig,
-  ): Promise<Team[]> {
-    const teams: Team[] = [];
+  ): Promise<MatchTeam[]> {
+    const teams: MatchTeam[] = [];
     const group1: User[] = [];
     const group2: User[] = [];
 

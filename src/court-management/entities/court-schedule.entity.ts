@@ -5,11 +5,13 @@ import {
     JoinColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    ManyToMany,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Court } from './court.entity';
 import { Day } from 'src/common/entities/day.entity';
 import { TimeSlot } from 'src/common/entities/time-slot.entity';
+import { Match } from 'src/match-management/entities/match.entity';
 
 @ObjectType()
 @Entity()
@@ -22,6 +24,10 @@ export class CourtSchedule {
     @ManyToOne(() => Court, (court) => court.courtSchedules)
     @JoinColumn({ name: 'courtId' })
     court: Court;
+
+    @Field(() => [Match])
+    @ManyToMany(() => Match, (match) => match.courtSchedules)
+    matches: Match[];
 
     @Field(() => Day)
     @ManyToOne(() => Day)

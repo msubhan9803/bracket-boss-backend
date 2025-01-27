@@ -17,11 +17,13 @@ export type TimeSlot = {
     };
 };
 
+export type CourtScheduleElem = {
+    timeslots: CourtSchedule[] | TimeSlot[];
+    dateList: string[];
+};
+
 export type CourtSchedule = {
-    [day: string]: {
-        timeslots: TimeSlot[];
-        dateList: string[];
-    };
+    [day: string]: CourtScheduleElem;
 };
 
 export type Court = {
@@ -34,6 +36,7 @@ export type Court = {
 };
 
 export type TimeSlotWithCourts = {
+    courtSchedule: CourtSchedule;
     date: string;
     startTime: string;
     endTime: string;
