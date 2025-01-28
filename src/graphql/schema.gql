@@ -47,7 +47,6 @@ type CourtSchedule {
   createdAt: DateTime!
   day: Day!
   id: Float!
-  matches: [Match!]!
   timeSlot: TimeSlot!
   updatedAt: DateTime!
 }
@@ -186,12 +185,10 @@ type LoginResponseDto {
 type Match {
   awayTeam: Team!
   club: Club!
-  courtSchedules: [CourtSchedule!]!
   courts: [Court!]!
   created_at: DateTime!
   homeTeam: Team!
   id: CustomID!
-  matchDate: DateTime!
   matchRounds: [MatchRound!]!
   statuses: [MatchStatus!]!
   tournament: Tournament!

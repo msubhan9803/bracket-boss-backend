@@ -10,11 +10,13 @@ import { MatchService } from './providers/match.service';
 import { MatchStatusService } from './providers/match-status.service';
 import { MatchRoundService } from './providers/match-round.service';
 import { MatchRoundStatusService } from './providers/match-round-status.service';
+import { MatchCourtSchedules } from './entities/match-court-schedule.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Match,
+      MatchCourtSchedules,
       MatchStatus,
       MatchRound,
       MatchRoundScore,

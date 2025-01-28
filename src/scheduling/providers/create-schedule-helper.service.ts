@@ -134,7 +134,6 @@ export class CreateScheduleHelperService {
                     club,
                     tournament,
                     courts: [selectedCourt],
-                    courtSchedules: [courtSchedule],
                     matchDate,
                     tournamentRound: createdTournamentRound,
                     homeTeam,
@@ -142,6 +141,8 @@ export class CreateScheduleHelperService {
                     statuses: [notStartedMatchStatus],
                 });
                 createdMatches.push(createdMatch);
+
+                // Creating Match Court Schedule relationship
 
                 // If the current time slot has no more courts, remove it from availableTimeSlots
                 if (selectedTimeSlot.courts.length === 0) {
