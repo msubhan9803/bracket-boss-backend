@@ -103,6 +103,7 @@ export class TournamentManagementService {
       format,
       teamGenerationType,
       splitSwitchGroupBy: createTournamentDto.splitSwitchGroupBy,
+      bestOfRounds: createTournamentDto.bestOfRounds
     });
 
     return this.tournamentRepository.save(newTournament);

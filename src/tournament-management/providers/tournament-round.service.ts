@@ -25,7 +25,6 @@ export class TournamentRoundService {
             'matches.matchRounds.matchRoundScores',
             'matches.homeTeam',
             'matches.awayTeam',
-            'matches.courts',
             'roundFormat'
         ]) {
         return this.tournamentRoundRepository.find({

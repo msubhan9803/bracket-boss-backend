@@ -13,7 +13,6 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Club } from 'src/clubs/entities/club.entity';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
-import { Court } from 'src/court-management/entities/court.entity';
 import { TournamentRound } from 'src/tournament-management/entities/tournamentRound.entity';
 import { Team } from 'src/team-management/entities/team.entity';
 import { MatchStatus } from './matchStatus.entity';
@@ -35,11 +34,6 @@ export class Match {
   @ManyToOne(() => Tournament)
   @JoinColumn()
   tournament: Tournament;
-
-  @Field(() => [Court])
-  @ManyToMany(() => Court, (court) => court.matches)
-  @JoinTable({ name: 'match_courts' })
-  courts: Court[];
 
   @Field(() => [MatchRound])
   @OneToMany(() => MatchRound, (matchRound) => matchRound.match, {

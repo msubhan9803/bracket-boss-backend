@@ -11,6 +11,7 @@ import { MatchStatusService } from './providers/match-status.service';
 import { MatchRoundService } from './providers/match-round.service';
 import { MatchRoundStatusService } from './providers/match-round-status.service';
 import { MatchCourtSchedules } from './entities/match-court-schedule.entity';
+import { MatctCourtScheduleService } from './providers/matct-court-schedule.service';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { MatchCourtSchedules } from './entities/match-court-schedule.entity';
       MatchCommentary,
     ]),
   ],
-  providers: [MatchService, MatchStatusService, MatchRoundService, MatchRoundStatusService],
-  exports: [MatchService, MatchStatusService, MatchRoundService, MatchRoundStatusService]
+  providers: [MatchService, MatchStatusService, MatchRoundService, MatchRoundStatusService, MatctCourtScheduleService],
+  exports: [MatchService, MatchStatusService, MatchRoundService, MatchRoundStatusService, MatctCourtScheduleService]
 })
 export class MatchManagementModule {}

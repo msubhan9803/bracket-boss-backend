@@ -5,7 +5,6 @@ import {
     JoinColumn,
     CreateDateColumn,
     UpdateDateColumn,
-    ManyToMany,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Court } from './court.entity';

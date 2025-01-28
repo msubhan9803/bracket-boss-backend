@@ -46,4 +46,8 @@ export class CreateTournamentInputDto {
   @IsOptional()
   @IsString()
   splitSwitchGroupBy?: GroupByEnum;
+
+  @Field()
+  @IsInt({ message: 'Best of Rounds must be an integer' })
+  bestOfRounds: number;
 }

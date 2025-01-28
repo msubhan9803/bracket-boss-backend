@@ -19,7 +19,6 @@ export class MatchService {
             'awayTeam.users',
             'homeTeam',
             'homeTeam.users',
-            'courts'
         ]
     ): Promise<Match[]> {
         return this.matchRepository.find({

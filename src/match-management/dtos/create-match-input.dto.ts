@@ -9,7 +9,6 @@ export class CreateMatchInputDto {
   club: Club;
   tournament: Tournament;
   courts: Court[];
-  matchDate: Date;
   tournamentRound: TournamentRound;
   homeTeam: Team;
   awayTeam: Team;

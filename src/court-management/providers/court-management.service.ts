@@ -250,7 +250,7 @@ export class CourtManagementService {
       Object.keys(court.courtSchedules).forEach((day) => {
         const { timeslots, dateList } = court.courtSchedules[day] as CourtScheduleElem;
 
-        dateList.forEach((date) => {
+        dateList. forEach((date) => {
           timeslots.forEach((slot) => {
             const courtSchedule = slot;
             const { startTime, endTime } = courtSchedule.timeSlot;
@@ -266,6 +266,7 @@ export class CourtManagementService {
             if (!existingEntry) {
               existingEntry = {
                 courtSchedule,
+                courtSchedules: [],
                 date: new Date(date).toISOString().split("T")[0],
                 startTime,
                 endTime,
@@ -276,6 +277,7 @@ export class CourtManagementService {
 
             // Add the court ID to the courts list for this timeslot
             existingEntry.courts.push(court.id);
+            existingEntry.courtSchedules.push(courtSchedule.id);
           });
         });
       });

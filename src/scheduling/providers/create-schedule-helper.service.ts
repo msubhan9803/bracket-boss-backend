@@ -14,6 +14,8 @@ import { TimeSlotWithCourts } from 'src/court-management/types';
 import { TournamentRound } from 'src/tournament-management/entities/tournamentRound.entity';
 import { Team } from 'src/team-management/entities/team.entity';
 import { GroupedMatches } from '../types/common';
+import { MatctCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
+import { CourtScheduleService } from 'src/court-management/providers/court-schedule.service';
 
 @Injectable()
 export class CreateScheduleHelperService {
@@ -25,6 +27,8 @@ export class CreateScheduleHelperService {
         private readonly matchStatusService: MatchStatusService,
         private readonly matchRoundService: MatchRoundService,
         private readonly matchRoundStatusService: MatchRoundStatusService,
+        private readonly matctCourtScheduleService: MatctCourtScheduleService,
+        private readonly courtScheduleService: CourtScheduleService,
     ) { }
 
     /**
@@ -109,7 +113,8 @@ export class CreateScheduleHelperService {
                 }
 
                 const selectedTimeSlot = availableTimeSlots[timeSlotIndex];
-                const courtSchedule = selectedTimeSlot.courtSchedule as any;
+                const courtScheduleId = selectedTimeSlot.courtSchedules.shift();
+                const courtSchedule = await this.courtScheduleService.findOneByID(courtScheduleId);
 
                 const courtId = selectedTimeSlot.courts.shift();
                 if (!courtId) {
@@ -134,7 +139,6 @@ export class CreateScheduleHelperService {
                     club,
                     tournament,
                     courts: [selectedCourt],
-                    matchDate,
                     tournamentRound: createdTournamentRound,
                     homeTeam,
                     awayTeam,
@@ -142,7 +146,12 @@ export class CreateScheduleHelperService {
                 });
                 createdMatches.push(createdMatch);
 
-                // Creating Match Court Schedule relationship
+                // Assigning Court to Match for the given match date
+                await this.matctCourtScheduleService.createMatchCourtScheduleRelation(
+                    createdMatch,
+                    courtSchedule,
+                    matchDate
+                )
 
                 // If the current time slot has no more courts, remove it from availableTimeSlots
                 if (selectedTimeSlot.courts.length === 0) {

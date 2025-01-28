@@ -16,6 +16,7 @@ import { MatchRoundService } from 'src/match-management/providers/match-round.se
 import { ScheduleDto } from '../dtos/schedule.dto';
 import { MatchGroupingService } from './match-grouping.service';
 import { CreateScheduleHelperService } from './create-schedule-helper.service';
+import { MatctCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
 
 @Injectable()
 export class SchedulingService {
@@ -36,6 +37,7 @@ export class SchedulingService {
     private readonly matchRoundService: MatchRoundService,
     private readonly createScheduleHelperService: CreateScheduleHelperService,
     private readonly matchGroupingService: MatchGroupingService,
+    private readonly matctCourtScheduleService: MatctCourtScheduleService,
   ) {
     this.formatStrategies = formatStrategies.reduce((acc, strategy) => {
       acc[strategy.type] = strategy;
@@ -170,6 +172,12 @@ export class SchedulingService {
 
   async deleteScheduleOfTournament(tournamentId: number) {
     const tournament = await this.tournamentManagementService.findOne(tournamentId);
+    const matches = await this.matchService.findMatchesByTournament(tournament);
+
+    for (const match of matches) {
+      await this.matctCourtScheduleService.deleteMatchCourtSchedules(match);
+    }
+
     await this.tournamentRoundService.deleteTournamentRound(tournament);
     await this.teamManagementService.deleteTeamsByTournament(tournament);
   }

@@ -8,10 +8,11 @@ import { UsersModule } from 'src/users/users.module';
 import { JwtService } from '@nestjs/jwt';
 import { CourtSchedule } from './entities/court-schedule.entity';
 import { CommonModule } from 'src/common/common.module';
+import { CourtScheduleService } from './providers/court-schedule.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Court, CourtSchedule]), ClubsModule, UsersModule, CommonModule],
-  providers: [CourtManagementService, CourtManagementResolver, JwtService],
-  exports: [CourtManagementService]
+  providers: [CourtManagementService, CourtManagementResolver, JwtService, CourtScheduleService],
+  exports: [CourtManagementService, CourtScheduleService]
 })
 export class CourtManagementModule {}

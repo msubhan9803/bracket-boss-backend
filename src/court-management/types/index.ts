@@ -18,11 +18,11 @@ export type TimeSlot = {
 };
 
 export type CourtScheduleElem = {
-    timeslots: CourtSchedule[] | TimeSlot[];
+    timeslots: CourtScheduleType[] | TimeSlot[];
     dateList: string[];
 };
 
-export type CourtSchedule = {
+export type CourtScheduleType = {
     [day: string]: CourtScheduleElem;
 };
 
@@ -32,11 +32,12 @@ export type Court = {
     location: string;
     courtLength: number;
     courtWidth: number;
-    courtSchedules: CourtSchedule;
+    courtSchedules: CourtScheduleType;
 };
 
 export type TimeSlotWithCourts = {
-    courtSchedule: CourtSchedule;
+    courtSchedule: CourtScheduleType;
+    courtSchedules: number[];
     date: string;
     startTime: string;
     endTime: string;

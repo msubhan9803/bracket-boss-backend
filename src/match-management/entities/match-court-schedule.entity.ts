@@ -17,14 +17,14 @@ export class MatchCourtSchedules {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Field(() => Match)
     @ManyToOne(() => Match)
-    @JoinColumn({ name: 'matchId' })
+    @JoinColumn()
+    @Field(() => Match)
     match: Match;
 
-    @Field(() => CourtSchedule)
     @ManyToOne(() => CourtSchedule)
-    @JoinColumn({ name: 'courtScheduleId' })
+    @JoinColumn()
+    @Field(() => CourtSchedule)
     courtSchedule: CourtSchedule;
 
     @Field()

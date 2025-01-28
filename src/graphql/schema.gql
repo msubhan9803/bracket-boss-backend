@@ -33,7 +33,6 @@ type Court {
   courtWidth: Float!
   id: CustomID!
   location: String!
-  matches: [Match!]!
   name: String!
 }
 
@@ -81,6 +80,7 @@ input CreateTeamInputDto {
 }
 
 input CreateTournamentInputDto {
+  bestOfRounds: Float!
   clubId: Float!
   description: String!
   end_date: DateTime!
@@ -185,7 +185,6 @@ type LoginResponseDto {
 type Match {
   awayTeam: Team!
   club: Club!
-  courts: [Court!]!
   created_at: DateTime!
   homeTeam: Team!
   id: CustomID!
