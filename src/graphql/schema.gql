@@ -265,6 +265,22 @@ type MatchType {
   teams: [TeamType!]!
 }
 
+type MatchWithCourtDto {
+  awayTeam: Team!
+  club: Club!
+  courtSchedule: CourtSchedule
+  created_at: DateTime!
+  homeTeam: Team!
+  id: CustomID!
+  matchDate: DateTime
+  matchRounds: [MatchRound!]!
+  statuses: [MatchStatus!]!
+  tournament: Tournament!
+  tournamentRound: TournamentRound!
+  updated_at: DateTime!
+  winnerTeam: Team
+}
+
 type MessageResponseDto {
   message: String!
 }
@@ -382,7 +398,7 @@ type Role {
 
 type ScheduleDto {
   matchRounds: [MatchRound!]!
-  matches: [Match!]!
+  matches: [MatchWithCourtDto!]!
   teams: [Team!]!
   tournament: Tournament!
   tournamentRounds: [TournamentRound!]!

@@ -160,12 +160,13 @@ export class SchedulingService {
     const teams = await this.teamManagementService.findTeamsByTournament(tournament)
     const matches = await this.matchService.findMatchesByTournament(tournament)
     const matchRounds = await this.matchRoundService.findMatchRoundsByTournament(tournament);
+    const matchesWithCourtSchedule = await this.matctCourtScheduleService.populateMatchesCourtsInMatches(matches);
 
     return {
       tournament,
       tournamentRounds,
       teams,
-      matches,
+      matches: matchesWithCourtSchedule,
       matchRounds,
     }
   }
