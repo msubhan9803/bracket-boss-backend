@@ -106,8 +106,8 @@ export class CreateScheduleHelperService {
             const group = groupedMatches[groupKey];
 
             for (const match of group.matches) {
-                // Find the first available time slot with at least one court
-                const timeSlotIndex = availableTimeSlots.findIndex(ts => ts.courts.length > 0);
+                // Find the first available time slot with at least one court schedule
+                const timeSlotIndex = availableTimeSlots.findIndex(ts => ts.courtSchedules.length > 0);
                 if (timeSlotIndex === -1) {
                     throw new Error(`No available time slots with courts found for group ${groupKey}`);
                 }
@@ -115,16 +115,6 @@ export class CreateScheduleHelperService {
                 const selectedTimeSlot = availableTimeSlots[timeSlotIndex];
                 const courtScheduleId = selectedTimeSlot.courtSchedules.shift();
                 const courtSchedule = await this.courtScheduleService.findOneByID(courtScheduleId);
-
-                const courtId = selectedTimeSlot.courts.shift();
-                if (!courtId) {
-                    throw new Error(`No courts available in the selected time slot for group ${groupKey}`);
-                }
-
-                const selectedCourt = await this.courtManagementService.findOne(courtId);
-                if (!selectedCourt) {
-                    throw new Error(`Court with ID ${courtId} not found`);
-                }
 
                 const homeTeam = teamMap.get(JSON.stringify(match.teams[0].userIds.sort()));
                 const awayTeam = teamMap.get(JSON.stringify(match.teams[1].userIds.sort()));
@@ -138,7 +128,6 @@ export class CreateScheduleHelperService {
                 const createdMatch = await this.matchService.createMatch({
                     club,
                     tournament,
-                    courts: [selectedCourt],
                     tournamentRound: createdTournamentRound,
                     homeTeam,
                     awayTeam,
@@ -153,8 +142,8 @@ export class CreateScheduleHelperService {
                     matchDate
                 )
 
-                // If the current time slot has no more courts, remove it from availableTimeSlots
-                if (selectedTimeSlot.courts.length === 0) {
+                // If the current time slot has no more court schedules, remove it from availableTimeSlots
+                if (selectedTimeSlot.courtSchedules.length === 0) {
                     availableTimeSlots.splice(timeSlotIndex, 1);
                 }
             }

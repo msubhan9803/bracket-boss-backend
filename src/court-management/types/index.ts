@@ -36,10 +36,8 @@ export type Court = {
 };
 
 export type TimeSlotWithCourts = {
-    courtSchedule: CourtScheduleType;
     courtSchedules: number[];
     date: string;
     startTime: string;
     endTime: string;
-    courts: number[];
 };

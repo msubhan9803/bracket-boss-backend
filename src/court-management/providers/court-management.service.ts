@@ -265,18 +265,15 @@ export class CourtManagementService {
 
             if (!existingEntry) {
               existingEntry = {
-                courtSchedule,
                 courtSchedules: [],
                 date: new Date(date).toISOString().split("T")[0],
                 startTime,
                 endTime,
-                courts: [],
               };
               result.push(existingEntry);
             }
 
-            // Add the court ID to the courts list for this timeslot
-            existingEntry.courts.push(court.id);
+            // Add the Court Schedule ID to the courts list for this timeslot
             existingEntry.courtSchedules.push(courtSchedule.id);
           });
         });
