@@ -56,10 +56,10 @@ export class MatctCourtScheduleService {
         return matches.map(match => {
             const matchCourt = matchCourtSchedules.find(mcs => mcs.match.id === match.id);
             return {
-                ...match,
-                courtSchedule: matchCourt.courtSchedule || null,
-                matchDate: new Date(matchCourt.matchDate)
+            ...match,
+            courtSchedule: matchCourt.courtSchedule || null,
+            matchDate: new Date(matchCourt.matchDate)
             } as MatchWithCourtDto;
-        });
+        }).sort((a, b) => a.matchDate.getTime() - b.matchDate.getTime());
     }
 }
