@@ -18,6 +18,8 @@ export default {
   FORGOT_PASSWORD_EMAIL_SENT: 'Forgot Password Email Sent',
   PASSWORD_RESET_SUCCESSFULLY: 'Password has been reset successfully',
   MATCH_SCHEDULE_CREATED_SUCCESSFULLY: 'Match schedule created successfully',
+  RUN_OUT_OF_TIMESLOTS: 'Run out of timeslots while assigning to matches',
+  TEAM_NOT_FOUND_FOR_MATCH: 'Team not found for one or both match teams'
 };
 
 export const emailMessages = {
