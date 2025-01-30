@@ -314,7 +314,9 @@ export class CourtManagementService {
       .createQueryBuilder('court')
       .leftJoinAndSelect('court.courtSchedules', 'courtSchedules')
       .leftJoinAndSelect('courtSchedules.day', 'day')
-      .leftJoinAndSelect('courtSchedules.timeSlot', 'timeSlot');
+      .leftJoinAndSelect('courtSchedules.timeSlot', 'timeSlot')
+      .leftJoin('match_court_schedules', 'mcs', 'mcs.courtScheduleId = courtSchedules.id')
+      .where('mcs.courtScheduleId IS NULL');
 
     const courts = await query.getMany();
 
@@ -341,6 +343,8 @@ export class CourtManagementService {
       };
     });
 
-    return this.courtScheduleModifier(groupedCourts as Court[]);
+    const modifiedCourtList = this.courtScheduleModifier(groupedCourts as Court[]);
+
+    return modifiedCourtList;
   }
 }

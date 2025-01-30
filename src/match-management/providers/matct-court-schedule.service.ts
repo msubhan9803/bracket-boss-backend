@@ -53,13 +53,22 @@ export class MatctCourtScheduleService {
             ],
         });
 
-        return matches.map(match => {
+        const sortedMatches = matches.map(match => {
             const matchCourt = matchCourtSchedules.find(mcs => mcs.match.id === match.id);
             return {
-            ...match,
-            courtSchedule: matchCourt.courtSchedule || null,
-            matchDate: new Date(matchCourt.matchDate)
+                ...match,
+                courtSchedule: matchCourt.courtSchedule || null,
+                matchDate: new Date(matchCourt.matchDate)
             } as MatchWithCourtDto;
-        }).sort((a, b) => a.matchDate.getTime() - b.matchDate.getTime());
+        }).sort((a, b) => {
+            const dateComparison = a.matchDate.getTime() - b.matchDate.getTime();
+            if (dateComparison !== 0) return dateComparison;
+
+            const aTime = a.courtSchedule?.timeSlot?.startTime || '';
+            const bTime = b.courtSchedule?.timeSlot?.startTime || '';
+            return aTime.localeCompare(bTime);
+        });
+
+        return sortedMatches;
     }
 }
