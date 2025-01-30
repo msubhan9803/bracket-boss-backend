@@ -46,7 +46,7 @@ export class DateTimeService {
     const dates: Date[] = [];
     let currentDate = new Date(startDate);
 
-    const dayIndex = Object.values(DayName).indexOf(dayName);
+    const dayIndex = Object.values(DayName).indexOf(dayName) + 1;
 
     if (dayIndex === -1) {
       throw new Error("Invalid day name provided");

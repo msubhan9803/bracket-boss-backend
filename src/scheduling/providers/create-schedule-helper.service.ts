@@ -234,7 +234,7 @@ export class CreateScheduleHelperService {
           courtScheduleId =
             availableTimeSlots[0]?.courtSchedules?.shift() as number;
           if (!availableTimeSlots[0] || !courtScheduleId) {
-            throw new Error('Run out of timeslots while assigning to matches');
+            throw new Error(messages.RAN_OUT_OF_TIMESLOTS);
           }
         }
 
