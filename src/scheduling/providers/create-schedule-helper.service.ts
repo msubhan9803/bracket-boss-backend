@@ -238,13 +238,6 @@ export class CreateScheduleHelperService {
           }
         }
 
-        /**
-         * Add logic to check if players in already assigned matches don't overlap with current match
-         * First get the matches where current team members exists
-         * Get the start/end time of the any assigned match
-         * then check the overlapping (moment) with current timings
-         */
-
         assignedMatches.set(match, {
           courtScheduleId: courtScheduleId,
           date: availableTimeSlots[0].date,

@@ -57,12 +57,6 @@ export class MatchGroupingService {
             }
         }
 
-        // Object.keys(groupedMatches).forEach(groupKey => {
-        //     groupedMatches[groupKey].matches.sort((a, b) => 
-        //         new Date(a.matchDate).getTime() - new Date(b.matchDate).getTime()
-        //     );
-        // });
-
         this.logGroupedMatches(groupedMatches);
 
         return groupedMatches;
