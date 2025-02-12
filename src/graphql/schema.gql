@@ -389,11 +389,19 @@ input RegisterInputDto {
 type Role {
   createdDate: DateTime!
   id: CustomID!
-  name: String!
+  name: RoleName!
   rolePolicyModule: [ModulePolicyRole!]
   steps: [Step!]
   updatedDate: DateTime!
   userRoleClub: [UserRoleClub!]
+}
+
+enum RoleName {
+  club_owner
+  league_organizer
+  player
+  super_admin
+  tournament_organizer
 }
 
 type ScheduleDto {

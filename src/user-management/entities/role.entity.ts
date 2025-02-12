@@ -8,11 +8,16 @@ import {
   OneToMany,
   JoinTable,
 } from 'typeorm';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { ModulePolicyRole } from './modules-policies-roles.entity';
 import { Step } from 'src/users-onboarding-steps/entities/step.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { UserRoleClub } from './user-role-club.entity';
+import { RoleName } from '../types/enums';
+
+registerEnumType(RoleName, {
+  name: 'RoleName',
+});
 
 @ObjectType()
 @Entity()
@@ -21,9 +26,9 @@ export class Role {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field()
+  @Field(() => RoleName)
   @Column('text', { unique: true })
-  name: string;
+  name: RoleName;
 
   @Field(() => [ModulePolicyRole], { nullable: true })
   @OneToMany(() => ModulePolicyRole, (rpm) => rpm.module)
