@@ -27,8 +27,8 @@ export class Role {
   id: number;
 
   @Field(() => RoleName)
-  @Column('text', { unique: true })
-  name: RoleName;
+  @Column({type: 'enum', enum: RoleName, unique: true, nullable: false})
+  name: string;
 
   @Field(() => [ModulePolicyRole], { nullable: true })
   @OneToMany(() => ModulePolicyRole, (rpm) => rpm.module)
