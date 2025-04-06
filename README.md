@@ -45,5 +45,5 @@ $ GRANT ALL ON SCHEMA public TO dbuser;
 ## Deployment
 ```bash
 # Start app with Pm2 process
-$ pm2 start dist/main.js --name "your-app-name"
+$ pm2 start npm --name "bracket-boss-backend-app" -- run start:prod
 ```
