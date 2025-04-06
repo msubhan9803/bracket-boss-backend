@@ -1,4 +1,4 @@
-import dataSource from 'typeorm.config';
+import dataSource from 'typeOrm.config';
 import { AddPickleballSportSeeder } from 'seeders/scripts/AddPickleballSportSeeder';
 import { OnboardingStepsSeeder } from 'seeders/scripts/OnboardingStepsSeeder';
 import { RoleSeeder } from 'seeders/scripts/RoleSeeder';

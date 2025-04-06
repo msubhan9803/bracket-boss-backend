@@ -40,3 +40,10 @@ $ PGPASSWORD="Password123" psql -U dbuser -h localhost -d bracket_boss -f bracke
 # Public Schema permissions
 $ GRANT ALL ON SCHEMA public TO dbuser;
 ```
+
+
+## Deployment
+```bash
+# Start app with Pm2 process
+$ pm2 start dist/main.js --name "your-app-name"
+```
