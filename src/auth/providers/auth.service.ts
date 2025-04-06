@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/providers/users.service';
 import { LoginInputDto } from '../dtos/login-input.dto';

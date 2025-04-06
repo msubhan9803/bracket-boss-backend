@@ -5,7 +5,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { UsersService } from 'src/users/providers/users.service';
 import { LoginInputDto } from './dtos/login-input.dto';
 import { AuthService } from './providers/auth.service';
