@@ -59,6 +59,7 @@ const ENV = process.env.NODE_ENV;
       autoSchemaFile: join(process.cwd(), 'src/graphql/schema.gql'),
       sortSchema: true,
       playground: false,
+      introspection: true,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       resolvers: { CustomID: CustomNumberIdScalar },
     }),
