@@ -13,6 +13,8 @@ async function bootstrap() {
   const config = app.get(ConfigService);
   const port = config.get<number>('APP_PORT', 4000);
 
+  console.log('🌺🌺🌺🌺🌺 Port: ', port)
+
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 50 }));
 
   // app.enableCors({
