@@ -9,19 +9,11 @@ import { ClubsModule } from 'src/clubs/clubs.module';
 import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
 import { TeamGenerationTypeManagementModule } from 'src/team-generation-type-management/team-generation-type-management.module';
-import { TournamentStatus } from './entities/tournamentStatus.entity';
-import { TournamentRound } from './entities/tournamentRound.entity';
-import { TournamentRoundStatus } from './entities/tournamentRoundStatus.entity';
-import { TournamentRoundService } from './providers/tournament-round.service';
-import { TournamentRoundStatusService } from './providers/tournament-round-status.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Tournament,
-      TournamentStatus,
-      TournamentRound,
-      TournamentRoundStatus,
     ]),
     SportManagementModule,
     FormatManagementModule,
@@ -33,9 +25,7 @@ import { TournamentRoundStatusService } from './providers/tournament-round-statu
     TournamentManagementService,
     TournamentManagementResolver,
     JwtService,
-    TournamentRoundService,
-    TournamentRoundStatusService
   ],
-  exports: [TournamentManagementService, TournamentRoundService],
+  exports: [TournamentManagementService],
 })
 export class TournamentManagementModule {}

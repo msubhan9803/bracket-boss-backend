@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GroupByEnum, MatchTeam } from '../types/common';
+import { SplitSwitchGroupByEnum, MatchTeam } from '../types/common';
 import { TeamGenerationTypeEnum } from 'src/team-generation-type-management/types/team-generation-type.enums';
 import {
   TeamGenerationConfig,
@@ -8,7 +8,7 @@ import {
 import { User } from 'src/users/entities/user.entity';
 
 export interface SplitSwitchTeamGenerationConfig extends TeamGenerationConfig {
-  groupBy: GroupByEnum;
+  groupBy: SplitSwitchGroupByEnum;
 }
 
 @Injectable()
@@ -33,7 +33,7 @@ export class SplitSwitchTeamGenerationStrategy
     const group1: User[] = [];
     const group2: User[] = [];
 
-    if (config?.groupBy === GroupByEnum.GENDER) {
+    if (config?.groupBy === SplitSwitchGroupByEnum.gender) {
       users.forEach((user) => {
         if (user.gender === 'male') {
           group1.push(user);

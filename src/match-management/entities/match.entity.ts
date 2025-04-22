@@ -13,7 +13,6 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Club } from 'src/clubs/entities/club.entity';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
-import { TournamentRound } from 'src/tournament-management/entities/tournamentRound.entity';
 import { Team } from 'src/team-management/entities/team.entity';
 import { MatchStatus } from './matchStatus.entity';
 import { MatchRound } from './matchRound.entity';
@@ -41,13 +40,6 @@ export class Match {
     onDelete: "CASCADE",
   })
   matchRounds: MatchRound[];
-
-  @Field(() => TournamentRound)
-  @ManyToOne(() => TournamentRound, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn()
-  tournamentRound: TournamentRound;
 
   @Field(() => Team)
   @ManyToOne(() => Team)

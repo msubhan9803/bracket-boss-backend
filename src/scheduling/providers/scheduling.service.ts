@@ -8,7 +8,6 @@ import { UsersService } from 'src/users/providers/users.service';
 import { CreateScheduleInputDto } from '../dtos/create-schedule-input.dto';
 import { CreateScheduleResponseDto } from '../dtos/create-schedule-response.dto';
 import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
-import { TournamentRoundService } from 'src/tournament-management/providers/tournament-round.service';
 import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { TeamManagementService } from 'src/team-management/providers/team-management.service';
 import { MatchService } from 'src/match-management/providers/match.service';
@@ -30,7 +29,6 @@ export class SchedulingService {
     teamGenerationStrategies: TeamGenerationStrategy[],
     private usersService: UsersService,
     private readonly tournamentManagementService: TournamentManagementService,
-    private readonly tournamentRoundService: TournamentRoundService,
     private readonly clubsService: ClubsService,
     private readonly teamManagementService: TeamManagementService,
     private readonly matchService: MatchService,
@@ -77,7 +75,7 @@ export class SchedulingService {
     userIds: number[],
   ): Promise<{ matches: MatchEntity[]; teams: MatchTeam[] }> {
     const { formatStrategy, teamGenerationStrategy } = this.getStrategy(
-      tournament.format.name,
+      tournament.poolPlayFormat.name,
       tournament.teamGenerationType.name,
     );
 
@@ -99,11 +97,6 @@ export class SchedulingService {
 
     const club = await this.clubsService.findOne(clubId);
     const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
-
-    /**
-     * Create a tournament round
-     */
-    const createdTournamentRound = await this.createScheduleHelperService.createTournamentRound(club, tournament);
 
     /**
      * Create Teams
@@ -129,7 +122,6 @@ export class SchedulingService {
       teamMap,
       club,
       tournament,
-      createdTournamentRound,
       timeSlotWithCourts,
     );
 
@@ -140,13 +132,12 @@ export class SchedulingService {
       createdMatches,
       tournament,
       club,
-      tournament.bestOfRounds,
+      tournament.matchBestOfRounds,
     );
 
     return {
       schedule: {
         tournament,
-        tournamentRounds: [createdTournamentRound],
         teams: Array.from(teamMap.values()),
         matches: createdMatches,
         matchRounds: createdMatchRounds,
@@ -156,7 +147,6 @@ export class SchedulingService {
 
   async getScheduleOfTournament(tournamentId: number): Promise<ScheduleDto> {
     const tournament = await this.tournamentManagementService.findOne(tournamentId);
-    const tournamentRounds = await this.tournamentRoundService.findTournamentRoundsByTournament(tournament);
     const teams = await this.teamManagementService.findTeamsByTournament(tournament)
     const matches = await this.matchService.findMatchesByTournament(tournament)
     const matchRounds = await this.matchRoundService.findMatchRoundsByTournament(tournament);
@@ -164,7 +154,6 @@ export class SchedulingService {
 
     return {
       tournament,
-      tournamentRounds,
       teams,
       matches: matchesWithCourtSchedule,
       matchRounds,
@@ -179,7 +168,6 @@ export class SchedulingService {
       await this.matctCourtScheduleService.deleteMatchCourtSchedules(match);
     }
 
-    await this.tournamentRoundService.deleteTournamentRound(tournament);
     await this.teamManagementService.deleteTeamsByTournament(tournament);
   }
 }

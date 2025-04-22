@@ -6,23 +6,22 @@ import {
   UpdateDateColumn,
   JoinColumn,
   ManyToOne,
-  ManyToMany,
-  JoinTable,
-  OneToMany,
 } from 'typeorm';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Club } from 'src/clubs/entities/club.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Sport } from 'src/sport-management/entities/sport.entity';
 import { Format } from 'src/format-management/entities/format.entity';
 import { TeamGenerationType } from 'src/team-generation-type-management/entities/team-generation-type.entity';
-import { GroupByEnum } from 'src/scheduling/types/common';
+import { SplitSwitchGroupByEnum } from 'src/scheduling/types/common';
 import { IsOptional } from 'class-validator';
-import { TournamentStatus } from './tournamentStatus.entity';
-import { TournamentRound } from './tournamentRound.entity';
+import { TournamentStatusTypesEnum } from '../types/common';
 
-registerEnumType(GroupByEnum, {
-  name: 'GroupByEnum',
+registerEnumType(SplitSwitchGroupByEnum, {
+  name: 'SplitSwitchGroupByEnum',
+});
+
+registerEnumType(TournamentStatusTypesEnum, {
+  name: 'TournamentStatusTypesEnum',
 });
 
 @ObjectType()
@@ -31,16 +30,6 @@ export class Tournament {
   @Field(() => CustomNumberIdScalar)
   @PrimaryGeneratedColumn()
   id: number;
-
-  @ManyToOne(() => Club)
-  @JoinColumn()
-  @Field(() => Club)
-  club: Club;
-
-  @ManyToOne(() => Sport)
-  @JoinColumn()
-  @Field(() => Sport)
-  sport: Sport;
 
   @Field()
   @Column('varchar')
@@ -65,38 +54,35 @@ export class Tournament {
   @ManyToOne(() => Format)
   @JoinColumn()
   @Field(() => Format)
-  format: Format;
+  poolPlayFormat: Format;
+
+  @ManyToOne(() => Format)
+  @JoinColumn()
+  @Field(() => Format)
+  playOffFormat: Format;
 
   @ManyToOne(() => TeamGenerationType)
   @JoinColumn()
   @Field(() => TeamGenerationType)
   teamGenerationType: TeamGenerationType;
 
-  @Field(() => GroupByEnum, { nullable: true })
+  @Field(() => SplitSwitchGroupByEnum, { nullable: true })
   @IsOptional()
   @Column('varchar', { nullable: true })
-  splitSwitchGroupBy: GroupByEnum;
-
-  @ManyToOne(() => Format)
-  @JoinColumn()
-  @Field(() => Format)
-  playOffMatchesType: Format;
+  splitSwitchGroupBy: SplitSwitchGroupByEnum;
 
   @Field()
   @Column('int')
-  bestOfRounds: number;
+  matchBestOfRounds: number;
+  
+  @Field(() => TournamentStatusTypesEnum)
+  @Column('varchar')
+  status: TournamentStatusTypesEnum;
 
-  @Field(() => [TournamentStatus])
-  @ManyToMany(
-    () => TournamentStatus,
-    (tournamentStatus) => tournamentStatus.tournaments,
-  )
-  @JoinTable({ name: 'tournament_tournament_statuses' })
-  statuses: TournamentStatus[];
-
-  @OneToMany(() => TournamentRound, (tournamentRound) => tournamentRound.tournament)
-  @Field(() => [TournamentRound])
-  tournamentRounds: TournamentRound[];
+  @ManyToOne(() => Sport)
+  @JoinColumn()
+  @Field(() => Sport)
+  sport: Sport;
 
   @Field()
   @CreateDateColumn()

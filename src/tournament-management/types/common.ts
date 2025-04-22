@@ -1,11 +1,6 @@
-export enum TournamentStatusTypes {
+export enum TournamentStatusTypesEnum {
   not_started = 'not_started',
-  in_progress = 'in_progress',
-  completed = 'completed',
-}
-
-export enum TournamentRoundStatusTypes {
-  not_started = 'not_started',
-  in_progress = 'in_progress',
+  pool_play_in_progress = 'pool_play_in_progress',
+  play_off_in_progress = 'play_off_in_progress',
   completed = 'completed',
 }

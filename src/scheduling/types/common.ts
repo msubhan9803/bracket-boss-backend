@@ -11,9 +11,9 @@ export type Match = {
   teams: MatchTeam[];
 };
 
-export enum GroupByEnum {
-  GENDER = 'GENDER',
-  RATING = 'RATING',
+export enum SplitSwitchGroupByEnum {
+  gender = 'gender',
+  rating = 'rating',
 }
 
 export enum GenderTypes {

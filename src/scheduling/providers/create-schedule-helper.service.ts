@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { Club } from 'src/clubs/entities/club.entity';
-import { TournamentRoundService } from 'src/tournament-management/providers/tournament-round.service';
 import { TeamManagementService } from 'src/team-management/providers/team-management.service';
 import { CourtManagementService } from 'src/court-management/providers/court-management.service';
 import { MatchService } from 'src/match-management/providers/match.service';
@@ -14,7 +13,6 @@ import {
   MatchStatusTypes,
 } from 'src/match-management/types/common';
 import { TimeSlotWithCourts } from 'src/court-management/types';
-import { TournamentRound } from 'src/tournament-management/entities/tournamentRound.entity';
 import { Team } from 'src/team-management/entities/team.entity';
 import { GroupedMatches } from '../types/common';
 import { MatctCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
@@ -24,7 +22,6 @@ import messages from 'src/utils/messages';
 @Injectable()
 export class CreateScheduleHelperService {
   constructor(
-    private readonly tournamentRoundService: TournamentRoundService,
     private readonly teamManagementService: TeamManagementService,
     private readonly courtManagementService: CourtManagementService,
     private readonly matchService: MatchService,
@@ -34,16 +31,6 @@ export class CreateScheduleHelperService {
     private readonly matctCourtScheduleService: MatctCourtScheduleService,
     private readonly courtScheduleService: CourtScheduleService,
   ) {}
-
-  /**
-   * Creates a tournament round for a given club and tournament.
-   * @param club - The club associated with the tournament.
-   * @param tournament - The tournament for which the round is being created.
-   * @returns The created tournament round.
-   */
-  async createTournamentRound(club: Club, tournament: Tournament) {
-    return this.tournamentRoundService.createTournamentRound(club, tournament);
-  }
 
   /**
    * Creates teams based on the provided team inputs and associates them with a tournament and club.
@@ -101,7 +88,6 @@ export class CreateScheduleHelperService {
     teamMap: Map<string, Team>,
     club: Club,
     tournament: Tournament,
-    createdTournamentRound: TournamentRound,
     timeSlotWithCourts: TimeSlotWithCourts[],
   ) {
     let createdMatches = [];
@@ -136,7 +122,6 @@ export class CreateScheduleHelperService {
       const createdMatch = await this.matchService.createMatch({
         club,
         tournament,
-        tournamentRound: createdTournamentRound,
         homeTeam,
         awayTeam,
         statuses: [notStartedMatchStatus],

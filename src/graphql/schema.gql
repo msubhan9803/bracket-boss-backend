@@ -80,14 +80,14 @@ input CreateTeamInputDto {
 }
 
 input CreateTournamentInputDto {
-  bestOfRounds: Float!
-  clubId: Float!
   description: String!
   end_date: DateTime!
-  formatId: Float!
   isPrivate: Boolean!
+  matchBestOfRounds: Float!
   name: String!
-  splitSwitchGroupBy: GroupByEnum
+  playOffFormatId: Float!
+  poolPlayFormatId: Float!
+  splitSwitchGroupBy: SplitSwitchGroupByEnum
   start_date: DateTime!
   teamGenerationTypeId: Float!
 }
@@ -167,11 +167,6 @@ type GetSchedulePreperationDataOfTournamentResponseDto {
   teams: [TeamType!]!
 }
 
-enum GroupByEnum {
-  GENDER
-  RATING
-}
-
 input LoginInputDto {
   email: String!
   password: String!
@@ -191,7 +186,6 @@ type Match {
   matchRounds: [MatchRound!]!
   statuses: [MatchStatus!]!
   tournament: Tournament!
-  tournamentRound: TournamentRound!
   updated_at: DateTime!
   winnerTeam: Team
 }
@@ -276,7 +270,6 @@ type MatchWithCourtDto {
   matchRounds: [MatchRound!]!
   statuses: [MatchStatus!]!
   tournament: Tournament!
-  tournamentRound: TournamentRound!
   updated_at: DateTime!
   winnerTeam: Team
 }
@@ -409,7 +402,6 @@ type ScheduleDto {
   matches: [MatchWithCourtDto!]!
   teams: [Team!]!
   tournament: Tournament!
-  tournamentRounds: [TournamentRound!]!
 }
 
 input ScheduleTimingInputDto {
@@ -421,6 +413,11 @@ input ScheduleTimingInputDto {
 input SortInput {
   direction: String!
   field: String!
+}
+
+enum SplitSwitchGroupByEnum {
+  gender
+  rating
 }
 
 type Sport {
@@ -521,22 +518,20 @@ type TimeSlot {
 }
 
 type Tournament {
-  bestOfRounds: Float!
-  club: Club!
   created_at: DateTime!
   description: String!
   end_date: DateTime!
-  format: Format!
   id: CustomID!
   isPrivate: Boolean!
+  matchBestOfRounds: Float!
   name: String!
-  playOffMatchesType: Format!
-  splitSwitchGroupBy: GroupByEnum
+  playOffFormat: Format!
+  poolPlayFormat: Format!
+  splitSwitchGroupBy: SplitSwitchGroupByEnum
   sport: Sport!
   start_date: DateTime!
-  statuses: [TournamentStatus!]!
+  status: TournamentStatusTypesEnum!
   teamGenerationType: TeamGenerationType!
-  tournamentRounds: [TournamentRound!]!
   updated_at: DateTime!
 }
 
@@ -545,44 +540,11 @@ type TournamentListResponse {
   tournaments: [Tournament!]!
 }
 
-type TournamentRound {
-  club: Club!
-  created_at: DateTime!
-  id: CustomID!
-  matches: [Match!]!
-  roundFormat: Format!
-  roundNumber: Float!
-  statuses: [TournamentRoundStatus!]!
-  tournament: Tournament!
-  updated_at: DateTime!
-}
-
-type TournamentRoundStatus {
-  created_at: DateTime!
-  id: CustomID!
-  status: TournamentRoundStatusTypes!
-  tournamentRounds: [TournamentRound!]!
-  updated_at: DateTime!
-}
-
-enum TournamentRoundStatusTypes {
+enum TournamentStatusTypesEnum {
   completed
-  in_progress
   not_started
-}
-
-type TournamentStatus {
-  created_at: DateTime!
-  id: CustomID!
-  status: TournamentStatusTypes!
-  tournaments: [Tournament!]!
-  updated_at: DateTime!
-}
-
-enum TournamentStatusTypes {
-  completed
-  in_progress
-  not_started
+  play_off_in_progress
+  pool_play_in_progress
 }
 
 input UpdateTournamentInput {

@@ -6,7 +6,7 @@ import {
   IsInt,
   IsOptional,
 } from 'class-validator';
-import { GroupByEnum } from 'src/scheduling/types/common';
+import { SplitSwitchGroupByEnum } from 'src/scheduling/types/common';
 
 @InputType()
 export class CreateTournamentInputDto {
@@ -31,23 +31,23 @@ export class CreateTournamentInputDto {
   isPrivate: boolean;
 
   @Field()
-  @IsInt({ message: 'Club ID must be an integer' })
-  clubId: number;
+  @IsInt({ message: 'Pool Play Format ID must be an integer' })
+  poolPlayFormatId: number;
 
   @Field()
-  @IsInt({ message: 'Format ID must be an integer' })
-  formatId: number;
+  @IsInt({ message: 'Play Off Format ID must be an integer' })
+  playOffFormatId: number;
 
   @Field()
   @IsInt({ message: 'Team Generation Type is required' })
   teamGenerationTypeId: number;
 
-  @Field(() => GroupByEnum, { nullable: true })
+  @Field(() => SplitSwitchGroupByEnum, { nullable: true })
   @IsOptional()
   @IsString()
-  splitSwitchGroupBy?: GroupByEnum;
+  splitSwitchGroupBy?: SplitSwitchGroupByEnum;
 
   @Field()
   @IsInt({ message: 'Best of Rounds must be an integer' })
-  bestOfRounds: number;
+  matchBestOfRounds: number;
 }
