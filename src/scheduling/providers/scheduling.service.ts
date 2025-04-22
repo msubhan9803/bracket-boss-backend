@@ -166,6 +166,7 @@ export class SchedulingService {
 
     for (const match of matches) {
       await this.matctCourtScheduleService.deleteMatchCourtSchedules(match);
+      await this.matchService.deleteMatch(match);
     }
 
     await this.teamManagementService.deleteTeamsByTournament(tournament);

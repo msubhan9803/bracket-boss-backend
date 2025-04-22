@@ -30,4 +30,8 @@ export class MatchService {
     createMatch(match: CreateMatchInputDto): Promise<Match> {
         return this.matchRepository.save(match);
     }
+
+    async deleteMatch(match: Match) {
+        await this.matchRepository.delete({ id: match.id });
+    }
 }
