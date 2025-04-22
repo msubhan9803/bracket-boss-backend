@@ -27,6 +27,9 @@ import { Day } from 'src/common/entities/day.entity';
 import { TimeSlot } from 'src/common/entities/time-slot.entity';
 import { CourtSchedule } from 'src/court-management/entities/court-schedule.entity';
 import { MatchCourtSchedules } from 'src/match-management/entities/match-court-schedule.entity';
+import { Level } from 'src/level/entities/level.entity';
+import { Pool } from 'src/pool/entities/pool.entity';
+import { Round } from 'src/round/entities/round.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFilePath });
@@ -54,6 +57,9 @@ export default new DataSource({
     Tournament,
     Sport,
     Format,
+    Level,
+    Pool,
+    Round,
     Court,
     Team,
     TeamStatus,

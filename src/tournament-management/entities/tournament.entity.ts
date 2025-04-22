@@ -6,6 +6,8 @@ import {
   UpdateDateColumn,
   JoinColumn,
   ManyToOne,
+  OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
@@ -15,6 +17,7 @@ import { TeamGenerationType } from 'src/team-generation-type-management/entities
 import { SplitSwitchGroupByEnum } from 'src/scheduling/types/common';
 import { IsOptional } from 'class-validator';
 import { TournamentStatusTypesEnum } from '../types/common';
+import { Level } from 'src/level/entities/level.entity';
 
 registerEnumType(SplitSwitchGroupByEnum, {
   name: 'SplitSwitchGroupByEnum',
@@ -32,7 +35,7 @@ export class Tournament {
   id: number;
 
   @Field()
-  @Column('varchar')
+  @Column('text')
   name: string;
 
   @Field()
@@ -79,10 +82,17 @@ export class Tournament {
   @Column('varchar')
   status: TournamentStatusTypesEnum;
 
-  @ManyToOne(() => Sport)
+  @OneToOne(() => Sport)
   @JoinColumn()
   @Field(() => Sport)
   sport: Sport;
+
+  @OneToMany(() => Level, level => level.tournament, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  @Field(() => [Level])
+  levels: Level[];
 
   @Field()
   @CreateDateColumn()
