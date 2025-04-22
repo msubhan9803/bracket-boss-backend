@@ -43,7 +43,6 @@ export class MatctCourtScheduleService {
                 'match.homeTeam',
                 'match.awayTeam',
                 'match.winnerTeam',
-                'match.statuses',
                 'courtSchedule',
                 'courtSchedule.court',
                 'courtSchedule.day',

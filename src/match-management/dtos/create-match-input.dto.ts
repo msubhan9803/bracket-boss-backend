@@ -1,12 +1,11 @@
-import { Club } from "src/clubs/entities/club.entity";
 import { Tournament } from "src/tournament-management/entities/tournament.entity";
-import { MatchStatus } from "../entities/matchStatus.entity";
 import { Team } from "src/team-management/entities/team.entity";
+import { MatchStatusTypes } from "../types/common";
 
 export class CreateMatchInputDto {
-  club: Club;
   tournament: Tournament;
+  title: string;
   homeTeam: Team;
   awayTeam: Team;
-  statuses: MatchStatus[];
+  status: MatchStatusTypes;
 }

@@ -4,7 +4,6 @@ import { Match } from "../entities/match.entity";
 import { MatchRoundStatus } from "../entities/matchRoundStatus.entity";
 
 export class CreateMatchRoundInputDto {
-  club: Club;
   tournament: Tournament;
   match: Match;
   startTime: Date;

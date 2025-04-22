@@ -7,10 +7,6 @@ export class CreateTeamInputDto {
   @IsInt({ message: 'Tournament ID must be an integer' })
   tournamentId: number;
 
-  @Field(() => Int)
-  @IsInt({ message: 'Club ID must be an integer' })
-  clubId: number;
-
   @Field()
   @IsString({ message: 'Name is required' })
   name: string;

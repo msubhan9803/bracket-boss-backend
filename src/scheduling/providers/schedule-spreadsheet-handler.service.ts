@@ -93,7 +93,7 @@ export class ScheduleSpreadsheetHandlerService {
         /**
          * Match Heading
          */
-        const matchHeaders = ['Match Date', 'Team 1 Name', 'Team 1 User 1', 'Team 1 User 2', 'Team 2 Name', 'Team 2 User 1', 'Team 2 User 2'];
+        const matchHeaders = ['Match Date', 'Title', 'Team 1 Name', 'Team 1 User 1', 'Team 1 User 2', 'Team 2 Name', 'Team 2 User 1', 'Team 2 User 2'];
         const matchHeadersRow = worksheet.addRow(matchHeaders);
         matchHeadersRow.eachCell((cell) => {
             cell.fill = {
@@ -125,10 +125,10 @@ export class ScheduleSpreadsheetHandlerService {
     }
 
     async parseMatchScheduleFromTemplate(file: FileUpload): Promise<{
-        clubId: any;
         tournamentId: any;
         matches: {
             matchDate: any;
+            title: string;
             teams: {
                 name: any;
                 userIds: any[];
@@ -156,28 +156,28 @@ export class ScheduleSpreadsheetHandlerService {
 
         const matches = rows.slice(5).map(row => {
             const team1 = {
-                name: row[1],
+                name: row[2],
                 userIds: [
-                    row[2],
-                    row[3]
+                    row[3],
+                    row[4]
                 ]
             };
             const team2 = {
-                name: row[4],
+                name: row[5],
                 userIds: [
-                    row[5],
-                    row[6]
+                    row[6],
+                    row[7]
                 ]
             };
 
             return {
                 matchDate: row[0],
+                title: row[1],
                 teams: [team1, team2]
             }
         })
 
         const scheduleData = {
-            clubId: rows[1][0],
             tournamentId: rows[1][1],
             matches
         }

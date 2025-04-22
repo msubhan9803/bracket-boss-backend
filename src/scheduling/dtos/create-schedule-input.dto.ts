@@ -18,6 +18,10 @@ export class MatchInput {
   @IsDate()
   matchDate?: Date;
 
+  @Field()
+  @IsString()
+  title: string;
+
   @Field(() => [TeamInput])
   @IsArray({ each: true })
   teams: TeamInput[];
@@ -25,10 +29,6 @@ export class MatchInput {
 
 @InputType()
 export class CreateScheduleInputDto {
-  @Field()
-  @IsNumber({}, { message: 'Club is required' })
-  clubId: number;
-
   @Field()
   @IsNumber({}, { message: 'Tournament is required' })
   tournamentId: number;

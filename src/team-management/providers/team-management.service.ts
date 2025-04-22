@@ -59,21 +59,19 @@ export class TeamManagementService {
   }
 
   async createTeam(createTeamInput: CreateTeamInputDto): Promise<Team> {
-    const { tournamentId, clubId, name, userIds } = createTeamInput;
+    const { tournamentId, name, userIds } = createTeamInput;
 
     const tournament =
       await this.tournamentManagementService.findOne(tournamentId);
-    const club = await this.clubsService.findOne(clubId);
     const users = await this.usersService.findMultipleUsersById(userIds);
 
-    if (!tournament || !club || users.length !== userIds.length) {
+    if (!tournament || users.length !== userIds.length) {
       throw new Error('Invalid tournament, club, or user IDs');
     }
 
     const newTeam = this.teamRepository.create({
       name,
       tournament,
-      club,
       users,
       statusInTournament: TeamStatusTypes.not_assigned
     });

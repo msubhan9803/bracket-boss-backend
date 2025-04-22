@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
-import { Club } from 'src/clubs/entities/club.entity';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { User } from 'src/users/entities/user.entity';
 import { TeamStatusTypes } from '../types/common';
@@ -30,11 +29,6 @@ export class Team {
   @Field()
   @Column('text')
   name: string;
-
-  @ManyToOne(() => Club)
-  @JoinColumn()
-  @Field(() => Club)
-  club: Club;
 
   @ManyToOne(() => Tournament)
   @JoinColumn()

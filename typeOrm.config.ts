@@ -17,7 +17,6 @@ import { Court } from 'src/court-management/entities/court.entity';
 import { Team } from 'src/team-management/entities/team.entity';
 import { TeamGenerationType } from 'src/team-generation-type-management/entities/team-generation-type.entity';
 import { Match } from 'src/match-management/entities/match.entity';
-import { MatchStatus } from 'src/match-management/entities/matchStatus.entity';
 import { MatchRound } from 'src/match-management/entities/matchRound.entity';
 import { MatchRoundStatus } from 'src/match-management/entities/matchRoundStatus.entity';
 import { MatchRoundScore } from 'src/match-management/entities/matchRoundScore.entity';
@@ -69,7 +68,6 @@ export default new DataSource({
     Tournament,
     Match,
     MatchCourtSchedules,
-    MatchStatus,
     MatchRound,
     MatchRoundStatus,
     MatchRoundScore,

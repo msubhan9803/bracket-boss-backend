@@ -5,7 +5,6 @@ import {
     JoinColumn,
     CreateDateColumn,
     Column,
-    Unique,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CourtSchedule } from 'src/court-management/entities/court-schedule.entity';
@@ -13,7 +12,6 @@ import { Match } from 'src/match-management/entities/match.entity';
 
 @ObjectType()
 @Entity()
-@Unique(['courtSchedule', 'matchDate'])
 export class MatchCourtSchedules {
     @Field(() => Number)
     @PrimaryGeneratedColumn()

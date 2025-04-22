@@ -63,7 +63,6 @@ type CreateClubResponseDto {
 }
 
 input CreateScheduleInputDto {
-  clubId: Float!
   matches: [MatchInput!]!
   tournamentId: Float!
 }
@@ -73,7 +72,6 @@ type CreateScheduleResponseDto {
 }
 
 input CreateTeamInputDto {
-  clubId: Int!
   name: String!
   tournamentId: Int!
   userIds: [Int!]!
@@ -196,12 +194,13 @@ type LoginResponseDto {
 
 type Match {
   awayTeam: Team!
-  club: Club!
   created_at: DateTime!
   homeTeam: Team!
   id: CustomID!
   matchRounds: [MatchRound!]!
-  statuses: [MatchStatus!]!
+  round: Round!
+  status: MatchStatusTypes!
+  title: String!
   tournament: Tournament!
   updated_at: DateTime!
   winnerTeam: Team
@@ -210,6 +209,7 @@ type Match {
 input MatchInput {
   matchDate: DateTime!
   teams: [TeamInput!]!
+  title: String!
 }
 
 type MatchRound {
@@ -255,14 +255,6 @@ enum MatchRoundStatusTypes {
   void
 }
 
-type MatchStatus {
-  created_at: DateTime!
-  id: CustomID!
-  matches: [Match!]!
-  status: MatchStatusTypes!
-  updated_at: DateTime!
-}
-
 enum MatchStatusTypes {
   completed
   in_progress
@@ -278,14 +270,15 @@ type MatchType {
 
 type MatchWithCourtDto {
   awayTeam: Team!
-  club: Club!
   courtSchedule: CourtSchedule
   created_at: DateTime!
   homeTeam: Team!
   id: CustomID!
   matchDate: DateTime
   matchRounds: [MatchRound!]!
-  statuses: [MatchStatus!]!
+  round: Round!
+  status: MatchStatusTypes!
+  title: String!
   tournament: Tournament!
   updated_at: DateTime!
   winnerTeam: Team
@@ -427,6 +420,7 @@ enum RoleName {
 type Round {
   created_at: DateTime!
   id: CustomID!
+  matches: [Match!]!
   name: String!
   pool: Pool!
   tournament: Tournament!
@@ -490,7 +484,6 @@ input StepsByRoleDto {
 }
 
 type Team {
-  club: Club!
   createdDate: DateTime!
   id: CustomID!
   name: String!

@@ -93,16 +93,15 @@ export class SchedulingService {
   }
 
   async createSchedule(createScheduleInputDto: CreateScheduleInputDto): Promise<CreateScheduleResponseDto> {
-    const { tournamentId, clubId, matches } = createScheduleInputDto;
+    const { tournamentId, matches } = createScheduleInputDto;
 
-    const club = await this.clubsService.findOne(clubId);
     const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
 
     /**
      * Create Teams
      */
     const teams = matches.map((match) => match.teams).flat();
-    const teamMap = await this.createScheduleHelperService.createTeams(teams, tournamentId, clubId);
+    const teamMap = await this.createScheduleHelperService.createTeams(teams, tournamentId);
 
     /**
      * Fetching available courts for the tournament duration
@@ -120,7 +119,6 @@ export class SchedulingService {
     const createdMatches = await this.createScheduleHelperService.createMatches(
       groupedMatches,
       teamMap,
-      club,
       tournament,
       timeSlotWithCourts,
     );
@@ -131,7 +129,6 @@ export class SchedulingService {
     const createdMatchRounds = await this.createScheduleHelperService.createMatchRounds(
       createdMatches,
       tournament,
-      club,
       tournament.matchBestOfRounds,
     );
 

@@ -5,17 +5,21 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  ManyToMany,
-  JoinTable,
   OneToMany,
+  Column,
+  OneToOne,
 } from 'typeorm';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
-import { Club } from 'src/clubs/entities/club.entity';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { Team } from 'src/team-management/entities/team.entity';
-import { MatchStatus } from './matchStatus.entity';
 import { MatchRound } from './matchRound.entity';
+import { Round } from 'src/round/entities/round.entity';
+import { MatchStatusTypes } from '../types/common';
+
+registerEnumType(MatchStatusTypes, {
+  name: 'MatchStatusTypes',
+});
 
 @ObjectType()
 @Entity()
@@ -24,22 +28,21 @@ export class Match {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => Club)
-  @ManyToOne(() => Club)
-  @JoinColumn()
-  club: Club;
-
   @Field(() => Tournament)
   @ManyToOne(() => Tournament)
   @JoinColumn()
   tournament: Tournament;
 
-  @Field(() => [MatchRound])
-  @OneToMany(() => MatchRound, (matchRound) => matchRound.match, {
-    cascade: true,
-    onDelete: "CASCADE",
+  @ManyToOne(() => Round, (round) => round.matches, {
+    onDelete: 'CASCADE',
   })
-  matchRounds: MatchRound[];
+  @Field(() => Round)
+  @JoinColumn()
+  round: Round;
+
+  @Field()
+  @Column('text')
+  title: string;
 
   @Field(() => Team)
   @ManyToOne(() => Team)
@@ -56,12 +59,16 @@ export class Match {
   @JoinColumn()
   winnerTeam?: Team;
 
-  @Field(() => [MatchStatus])
-  @ManyToMany(() => MatchStatus, (matchStatus) => matchStatus.matches, {
+  @Field(() => MatchStatusTypes)
+  @Column('varchar')
+  status: MatchStatusTypes;
+
+  @Field(() => [MatchRound])
+  @OneToMany(() => MatchRound, (matchRound) => matchRound.match, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
-  @JoinTable({ name: 'match_match_statuses' })
-  statuses: MatchStatus[];
+  matchRounds: MatchRound[];
 
   @Field()
   @CreateDateColumn()

@@ -4,7 +4,6 @@ import { Club } from 'src/clubs/entities/club.entity';
 import { TeamManagementService } from 'src/team-management/providers/team-management.service';
 import { CourtManagementService } from 'src/court-management/providers/court-management.service';
 import { MatchService } from 'src/match-management/providers/match.service';
-import { MatchStatusService } from 'src/match-management/providers/match-status.service';
 import { MatchRoundService } from 'src/match-management/providers/match-round.service';
 import { MatchRoundStatusService } from 'src/match-management/providers/match-round-status.service';
 import { MatchInput, TeamInput } from '../dtos/create-schedule-input.dto';
@@ -25,7 +24,6 @@ export class CreateScheduleHelperService {
     private readonly teamManagementService: TeamManagementService,
     private readonly courtManagementService: CourtManagementService,
     private readonly matchService: MatchService,
-    private readonly matchStatusService: MatchStatusService,
     private readonly matchRoundService: MatchRoundService,
     private readonly matchRoundStatusService: MatchRoundStatusService,
     private readonly matctCourtScheduleService: MatctCourtScheduleService,
@@ -36,17 +34,15 @@ export class CreateScheduleHelperService {
    * Creates teams based on the provided team inputs and associates them with a tournament and club.
    * @param teams - An array of team inputs containing team details.
    * @param tournamentId - The ID of the tournament the teams belong to.
-   * @param clubId - The ID of the club the teams belong to.
    * @returns A map of teams, keyed by a stringified sorted array of user IDs.
    */
-  async createTeams(teams: TeamInput[], tournamentId: number, clubId: number) {
+  async createTeams(teams: TeamInput[], tournamentId: number) {
     const createdTeams = await Promise.all(
       teams.map((team) =>
         this.teamManagementService.createTeam({
           name: team.name,
           userIds: team.userIds,
           tournamentId,
-          clubId,
         }),
       ),
     );
@@ -86,57 +82,56 @@ export class CreateScheduleHelperService {
   async createMatches(
     groupedMatches: GroupedMatches,
     teamMap: Map<string, Team>,
-    club: Club,
     tournament: Tournament,
     timeSlotWithCourts: TimeSlotWithCourts[],
   ) {
-    let createdMatches = [];
-    const notStartedMatchStatus =
-      await this.matchStatusService.findMatchStatusByStatusName(
-        MatchStatusTypes.not_started,
+    try {
+      let createdMatches = [];
+
+      const assignedTimeSlots = this.validateAndAssignTimeslots(
+        groupedMatches,
+        timeSlotWithCourts,
       );
 
-    const assignedTimeSlots = this.validateAndAssignTimeslots(
-      groupedMatches,
-      timeSlotWithCourts,
-    );
+      for (const [match, courtScheduleElem] of assignedTimeSlots.entries()) {
+        const { courtScheduleId, date, startTime } = courtScheduleElem;
+        const courtSchedule =
+          await this.courtScheduleService.findOneByID(courtScheduleId);
 
-    for (const [match, courtScheduleElem] of assignedTimeSlots.entries()) {
-      const { courtScheduleId, date, startTime } = courtScheduleElem;
-      const courtSchedule =
-        await this.courtScheduleService.findOneByID(courtScheduleId);
+        const homeTeam = teamMap.get(
+          JSON.stringify(match.teams[0].userIds.sort()),
+        );
+        const awayTeam = teamMap.get(
+          JSON.stringify(match.teams[1].userIds.sort()),
+        );
 
-      const homeTeam = teamMap.get(
-        JSON.stringify(match.teams[0].userIds.sort()),
-      );
-      const awayTeam = teamMap.get(
-        JSON.stringify(match.teams[1].userIds.sort()),
-      );
+        if (!homeTeam || !awayTeam) {
+          throw new Error(messages.TEAM_NOT_FOUND_FOR_MATCH);
+        }
 
-      if (!homeTeam || !awayTeam) {
-        throw new Error(messages.TEAM_NOT_FOUND_FOR_MATCH);
+        const matchDate = new Date(`${date}T${startTime}`);
+
+        const createdMatch = await this.matchService.createMatch({
+          title: match.title,
+          tournament,
+          homeTeam,
+          awayTeam,
+          status: MatchStatusTypes.not_started,
+        });
+        createdMatches.push(createdMatch);
+
+        // Assigning Court to Match for the given match date
+        await this.matctCourtScheduleService.createMatchCourtScheduleRelation(
+          createdMatch,
+          courtSchedule,
+          matchDate,
+        );
       }
 
-      const matchDate = new Date(`${date}T${startTime}`);
-
-      const createdMatch = await this.matchService.createMatch({
-        club,
-        tournament,
-        homeTeam,
-        awayTeam,
-        statuses: [notStartedMatchStatus],
-      });
-      createdMatches.push(createdMatch);
-
-      // Assigning Court to Match for the given match date
-      await this.matctCourtScheduleService.createMatchCourtScheduleRelation(
-        createdMatch,
-        courtSchedule,
-        matchDate,
-      );
+      return createdMatches;
+    } catch (error) {
+      console.log('❌ Error: ', error);
     }
-
-    return createdMatches;
   }
 
   /**
@@ -150,7 +145,6 @@ export class CreateScheduleHelperService {
   async createMatchRounds(
     createdMatches: any[],
     tournament: Tournament,
-    club: Club,
     bestOfRounds: number,
   ) {
     const notStartedMatchRoundStatus =
@@ -165,7 +159,6 @@ export class CreateScheduleHelperService {
       for (let index = 1; index <= bestOfRounds; index++) {
         const createdMatchRound = await this.matchRoundService.createMatchRound(
           {
-            club,
             tournament,
             match,
             startTime: match.matchDate,
