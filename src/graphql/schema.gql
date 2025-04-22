@@ -167,6 +167,23 @@ type GetSchedulePreperationDataOfTournamentResponseDto {
   teams: [TeamType!]!
 }
 
+type Level {
+  created_at: DateTime!
+  format: Format!
+  id: CustomID!
+  name: String!
+  order: Float!
+  pools: [Pool!]!
+  tournament: Tournament!
+  type: LevelTypeEnum!
+  updated_at: DateTime!
+}
+
+enum LevelTypeEnum {
+  play_off
+  pool_play
+}
+
 input LoginInputDto {
   email: String!
   password: String!
@@ -345,6 +362,16 @@ type Policy {
   updatedDate: DateTime!
 }
 
+type Pool {
+  created_at: DateTime!
+  id: CustomID!
+  level: Level!
+  name: String!
+  rounds: [Round!]!
+  tournament: Tournament!
+  updated_at: DateTime!
+}
+
 type Query {
   getAllClubs: [Club!]!
   getAllCourts(clubId: Int, filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): CourtListResponse!
@@ -395,6 +422,15 @@ enum RoleName {
   player
   super_admin
   tournament_organizer
+}
+
+type Round {
+  created_at: DateTime!
+  id: CustomID!
+  name: String!
+  pool: Pool!
+  tournament: Tournament!
+  updated_at: DateTime!
 }
 
 type ScheduleDto {
@@ -458,7 +494,7 @@ type Team {
   createdDate: DateTime!
   id: CustomID!
   name: String!
-  statuses: [TeamStatus!]!
+  status: TeamStatusTypes!
   tournament: Tournament!
   updatedDate: DateTime!
   users: [User!]
@@ -487,21 +523,18 @@ type TeamListResponse {
   totalRecords: Int!
 }
 
-type TeamStatus {
-  created_at: DateTime!
-  id: CustomID!
-  status: TeamStatusTypes!
-  teams: [Team!]!
-  updated_at: DateTime!
-}
-
 enum TeamStatusTypes {
+  bye
   coming_up
   disqualified
+  eliminated
+  forfeited
   idle
   not_assigned
   playing
-  removed
+  registered
+  waiting_list
+  withdrawn
 }
 
 type TeamType {
@@ -523,6 +556,7 @@ type Tournament {
   end_date: DateTime!
   id: CustomID!
   isPrivate: Boolean!
+  levels: [Level!]!
   matchBestOfRounds: Float!
   name: String!
   playOffFormat: Format!

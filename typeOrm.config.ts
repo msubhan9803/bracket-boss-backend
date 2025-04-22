@@ -21,7 +21,6 @@ import { MatchStatus } from 'src/match-management/entities/matchStatus.entity';
 import { MatchRound } from 'src/match-management/entities/matchRound.entity';
 import { MatchRoundStatus } from 'src/match-management/entities/matchRoundStatus.entity';
 import { MatchRoundScore } from 'src/match-management/entities/matchRoundScore.entity';
-import { TeamStatus } from 'src/team-management/entities/teamStatus.entity';
 import { MatchCommentary } from 'src/match-management/entities/matchCommentary.entity';
 import { Day } from 'src/common/entities/day.entity';
 import { TimeSlot } from 'src/common/entities/time-slot.entity';
@@ -62,7 +61,6 @@ export default new DataSource({
     Round,
     Court,
     Team,
-    TeamStatus,
     TeamGenerationType,
     Tournament,
     Match,

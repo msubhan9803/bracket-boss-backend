@@ -9,12 +9,16 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Club } from 'src/clubs/entities/club.entity';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { User } from 'src/users/entities/user.entity';
-import { TeamStatus } from './teamStatus.entity';
+import { TeamStatusTypes } from '../types/common';
+
+registerEnumType(TeamStatusTypes, {
+  name: 'TeamStatusTypes'
+});
 
 @ObjectType()
 @Entity()
@@ -42,10 +46,9 @@ export class Team {
   @JoinTable({ name: 'team_users' })
   users: User[];
 
-  @Field(() => [TeamStatus])
-  @ManyToMany(() => TeamStatus, (teamStatus) => teamStatus.teams)
-  @JoinTable({ name: 'team_team_statuses' })
-  statuses: TeamStatus[];
+  @Field(() => TeamStatusTypes)
+  @Column('varchar')
+  status: TeamStatusTypes;
 
   @Field()
   @CreateDateColumn()

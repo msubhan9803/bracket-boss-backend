@@ -7,11 +7,10 @@ import { ClubsModule } from 'src/clubs/clubs.module';
 import { UsersModule } from 'src/users/users.module';
 import { TournamentManagementModule } from 'src/tournament-management/tournament-management.module';
 import { JwtService } from '@nestjs/jwt';
-import { TeamStatus } from './entities/teamStatus.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Team, TeamStatus]),
+    TypeOrmModule.forFeature([Team]),
     ClubsModule,
     UsersModule,
     TournamentManagementModule,

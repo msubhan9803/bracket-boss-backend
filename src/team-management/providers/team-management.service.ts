@@ -6,7 +6,6 @@ import { Team } from '../entities/team.entity';
 import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
 import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { UsersService } from 'src/users/providers/users.service';
-import { TeamStatus } from '../entities/teamStatus.entity';
 import { TeamStatusTypes } from '../types/common';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 
@@ -15,8 +14,6 @@ export class TeamManagementService {
   constructor(
     @InjectRepository(Team)
     private readonly teamRepository: Repository<Team>,
-    @InjectRepository(TeamStatus)
-    private readonly teamStatusRepository: Repository<TeamStatus>,
     private readonly tournamentManagementService: TournamentManagementService,
     private readonly clubsService: ClubsService,
     private readonly usersService: UsersService,
@@ -73,16 +70,12 @@ export class TeamManagementService {
       throw new Error('Invalid tournament, club, or user IDs');
     }
 
-    const notAssignedTeamStatus = await this.teamStatusRepository.findOne({
-      where: { status: TeamStatusTypes.not_assigned },
-    });
-
     const newTeam = this.teamRepository.create({
       name,
       tournament,
       club,
       users,
-      statuses: [notAssignedTeamStatus]
+      status: TeamStatusTypes.not_assigned
     });
 
     const savedTeam = await this.teamRepository.save(newTeam);

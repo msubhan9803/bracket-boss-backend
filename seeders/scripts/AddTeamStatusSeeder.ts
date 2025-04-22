@@ -19,12 +19,17 @@ export class AddTeamStatusSeeder {
       // Insert Team Statuses
       await queryRunner.query(`
         INSERT INTO "team_status" ("status", "created_at", "updated_at") VALUES
+        ('${TeamStatusTypes.not_assigned}', NOW(), NOW()),
+        ('${TeamStatusTypes.registered}', NOW(), NOW()),
         ('${TeamStatusTypes.idle}', NOW(), NOW()),
         ('${TeamStatusTypes.coming_up}', NOW(), NOW()),
         ('${TeamStatusTypes.playing}', NOW(), NOW()),
-        ('${TeamStatusTypes.not_assigned}', NOW(), NOW()),
-        ('${TeamStatusTypes.removed}', NOW(), NOW()),
-        ('${TeamStatusTypes.disqualified}', NOW(), NOW());
+        ('${TeamStatusTypes.disqualified}', NOW(), NOW()),
+        ('${TeamStatusTypes.forfeited}', NOW(), NOW()),
+        ('${TeamStatusTypes.eliminated}', NOW(), NOW()),
+        ('${TeamStatusTypes.withdrawn}', NOW(), NOW()),
+        ('${TeamStatusTypes.bye}', NOW(), NOW()),
+        ('${TeamStatusTypes.waiting_list}', NOW(), NOW()),
       `);
 
       await queryRunner.commitTransaction();
