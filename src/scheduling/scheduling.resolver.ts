@@ -38,7 +38,7 @@ export class SchedulingResolver {
       const tournament =
         await this.tournamentManagementService.findOneWithRelations(
           tournamentId,
-          ['format', 'teamGenerationType'],
+          ['poolPlayFormat', 'playOffFormat', 'teamGenerationType'],
         );
       if (!tournament) {
         throw new Error(messages.NOT_FOUND);

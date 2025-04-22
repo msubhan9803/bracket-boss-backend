@@ -38,10 +38,8 @@ export class MatctCourtScheduleService {
             where: { match: { id: In(matchIds) } },
             relations: [
                 'match',
-                'match.club',
                 'match.tournament',
                 'match.matchRounds',
-                'match.tournamentRound',
                 'match.homeTeam',
                 'match.awayTeam',
                 'match.winnerTeam',

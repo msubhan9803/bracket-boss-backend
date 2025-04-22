@@ -40,7 +40,6 @@ export class TournamentManagementService {
     const query = this.tournamentRepository
       .createQueryBuilder('tournament')
       .leftJoinAndSelect('tournament.sport', 'sport')
-      // .leftJoinAndSelect('tournament.club', 'club')
       .leftJoinAndSelect('tournament.poolPlayFormat', 'poolPlayFormat')
       .leftJoinAndSelect('tournament.playOffFormat', 'playOffFormat')
       .leftJoinAndSelect('tournament.teamGenerationType', 'teamGenerationType')
@@ -68,7 +67,7 @@ export class TournamentManagementService {
 
   findOneWithRelations(
     tournamentId: number,
-    relations: string[] = ['sport', 'club', 'format', 'teamGenerationType'],
+    relations: string[] = ['sport', 'poolPlayFormat', 'playOffFormat', 'teamGenerationType'],
   ): Promise<Tournament> {
     return this.tournamentRepository.findOne({
       where: { id: tournamentId },
