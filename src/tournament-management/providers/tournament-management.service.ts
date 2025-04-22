@@ -10,6 +10,7 @@ import { FormatManagementService } from 'src/format-management/providers/format-
 import { UpdateTournamentInput } from '../dtos/update-tournament-input.dto';
 import messages from 'src/utils/messages';
 import { TeamGenerationTypeManagementService } from 'src/team-generation-type-management/providers/team-generation-type-management.service';
+import { TournamentStatusTypesEnum } from '../types/common';
 
 @Injectable()
 export class TournamentManagementService {
@@ -39,8 +40,9 @@ export class TournamentManagementService {
     const query = this.tournamentRepository
       .createQueryBuilder('tournament')
       .leftJoinAndSelect('tournament.sport', 'sport')
-      .leftJoinAndSelect('tournament.club', 'club')
-      .leftJoinAndSelect('tournament.format', 'format')
+      // .leftJoinAndSelect('tournament.club', 'club')
+      .leftJoinAndSelect('tournament.poolPlayFormat', 'poolPlayFormat')
+      .leftJoinAndSelect('tournament.playOffFormat', 'playOffFormat')
       .leftJoinAndSelect('tournament.teamGenerationType', 'teamGenerationType')
       .skip((page - 1) * pageSize)
       .take(pageSize);
@@ -81,10 +83,12 @@ export class TournamentManagementService {
       SportName.pickleball,
     );
 
-    const club = await this.clubsService.findOne(createTournamentDto.clubId);
+    const poolPlayFormat = await this.formatManagementService.findOne(
+      createTournamentDto.poolPlayFormatId,
+    );
 
-    const format = await this.formatManagementService.findOne(
-      createTournamentDto.formatId,
+    const playOffFormat = await this.formatManagementService.findOne(
+      createTournamentDto.poolPlayFormatId,
     );
 
     const teamGenerationType =
@@ -98,12 +102,13 @@ export class TournamentManagementService {
       start_date: createTournamentDto.start_date,
       end_date: createTournamentDto.end_date,
       isPrivate: createTournamentDto.isPrivate,
-      club,
       sport,
-      format,
+      poolPlayFormat,
+      playOffFormat,
       teamGenerationType,
       splitSwitchGroupBy: createTournamentDto.splitSwitchGroupBy,
-      bestOfRounds: createTournamentDto.bestOfRounds
+      matchBestOfRounds: createTournamentDto.matchBestOfRounds,
+      status: TournamentStatusTypesEnum.not_started
     });
 
     return this.tournamentRepository.save(newTournament);
@@ -117,9 +122,7 @@ export class TournamentManagementService {
       SportName.pickleball,
     );
 
-    const club = await this.clubsService.findOne(updateTournamentInput.clubId);
-
-    const format = await this.formatManagementService.findOne(
+    const poolPlayFormat = await this.formatManagementService.findOne(
       updateTournamentInput.formatId,
     );
 
@@ -130,9 +133,8 @@ export class TournamentManagementService {
       start_date: updateTournamentInput.start_date,
       end_date: updateTournamentInput.end_date,
       isPrivate: updateTournamentInput.isPrivate,
-      club,
       sport,
-      format,
+      poolPlayFormat,
     });
 
     if (!user) {
