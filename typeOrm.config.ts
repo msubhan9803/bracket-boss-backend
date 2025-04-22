@@ -29,6 +29,8 @@ import { MatchCourtSchedules } from 'src/match-management/entities/match-court-s
 import { Level } from 'src/level/entities/level.entity';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Round } from 'src/round/entities/round.entity';
+import { LevelTeam } from 'src/level/entities/level-team.entity';
+import { RoundTeam } from 'src/round/entities/round-team.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFilePath });
@@ -57,8 +59,10 @@ export default new DataSource({
     Sport,
     Format,
     Level,
+    LevelTeam,
     Pool,
     Round,
+    RoundTeam,
     Court,
     Team,
     TeamGenerationType,

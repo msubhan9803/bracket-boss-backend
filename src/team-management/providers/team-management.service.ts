@@ -75,7 +75,7 @@ export class TeamManagementService {
       tournament,
       club,
       users,
-      status: TeamStatusTypes.not_assigned
+      statusInTournament: TeamStatusTypes.not_assigned
     });
 
     const savedTeam = await this.teamRepository.save(newTeam);

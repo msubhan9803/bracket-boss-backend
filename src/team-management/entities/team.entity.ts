@@ -48,7 +48,7 @@ export class Team {
 
   @Field(() => TeamStatusTypes)
   @Column('varchar')
-  status: TeamStatusTypes;
+  statusInTournament: TeamStatusTypes;
 
   @Field()
   @CreateDateColumn()

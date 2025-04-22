@@ -494,7 +494,7 @@ type Team {
   createdDate: DateTime!
   id: CustomID!
   name: String!
-  status: TeamStatusTypes!
+  statusInTournament: TeamStatusTypes!
   tournament: Tournament!
   updatedDate: DateTime!
   users: [User!]
