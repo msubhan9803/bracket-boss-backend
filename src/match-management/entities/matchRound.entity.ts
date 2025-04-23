@@ -6,18 +6,10 @@ import {
   ManyToOne,
   JoinColumn,
   Column,
-  ManyToMany,
-  JoinTable,
-  OneToMany,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
-import { Club } from 'src/clubs/entities/club.entity';
-import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { Match } from './match.entity';
-import { Team } from 'src/team-management/entities/team.entity';
-import { MatchRoundStatus } from './matchRoundStatus.entity';
-import { MatchRoundScore } from './matchRoundScore.entity';
 
 @ObjectType()
 @Entity()
@@ -26,48 +18,16 @@ export class MatchRound {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => Club)
-  @ManyToOne(() => Club)
-  @JoinColumn()
-  club: Club;
-
-  @Field(() => Tournament)
-  @ManyToOne(() => Tournament)
-  @JoinColumn()
-  tournament: Tournament;
-
   @Field(() => Match)
   @ManyToOne(() => Match, {
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   match: Match;
 
   @Field()
-  @CreateDateColumn()
-  startTime: Date;
-
-  @Field()
-  @CreateDateColumn()
-  endTime: Date;
-
-  @Field()
   @Column('int')
   matchRoundNumber: number;
-
-  @Field(() => Team, { nullable: true })
-  @ManyToOne(() => Team, { nullable: true })
-  @JoinColumn()
-  winnerTeam?: Team;
-
-  @Field(() => [MatchRoundStatus])
-  @ManyToMany(() => MatchRoundStatus, (matchStatus) => matchStatus.matchRounds)
-  @JoinTable({ name: 'match_round_match_round_statuses' })
-  statuses: MatchRoundStatus[];
-
-  @Field(() => [MatchRoundScore])
-  @OneToMany(() => MatchRoundScore, (matchRoundScore) => matchRoundScore.matchRound)
-  matchRoundScores: MatchRoundScore[];
 
   @Field()
   @CreateDateColumn()

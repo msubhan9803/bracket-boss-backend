@@ -1,16 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
-import { Club } from 'src/clubs/entities/club.entity';
 import { TeamManagementService } from 'src/team-management/providers/team-management.service';
 import { CourtManagementService } from 'src/court-management/providers/court-management.service';
 import { MatchService } from 'src/match-management/providers/match.service';
 import { MatchRoundService } from 'src/match-management/providers/match-round.service';
-import { MatchRoundStatusService } from 'src/match-management/providers/match-round-status.service';
 import { MatchInput, TeamInput } from '../dtos/create-schedule-input.dto';
-import {
-  MatchRoundStatusTypes,
-  MatchStatusTypes,
-} from 'src/match-management/types/common';
+import { MatchStatusTypes } from 'src/match-management/types/common';
 import { TimeSlotWithCourts } from 'src/court-management/types';
 import { Team } from 'src/team-management/entities/team.entity';
 import { GroupedMatches } from '../types/common';
@@ -25,7 +20,6 @@ export class CreateScheduleHelperService {
     private readonly courtManagementService: CourtManagementService,
     private readonly matchService: MatchService,
     private readonly matchRoundService: MatchRoundService,
-    private readonly matchRoundStatusService: MatchRoundStatusService,
     private readonly matctCourtScheduleService: MatctCourtScheduleService,
     private readonly courtScheduleService: CourtScheduleService,
   ) {}
@@ -147,10 +141,6 @@ export class CreateScheduleHelperService {
     tournament: Tournament,
     bestOfRounds: number,
   ) {
-    const notStartedMatchRoundStatus =
-      await this.matchRoundStatusService.findMatchStatusByStatusName(
-        MatchRoundStatusTypes.not_started,
-      );
     let createdMatchRounds = [];
 
     for (let index = 0; index < createdMatches.length; index++) {
@@ -164,7 +154,6 @@ export class CreateScheduleHelperService {
             startTime: match.matchDate,
             endTime: match.matchDate,
             matchRoundNumber: index,
-            statuses: [notStartedMatchRoundStatus],
           },
         );
 

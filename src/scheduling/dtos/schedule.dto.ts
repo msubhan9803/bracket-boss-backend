@@ -26,5 +26,5 @@ export class ScheduleDto {
   matches: MatchWithCourtDto[];
 
   @Field(() => [MatchRound])
-  matchRounds: MatchRound[];
+  matchRounds?: MatchRound[];
 }

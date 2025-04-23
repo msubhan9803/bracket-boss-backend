@@ -213,46 +213,11 @@ input MatchInput {
 }
 
 type MatchRound {
-  club: Club!
   created_at: DateTime!
-  endTime: DateTime!
   id: CustomID!
   match: Match!
   matchRoundNumber: Float!
-  matchRoundScores: [MatchRoundScore!]!
-  startTime: DateTime!
-  statuses: [MatchRoundStatus!]!
-  tournament: Tournament!
   updated_at: DateTime!
-  winnerTeam: Team
-}
-
-type MatchRoundScore {
-  club: Club!
-  created_at: DateTime!
-  id: CustomID!
-  matchRound: MatchRound!
-  player: User!
-  score: Float!
-  team: Team!
-  tournament: Tournament!
-  updated_at: DateTime!
-}
-
-type MatchRoundStatus {
-  created_at: DateTime!
-  id: CustomID!
-  matchRounds: [MatchRound!]!
-  status: MatchRoundStatusTypes!
-  updated_at: DateTime!
-}
-
-enum MatchRoundStatusTypes {
-  completed
-  in_progress
-  not_started
-  paused
-  void
 }
 
 enum MatchStatusTypes {
