@@ -77,6 +77,10 @@ export class Tournament {
   @Field()
   @Column('int')
   matchBestOfRounds: number;
+
+  @Field()
+  @Column('int')
+  numberOfPools: number;
   
   @Field(() => TournamentStatusTypesEnum)
   @Column('varchar')

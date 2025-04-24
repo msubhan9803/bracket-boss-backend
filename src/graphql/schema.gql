@@ -83,6 +83,7 @@ input CreateTournamentInputDto {
   isPrivate: Boolean!
   matchBestOfRounds: Float!
   name: String!
+  numberOfPools: Float!
   playOffFormatId: Float!
   poolPlayFormatId: Float!
   splitSwitchGroupBy: SplitSwitchGroupByEnum
@@ -517,6 +518,7 @@ type Tournament {
   levels: [Level!]!
   matchBestOfRounds: Float!
   name: String!
+  numberOfPools: Float!
   playOffFormat: Format!
   poolPlayFormat: Format!
   splitSwitchGroupBy: SplitSwitchGroupByEnum

@@ -50,4 +50,8 @@ export class CreateTournamentInputDto {
   @Field()
   @IsInt({ message: 'Best of Rounds must be an integer' })
   matchBestOfRounds: number;
+
+  @Field()
+  @IsInt({ message: 'Number of Pools must be an integer' })
+  numberOfPools: number;
 }

@@ -15,9 +15,12 @@ import { MatchManagementModule } from 'src/match-management/match-management.mod
 import { ScheduleSpreadsheetHandlerService } from './providers/schedule-spreadsheet-handler.service';
 import { MatchGroupingService } from './providers/match-grouping.service';
 import { CreateScheduleHelperService } from './providers/create-schedule-helper.service';
+import { LevelModule } from 'src/level/level.module';
+import { PoolModule } from 'src/pool/pool.module';
+import { RoundModule } from 'src/round/round.module';
 
 @Module({
-  imports: [TournamentManagementModule, UsersModule, ClubsModule, TeamManagementModule, CourtManagementModule, MatchManagementModule],
+  imports: [TournamentManagementModule, UsersModule, ClubsModule, TeamManagementModule, CourtManagementModule, MatchManagementModule, LevelModule, PoolModule, RoundModule],
   providers: [
     SchedulingService,
     SchedulingResolver,

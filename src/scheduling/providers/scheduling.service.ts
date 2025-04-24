@@ -8,14 +8,16 @@ import { UsersService } from 'src/users/providers/users.service';
 import { CreateScheduleInputDto } from '../dtos/create-schedule-input.dto';
 import { CreateScheduleResponseDto } from '../dtos/create-schedule-response.dto';
 import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
-import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { TeamManagementService } from 'src/team-management/providers/team-management.service';
 import { MatchService } from 'src/match-management/providers/match.service';
-import { MatchRoundService } from 'src/match-management/providers/match-round.service';
 import { ScheduleDto } from '../dtos/schedule.dto';
 import { MatchGroupingService } from './match-grouping.service';
 import { CreateScheduleHelperService } from './create-schedule-helper.service';
 import { MatctCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
+import { LevelService } from 'src/level/providers/level.service';
+import { LevelTypeEnum, LevelTypeOrderNumber } from 'src/level/types/common';
+import { PoolService } from 'src/pool/providers/pool.service';
+import { RoundService } from 'src/round/providers/round.service';
 
 @Injectable()
 export class SchedulingService {
@@ -29,13 +31,14 @@ export class SchedulingService {
     teamGenerationStrategies: TeamGenerationStrategy[],
     private usersService: UsersService,
     private readonly tournamentManagementService: TournamentManagementService,
-    private readonly clubsService: ClubsService,
     private readonly teamManagementService: TeamManagementService,
     private readonly matchService: MatchService,
-    private readonly matchRoundService: MatchRoundService,
     private readonly createScheduleHelperService: CreateScheduleHelperService,
     private readonly matchGroupingService: MatchGroupingService,
     private readonly matctCourtScheduleService: MatctCourtScheduleService,
+    private readonly levelService: LevelService,
+    private readonly poolService: PoolService,
+    private readonly roundService: RoundService,
   ) {
     this.formatStrategies = formatStrategies.reduce((acc, strategy) => {
       acc[strategy.type] = strategy;
@@ -92,26 +95,67 @@ export class SchedulingService {
     return { matches, teams };
   }
 
-  async createSchedule(createScheduleInputDto: CreateScheduleInputDto): Promise<CreateScheduleResponseDto> {
+  async createSchedule(
+    createScheduleInputDto: CreateScheduleInputDto,
+  ): Promise<CreateScheduleResponseDto> {
     const { tournamentId, matches } = createScheduleInputDto;
 
-    const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
+    const tournament =
+      await this.tournamentManagementService.findOneWithRelations(tournamentId);
 
     /**
      * Create Teams
      */
     const teams = matches.map((match) => match.teams).flat();
-    const teamMap = await this.createScheduleHelperService.createTeams(teams, tournamentId);
+    const teamMap = await this.createScheduleHelperService.createTeams(
+      teams,
+      tournamentId,
+    );
 
     /**
      * Fetching available courts for the tournament duration
      */
-    const timeSlotWithCourts = await this.createScheduleHelperService.getAvailableCourts(tournament.start_date, tournament.end_date);
+    const timeSlotWithCourts =
+      await this.createScheduleHelperService.getAvailableCourts(
+        tournament.start_date,
+        tournament.end_date,
+      );
+
+    /**
+     * Creating Level
+     */
+    const level = await this.levelService.createLevel({
+      type: LevelTypeEnum.pool_play,
+      name: 'Pool Play',
+      order: LevelTypeOrderNumber.pool_play,
+      format: tournament.poolPlayFormat,
+    });
+
+    /**
+     * Creating Pools
+     */
+    for (let index = 0; index < tournament.numberOfPools; index++) {
+      const pool = await this.poolService.createPool({
+        name: `Pool ${index + 1}`,
+        tournament,
+        level,
+      });
+
+      /**
+       * Creaete Rounds
+       */
+      // const round = await this.roundService.createRound({
+      //   name: '',
+      //   tournament,
+      //   pool,
+      // })
+    }
 
     /**
      * Grouping matches by uniqueness
      */
-    const groupedMatches = this.matchGroupingService.groupMatchesByUniqueness(matches);
+    const groupedMatches =
+      this.matchGroupingService.groupMatchesByUniqueness(matches);
 
     /**
      * Creating Matches
@@ -126,11 +170,12 @@ export class SchedulingService {
     /**
      * Creating Match Rounds
      */
-    const createdMatchRounds = await this.createScheduleHelperService.createMatchRounds(
-      createdMatches,
-      tournament,
-      tournament.matchBestOfRounds,
-    );
+    const createdMatchRounds =
+      await this.createScheduleHelperService.createMatchRounds(
+        createdMatches,
+        tournament,
+        tournament.matchBestOfRounds,
+      );
 
     return {
       schedule: {
@@ -143,20 +188,26 @@ export class SchedulingService {
   }
 
   async getScheduleOfTournament(tournamentId: number): Promise<ScheduleDto> {
-    const tournament = await this.tournamentManagementService.findOne(tournamentId);
-    const teams = await this.teamManagementService.findTeamsByTournament(tournament)
-    const matches = await this.matchService.findMatchesByTournament(tournament)
-    const matchesWithCourtSchedule = await this.matctCourtScheduleService.populateMatchesCourtsInMatches(matches);
+    const tournament =
+      await this.tournamentManagementService.findOne(tournamentId);
+    const teams =
+      await this.teamManagementService.findTeamsByTournament(tournament);
+    const matches = await this.matchService.findMatchesByTournament(tournament);
+    const matchesWithCourtSchedule =
+      await this.matctCourtScheduleService.populateMatchesCourtsInMatches(
+        matches,
+      );
 
     return {
       tournament,
       teams,
       matches: matchesWithCourtSchedule,
-    }
+    };
   }
 
   async deleteScheduleOfTournament(tournamentId: number) {
-    const tournament = await this.tournamentManagementService.findOne(tournamentId);
+    const tournament =
+      await this.tournamentManagementService.findOne(tournamentId);
     const matches = await this.matchService.findMatchesByTournament(tournament);
 
     for (const match of matches) {

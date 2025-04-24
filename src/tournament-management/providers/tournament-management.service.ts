@@ -5,7 +5,6 @@ import { Tournament } from '../entities/tournament.entity';
 import { SportManagementService } from 'src/sport-management/providers/sport-management.service';
 import { SportName } from 'src/sport-management/types/sport.enums';
 import { CreateTournamentInputDto } from '../dtos/create-tournament-input.dto';
-import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { FormatManagementService } from 'src/format-management/providers/format-management.service';
 import { UpdateTournamentInput } from '../dtos/update-tournament-input.dto';
 import messages from 'src/utils/messages';
@@ -18,7 +17,6 @@ export class TournamentManagementService {
     @InjectRepository(Tournament)
     private tournamentRepository: Repository<Tournament>,
     private sportManagementService: SportManagementService,
-    private clubsService: ClubsService,
     private formatManagementService: FormatManagementService,
     private teamGenerationTypeManagementService: TeamGenerationTypeManagementService,
   ) {}
@@ -107,7 +105,8 @@ export class TournamentManagementService {
       teamGenerationType,
       splitSwitchGroupBy: createTournamentDto.splitSwitchGroupBy,
       matchBestOfRounds: createTournamentDto.matchBestOfRounds,
-      status: TournamentStatusTypesEnum.not_started
+      status: TournamentStatusTypesEnum.not_started,
+      numberOfPools: createTournamentDto.numberOfPools,
     });
 
     return this.tournamentRepository.save(newTournament);
