@@ -8,6 +8,7 @@ import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { UsersService } from 'src/users/providers/users.service';
 import { TeamStatusTypes } from '../types/common';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
+import { CreateTournamentTeamsInputDto } from '../dtos/create-tournament-teams-input.dto';
 
 @Injectable()
 export class TeamManagementService {
@@ -17,7 +18,7 @@ export class TeamManagementService {
     private readonly tournamentManagementService: TournamentManagementService,
     private readonly clubsService: ClubsService,
     private readonly usersService: UsersService,
-  ) { }
+  ) {}
 
   async findAllWithRelations(options: {
     page: number;
@@ -73,12 +74,54 @@ export class TeamManagementService {
       name,
       tournament,
       users,
-      statusInTournament: TeamStatusTypes.not_assigned
+      statusInTournament: TeamStatusTypes.not_assigned,
     });
 
     const savedTeam = await this.teamRepository.save(newTeam);
 
     return savedTeam;
+  }
+
+  async createTournamentTeams(
+    createTournamentTeamsInputDto: CreateTournamentTeamsInputDto,
+  ): Promise<Team[]> {
+    const { tournamentId, teams } = createTournamentTeamsInputDto;
+
+    const tournament =
+      await this.tournamentManagementService.findOne(tournamentId);
+    if (!tournament) {
+      throw new Error(`Tournament with ID ${tournamentId} not found`);
+    }
+
+    const allUserIds = teams.reduce(
+      (acc, team) => [...acc, ...team.userIds],
+      [],
+    );
+    const uniqueUserIds = [...new Set(allUserIds)];
+    const users = await this.usersService.findMultipleUsersById(uniqueUserIds);
+
+    if (users.length !== uniqueUserIds.length) {
+      const foundUserIds = users.map((user) => user.id);
+      const missingUserIds = uniqueUserIds.filter(
+        (id) => !foundUserIds.includes(id),
+      );
+      throw new Error(`Users with IDs ${missingUserIds.join(', ')} not found`);
+    }
+
+    const teamsToCreate = teams.map((teamInput) => {
+      const teamUsers = users.filter((user) =>
+        teamInput.userIds.includes(user.id),
+      );
+      return this.teamRepository.create({
+        name: teamInput.name,
+        tournament,
+        users: teamUsers,
+        statusInTournament: TeamStatusTypes.not_assigned,
+      });
+    });
+
+    const savedTeams = await this.teamRepository.save(teamsToCreate);
+    return savedTeams;
   }
 
   async deleteTeamsByTournament(tournament: Tournament) {

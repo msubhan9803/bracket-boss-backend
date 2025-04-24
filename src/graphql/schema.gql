@@ -91,6 +91,11 @@ input CreateTournamentInputDto {
   teamGenerationTypeId: Float!
 }
 
+input CreateTournamentTeamsInputDto {
+  teams: [TournamentTeamInput!]!
+  tournamentId: Int!
+}
+
 """A custom scalar to handle numeric IDs as integers"""
 scalar CustomID
 
@@ -277,6 +282,7 @@ type Mutation {
   createSchedule(input: CreateScheduleInputDto!): CreateScheduleResponseDto!
   createTeam(input: CreateTeamInputDto!): Team!
   createTournament(input: CreateTournamentInputDto!): Tournament!
+  createTournamentTeam(input: CreateTournamentTeamsInputDto!): [Team!]!
   deleteSchedule(input: DeleteScheduleInputDto!): DeleteScheduleResponseDto!
 
   """Download empty schedule template"""
@@ -539,6 +545,11 @@ enum TournamentStatusTypesEnum {
   not_started
   play_off_in_progress
   pool_play_in_progress
+}
+
+input TournamentTeamInput {
+  name: String!
+  userIds: [Float!]!
 }
 
 input UpdateTournamentInput {

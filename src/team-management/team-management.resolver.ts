@@ -6,6 +6,7 @@ import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
 import { TeamListResponse } from './dtos/get-all-teams-response.dto';
 import { SortInput } from 'src/common/dtos/sort-input.dto';
+import { CreateTournamentTeamsInputDto } from './dtos/create-tournament-teams-input.dto';
 
 @Resolver(() => Team)
 export class TeamManagementResolver {
@@ -45,5 +46,12 @@ export class TeamManagementResolver {
     @Args('input') createTeamInput: CreateTeamInputDto,
   ): Promise<Team> {
     return this.teamManagementService.createTeam(createTeamInput);
+  }
+
+  @Mutation(() => [Team])
+  async createTournamentTeam(
+    @Args('input') createTournamentTeamsInputDto: CreateTournamentTeamsInputDto,
+  ): Promise<Team[]> {
+    return this.teamManagementService.createTournamentTeams(createTournamentTeamsInputDto);
   }
 }
