@@ -19,6 +19,6 @@ export class CreateTournamentTeamsInputDto {
   tournamentId: number;
 
   @Field(() => [TournamentTeamInput])
-  @IsArray({ each: true })
+  @IsArray()
   teams: TournamentTeamInput[];
 }
