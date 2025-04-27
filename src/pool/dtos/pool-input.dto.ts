@@ -5,4 +5,5 @@ export class PoolInputDto {
   name: string;
   tournament: Tournament;
   level: Level;
+  order: number;
 }

@@ -5,4 +5,5 @@ export class RoundInputDto {
   name: string;
   tournament: Tournament;
   pool: Pool;
+  order: number;
 }

@@ -25,6 +25,10 @@ export class Round {
   @Column('text')
   name: string;
 
+  @Field()
+  @Column('int')
+  order: number;
+
   @ManyToOne(() => Tournament, {
     onDelete: 'CASCADE',
   })

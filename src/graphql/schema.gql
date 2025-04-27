@@ -148,10 +148,6 @@ input GetScheduleOfTournamentInput {
   tournamentId: Float!
 }
 
-type GetScheduleOfTournamentResponseDto {
-  schedule: ScheduleDto!
-}
-
 type Level {
   created_at: DateTime!
   format: Format!
@@ -207,22 +203,6 @@ enum MatchStatusTypes {
   not_started
   paused
   void
-}
-
-type MatchWithCourtDto {
-  awayTeam: Team!
-  courtSchedule: CourtSchedule
-  created_at: DateTime!
-  homeTeam: Team!
-  id: CustomID!
-  matchDate: DateTime
-  matchRounds: [MatchRound!]!
-  round: Round!
-  status: MatchStatusTypes!
-  title: String!
-  tournament: Tournament!
-  updated_at: DateTime!
-  winnerTeam: Team
 }
 
 type MessageResponseDto {
@@ -302,6 +282,7 @@ type Pool {
   id: CustomID!
   level: Level!
   name: String!
+  order: Float!
   rounds: [Round!]!
   tournament: Tournament!
   updated_at: DateTime!
@@ -321,7 +302,7 @@ type Query {
   getClubById(clubId: Float!): Club!
   getCourtById(courtId: Float!): Court!
   getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!
-  getScheduleOfTournament(input: GetScheduleOfTournamentInput!): GetScheduleOfTournamentResponseDto!
+  getScheduleOfTournament(input: GetScheduleOfTournamentInput!): [Level!]!
   getStepsOfUser: [Step!]!
   getTournamentById(tournamentId: Float!): Tournament!
   getUserById(clubId: Float, userId: Float!): UserWithRoleClub!
@@ -363,16 +344,10 @@ type Round {
   id: CustomID!
   matches: [Match!]!
   name: String!
+  order: Float!
   pool: Pool!
   tournament: Tournament!
   updated_at: DateTime!
-}
-
-type ScheduleDto {
-  matchRounds: [MatchRound!]!
-  matches: [MatchWithCourtDto!]!
-  teams: [Team!]!
-  tournament: Tournament!
 }
 
 input ScheduleTimingInputDto {

@@ -11,6 +11,7 @@ import { PoolService } from 'src/pool/providers/pool.service';
 import { LevelTypeEnum, LevelTypeOrderNumber } from 'src/level/types/common';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Level } from 'src/level/entities/level.entity';
+import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 
 @Injectable()
 export class SchedulingService {
@@ -55,6 +56,7 @@ export class SchedulingService {
       name: 'Pool Play',
       order: LevelTypeOrderNumber.pool_play,
       format: tournament.poolPlayFormat,
+      tournament,
     });
 
     /**
@@ -66,6 +68,7 @@ export class SchedulingService {
         name: `Pool ${poolNumber + 1}`,
         tournament,
         level,
+        order: poolNumber + 1,
       });
 
       const roundsWithMatches = await formatStrategy.createInitialRounds(tournament, pool, teamsByPool[poolNumber]);
@@ -82,17 +85,21 @@ export class SchedulingService {
     };
   }
 
-  async getScheduleOfTournament(tournamentId: number): Promise<ScheduleDto> {
+  async getScheduleOfTournament(tournamentId: number): Promise<Level[]> {
     const tournament = await this.tournamentManagementService.findOne(tournamentId);
-    const teams = await this.teamManagementService.findTeamsByTournament(tournament);
-    const matches = await this.matchService.findMatchesByTournament(tournament);
-    const matchesWithCourtSchedule = await this.matchCourtScheduleService.populateMatchesCourtsInMatches(matches);
+    const levels = await this.levelService.findOneWithRelations(tournament, [
+      'format',
+      'tournament',
+      'pools',
+      'pools.rounds',
+      'pools.rounds.matches',
+      'pools.rounds.matches.homeTeam',
+      'pools.rounds.matches.awayTeam',
+      'pools.rounds.matches.winnerTeam',
+      'pools.rounds.matches.matchRounds',
+    ]);
 
-    return {
-      tournament,
-      teams,
-      matches: matchesWithCourtSchedule,
-    };
+    return levels;
   }
 
   async deleteScheduleOfTournament(tournamentId: number) {

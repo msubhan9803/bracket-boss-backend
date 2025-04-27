@@ -40,6 +40,7 @@ export class RoundRobinScheduleBuilderService {
         name: `Round ${index + 1}`,
         tournament,
         pool,
+        order: index + 1,
       });
 
       let createdMatches = [];
@@ -70,6 +71,7 @@ export class RoundRobinScheduleBuilderService {
           homeTeam,
           awayTeam,
           status: MatchStatusTypes.not_started,
+          round,
         });
         createdMatches.push(createdMatch);
 

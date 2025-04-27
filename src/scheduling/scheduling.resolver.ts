@@ -4,7 +4,6 @@ import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
 import messages from 'src/utils/messages';
 import { GetScheduleOfTournamentInput } from './dtos/get-schedule-of-tournament-input.dto';
-import { GetScheduleOfTournamentResponseDto } from './dtos/get-schedule-of-tournament-response.dto';
 import { DeleteScheduleInputDto } from './dtos/delete-schedule-input.dto';
 import { DeleteScheduleResponseDto } from './dtos/delete-schedule-response.dto';
 import { UsersService } from 'src/users/providers/users.service';
@@ -23,14 +22,14 @@ export class SchedulingResolver {
   ) {}
 
   @UseGuards(AuthCheckGuard)
-  @Query(() => GetScheduleOfTournamentResponseDto)
+  @Query(() => [Level])
   async getScheduleOfTournament(@Args('input') getScheduleOfTournamentInput: GetScheduleOfTournamentInput) {
     try {
       const { tournamentId } = getScheduleOfTournamentInput;
 
-      const schedule = await this.schedulingService.getScheduleOfTournament(tournamentId);
+      const tournament = await this.schedulingService.getScheduleOfTournament(tournamentId);
 
-      return { schedule };
+      return tournament;
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }
