@@ -4,14 +4,12 @@ import { StrategyTypes } from 'src/common/types/global';
 import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
 import { TeamManagementService } from 'src/team-management/providers/team-management.service';
 import { MatchService } from 'src/match-management/providers/match.service';
-import { ScheduleDto } from '../dtos/schedule.dto';
 import { MatchCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
 import { LevelService } from 'src/level/providers/level.service';
 import { PoolService } from 'src/pool/providers/pool.service';
 import { LevelTypeEnum, LevelTypeOrderNumber } from 'src/level/types/common';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Level } from 'src/level/entities/level.entity';
-import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 
 @Injectable()
 export class SchedulingService {
