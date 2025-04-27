@@ -13,8 +13,7 @@ import { TeamManagementModule } from 'src/team-management/team-management.module
 import { CourtManagementModule } from 'src/court-management/court-management.module';
 import { MatchManagementModule } from 'src/match-management/match-management.module';
 import { ScheduleSpreadsheetHandlerService } from './providers/schedule-spreadsheet-handler.service';
-import { MatchGroupingService } from './providers/match-grouping.service';
-import { CreateScheduleHelperService } from './providers/create-schedule-helper.service';
+import { RoundRobinScheduleBuilderService } from './providers/round-robin-schedule-builder.service';
 import { LevelModule } from 'src/level/level.module';
 import { PoolModule } from 'src/pool/pool.module';
 import { RoundModule } from 'src/round/round.module';
@@ -27,7 +26,8 @@ import { RoundModule } from 'src/round/round.module';
     JwtService,
     {
       provide: StrategyTypes.FORMAT_STRATEGIES,
-      useFactory: () => [new RoundRobinStrategy()],
+      useFactory: (matchGroupingService: RoundRobinScheduleBuilderService) => [new RoundRobinStrategy(matchGroupingService)],
+      inject: [RoundRobinScheduleBuilderService],
     },
     {
       provide: StrategyTypes.TEAM_GENERATION_STRATEGIES,
@@ -37,8 +37,7 @@ import { RoundModule } from 'src/round/round.module';
       ],
     },
     ScheduleSpreadsheetHandlerService,
-    MatchGroupingService,
-    CreateScheduleHelperService,
+    RoundRobinScheduleBuilderService,
   ],
 })
 export class SchedulingModule {}

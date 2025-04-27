@@ -2,11 +2,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { SchedulingService } from './providers/scheduling.service';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
-import { GetSchedulePreperationDataOfTournamentInput } from './dtos/get-schedule-preperation-data-of-tournament-input.dto';
-import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
-import { GetSchedulePreperationDataOfTournamentResponseDto } from './dtos/get-schedule-preperation-data-of-tournament-response.dto';
 import messages from 'src/utils/messages';
-import { CreateScheduleInputDto } from './dtos/create-schedule-input.dto';
 import { CreateScheduleResponseDto } from './dtos/create-schedule-response.dto';
 import { GetScheduleOfTournamentInput } from './dtos/get-schedule-of-tournament-input.dto';
 import { GetScheduleOfTournamentResponseDto } from './dtos/get-schedule-of-tournament-response.dto';
@@ -22,39 +18,9 @@ import { BulkMatchImportResponseDto } from './dtos/bulk-match-import-response.dt
 export class SchedulingResolver {
   constructor(
     private readonly schedulingService: SchedulingService,
-    private readonly tournamentManagementService: TournamentManagementService,
-    private usersService: UsersService,
+    private readonly usersService: UsersService,
     private readonly scheduleSpreadsheetHandlerService: ScheduleSpreadsheetHandlerService,
   ) { }
-
-  @UseGuards(AuthCheckGuard)
-  @Query(() => GetSchedulePreperationDataOfTournamentResponseDto)
-  async getSchedulePreperationDataOfTournament(
-    @Args('input') getSchedulePreperationDataOfTournamentInput: GetSchedulePreperationDataOfTournamentInput,
-  ) {
-    try {
-      const { tournamentId, users } = getSchedulePreperationDataOfTournamentInput;
-
-      const tournament =
-        await this.tournamentManagementService.findOneWithRelations(
-          tournamentId,
-          ['poolPlayFormat', 'playOffFormat', 'teamGenerationType'],
-        );
-      if (!tournament) {
-        throw new Error(messages.NOT_FOUND);
-      }
-
-      const { matches, teams } =
-        await this.schedulingService.generateTeamsBasedOnStrategy(
-          tournament,
-          users,
-        );
-
-      return { matches, teams };
-    } catch (error) {
-      throw new InternalServerErrorException('Error: ', error.message);
-    }
-  }
 
   @UseGuards(AuthCheckGuard)
   @Query(() => GetScheduleOfTournamentResponseDto)
@@ -76,9 +42,9 @@ export class SchedulingResolver {
 
   @UseGuards(AuthCheckGuard)
   @Mutation(() => CreateScheduleResponseDto)
-  async createSchedule(@Args('input') createScheduleDto: CreateScheduleInputDto): Promise<CreateScheduleResponseDto> {
+  async createSchedule(@Args('tournamentId') tournamentId: number): Promise<CreateScheduleResponseDto> {
     try {
-      return this.schedulingService.createSchedule(createScheduleDto);
+      return this.schedulingService.createSchedule(tournamentId);
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }
@@ -137,7 +103,7 @@ export class SchedulingResolver {
   ): Promise<any> {
     const parsedScheduleData = await this.scheduleSpreadsheetHandlerService.parseMatchScheduleFromTemplate(file)
 
-    await this.schedulingService.createSchedule(parsedScheduleData);
+    await this.schedulingService.createSchedule(parsedScheduleData.tournamentId);
 
     return {
       message: messages.MATCH_SCHEDULE_CREATED_SUCCESSFULLY,

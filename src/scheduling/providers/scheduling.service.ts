@@ -1,23 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { FormatStrategy } from '../interface/format-strategy.interface';
-import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { StrategyTypes } from 'src/common/types/global';
-import { Match as MatchEntity, MatchTeam } from '../types/common';
 import { TeamGenerationStrategy } from '../interface/team-generation-strategy.interface';
-import { UsersService } from 'src/users/providers/users.service';
-import { CreateScheduleInputDto } from '../dtos/create-schedule-input.dto';
 import { CreateScheduleResponseDto } from '../dtos/create-schedule-response.dto';
 import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
 import { TeamManagementService } from 'src/team-management/providers/team-management.service';
 import { MatchService } from 'src/match-management/providers/match.service';
 import { ScheduleDto } from '../dtos/schedule.dto';
-import { MatchGroupingService } from './match-grouping.service';
-import { CreateScheduleHelperService } from './create-schedule-helper.service';
-import { MatctCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
+import { MatchCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
 import { LevelService } from 'src/level/providers/level.service';
-import { LevelTypeEnum, LevelTypeOrderNumber } from 'src/level/types/common';
 import { PoolService } from 'src/pool/providers/pool.service';
-import { RoundService } from 'src/round/providers/round.service';
+import { LevelTypeEnum, LevelTypeOrderNumber } from 'src/level/types/common';
+import { Pool } from 'src/pool/entities/pool.entity';
 
 @Injectable()
 export class SchedulingService {
@@ -29,16 +23,12 @@ export class SchedulingService {
     formatStrategies: FormatStrategy[],
     @Inject(StrategyTypes.TEAM_GENERATION_STRATEGIES)
     teamGenerationStrategies: TeamGenerationStrategy[],
-    private usersService: UsersService,
     private readonly tournamentManagementService: TournamentManagementService,
     private readonly teamManagementService: TeamManagementService,
     private readonly matchService: MatchService,
-    private readonly createScheduleHelperService: CreateScheduleHelperService,
-    private readonly matchGroupingService: MatchGroupingService,
-    private readonly matctCourtScheduleService: MatctCourtScheduleService,
+    private readonly matchCourtScheduleService: MatchCourtScheduleService,
     private readonly levelService: LevelService,
     private readonly poolService: PoolService,
-    private readonly roundService: RoundService,
   ) {
     this.formatStrategies = formatStrategies.reduce((acc, strategy) => {
       acc[strategy.type] = strategy;
@@ -53,73 +43,28 @@ export class SchedulingService {
     );
   }
 
-  private getStrategy(
-    formatName: string,
-    teamGenerationTypeName: string,
-  ): {
-    formatStrategy: FormatStrategy;
-    teamGenerationStrategy: TeamGenerationStrategy;
-  } {
-    const formatStrategy = this.formatStrategies[formatName];
-    if (!formatStrategy) {
-      throw new Error('Invalid strategy type');
-    }
-    const teamGenerationStrategy =
-      this.teamGenerationStrategies[teamGenerationTypeName];
-    if (!teamGenerationStrategy) {
-      throw new Error('Invalid strategy type');
-    }
-
-    return { formatStrategy, teamGenerationStrategy };
-  }
-
-  async generateTeamsBasedOnStrategy(
-    tournament: Tournament,
-    userIds: number[],
-  ): Promise<{ matches: MatchEntity[]; teams: MatchTeam[] }> {
-    const { formatStrategy, teamGenerationStrategy } = this.getStrategy(
-      tournament.poolPlayFormat.name,
-      tournament.teamGenerationType.name,
-    );
-
-    const users = await this.usersService.findUsersWithRelationsByUserIds(
-      userIds,
-      [],
-    );
-
-    const teams = await teamGenerationStrategy.generateTeams(users, {
-      groupBy: tournament.splitSwitchGroupBy,
-    });
-    const matches = await formatStrategy.generateMatches(teams);
-
-    return { matches, teams };
-  }
-
   async createSchedule(
-    createScheduleInputDto: CreateScheduleInputDto,
+    tournamentId: number,
   ): Promise<CreateScheduleResponseDto> {
-    const { tournamentId, matches } = createScheduleInputDto;
-
-    const tournament =
-      await this.tournamentManagementService.findOneWithRelations(tournamentId);
+    const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
+    const { numberOfPools } = tournament;
+    const formatStrategy = this.formatStrategies[tournament.poolPlayFormat.name];
+    let pools: Pool[] = [];
 
     /**
-     * Create Teams
+     * Group Teams into Pools
      */
-    const teams = matches.map((match) => match.teams).flat();
-    const teamMap = await this.createScheduleHelperService.createTeams(
-      teams,
-      tournamentId,
+    const teams = await this.teamManagementService.findTeamsByTournament(
+      tournament,
+      ['users'],
     );
-
-    /**
-     * Fetching available courts for the tournament duration
-     */
-    const timeSlotWithCourts =
-      await this.createScheduleHelperService.getAvailableCourts(
-        tournament.start_date,
-        tournament.end_date,
-      );
+    const teamsByPool: any[][] = Array.from(
+      { length: numberOfPools },
+      () => [],
+    );
+    teams.forEach((team, index) => {
+      teamsByPool[index % numberOfPools].push(team);
+    });
 
     /**
      * Creating Level
@@ -133,58 +78,28 @@ export class SchedulingService {
 
     /**
      * Creating Pools
+     * Getting Rounds & their Matches list
      */
-    for (let index = 0; index < tournament.numberOfPools; index++) {
+    for (let poolNumber = 0; poolNumber < numberOfPools; poolNumber++) {
       const pool = await this.poolService.createPool({
-        name: `Pool ${index + 1}`,
+        name: `Pool ${poolNumber + 1}`,
         tournament,
         level,
       });
 
-      /**
-       * Creaete Rounds
-       */
-      // const round = await this.roundService.createRound({
-      //   name: '',
-      //   tournament,
-      //   pool,
-      // })
-    }
-
-    /**
-     * Grouping matches by uniqueness
-     */
-    const groupedMatches =
-      this.matchGroupingService.groupMatchesByUniqueness(matches);
-
-    /**
-     * Creating Matches
-     */
-    const createdMatches = await this.createScheduleHelperService.createMatches(
-      groupedMatches,
-      teamMap,
-      tournament,
-      timeSlotWithCourts,
-    );
-
-    /**
-     * Creating Match Rounds
-     */
-    const createdMatchRounds =
-      await this.createScheduleHelperService.createMatchRounds(
-        createdMatches,
+      const roundsWithMatches = await formatStrategy.createInitialRounds(
         tournament,
-        tournament.matchBestOfRounds,
+        pool,
+        teamsByPool[poolNumber],
       );
 
-    return {
-      schedule: {
-        tournament,
-        teams: Array.from(teamMap.values()),
-        matches: createdMatches,
-        matchRounds: createdMatchRounds,
-      },
-    };
+      pools.push({
+        ...pool,
+        rounds: roundsWithMatches,
+      });
+    }
+
+    return null as any;
   }
 
   async getScheduleOfTournament(tournamentId: number): Promise<ScheduleDto> {
@@ -194,7 +109,7 @@ export class SchedulingService {
       await this.teamManagementService.findTeamsByTournament(tournament);
     const matches = await this.matchService.findMatchesByTournament(tournament);
     const matchesWithCourtSchedule =
-      await this.matctCourtScheduleService.populateMatchesCourtsInMatches(
+      await this.matchCourtScheduleService.populateMatchesCourtsInMatches(
         matches,
       );
 
@@ -211,7 +126,7 @@ export class SchedulingService {
     const matches = await this.matchService.findMatchesByTournament(tournament);
 
     for (const match of matches) {
-      await this.matctCourtScheduleService.deleteMatchCourtSchedules(match);
+      await this.matchCourtScheduleService.deleteMatchCourtSchedules(match);
       await this.matchService.deleteMatch(match);
     }
 

@@ -62,11 +62,6 @@ type CreateClubResponseDto {
   message: String!
 }
 
-input CreateScheduleInputDto {
-  matches: [MatchInput!]!
-  tournamentId: Float!
-}
-
 type CreateScheduleResponseDto {
   schedule: ScheduleDto!
 }
@@ -161,16 +156,6 @@ type GetScheduleOfTournamentResponseDto {
   schedule: ScheduleDto!
 }
 
-input GetSchedulePreperationDataOfTournamentInput {
-  tournamentId: Float!
-  users: [Float!]!
-}
-
-type GetSchedulePreperationDataOfTournamentResponseDto {
-  matches: [MatchType!]!
-  teams: [TeamType!]!
-}
-
 type Level {
   created_at: DateTime!
   format: Format!
@@ -212,12 +197,6 @@ type Match {
   winnerTeam: Team
 }
 
-input MatchInput {
-  matchDate: DateTime!
-  teams: [TeamInput!]!
-  title: String!
-}
-
 type MatchRound {
   created_at: DateTime!
   id: CustomID!
@@ -232,11 +211,6 @@ enum MatchStatusTypes {
   not_started
   paused
   void
-}
-
-type MatchType {
-  name: String!
-  teams: [TeamType!]!
 }
 
 type MatchWithCourtDto {
@@ -279,7 +253,7 @@ type ModulePolicyRole {
 type Mutation {
   bulkMatchImport(file: Upload!): BulkMatchImportResponseDto!
   createClub(input: CreateClubInputDto!): CreateClubResponseDto!
-  createSchedule(input: CreateScheduleInputDto!): CreateScheduleResponseDto!
+  createSchedule(tournamentId: Float!): CreateScheduleResponseDto!
   createTeam(input: CreateTeamInputDto!): Team!
   createTournament(input: CreateTournamentInputDto!): Tournament!
   createTournamentTeam(input: CreateTournamentTeamsInputDto!): [Team!]!
@@ -352,7 +326,6 @@ type Query {
   getCourtById(courtId: Float!): Court!
   getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!
   getScheduleOfTournament(input: GetScheduleOfTournamentInput!): GetScheduleOfTournamentResponseDto!
-  getSchedulePreperationDataOfTournament(input: GetSchedulePreperationDataOfTournamentInput!): GetSchedulePreperationDataOfTournamentResponseDto!
   getStepsOfUser: [Step!]!
   getTournamentById(tournamentId: Float!): Tournament!
   getUserById(clubId: Float, userId: Float!): UserWithRoleClub!
@@ -478,11 +451,6 @@ enum TeamGenerationTypeEnum {
   split_switch
 }
 
-input TeamInput {
-  name: String!
-  userIds: [Float!]!
-}
-
 type TeamListResponse {
   teams: [Team!]!
   totalRecords: Int!
@@ -500,11 +468,6 @@ enum TeamStatusTypes {
   registered
   waiting_list
   withdrawn
-}
-
-type TeamType {
-  name: String!
-  players: [User!]!
 }
 
 type TimeSlot {

@@ -1,5 +1,5 @@
 import { User } from 'src/users/entities/user.entity';
-import { MatchInput } from '../dtos/create-schedule-input.dto';
+import { Team } from 'src/team-management/entities/team.entity';
 
 export type MatchTeam = {
   name: string;
@@ -21,10 +21,23 @@ export enum GenderTypes {
   FEMALE = 'female',
 }
 
-export type SingleMatchGroup = {
-  matches: MatchInput[];
+export class DraftMatch {
+  matchDate?: Date;
+  title: string;
+  teams: Team[];
 }
 
-export type GroupedMatches = {
-  [key: string]: SingleMatchGroup;
+export type DraftMatchRound = {
+  matches: DraftMatch[];
+}
+
+export type DrafRoundsWithMatches = {
+  [key: string]: DraftMatchRound;
 };
+
+export type DraftMatchToAvailableSchedulesMapping = Map<DraftMatch, {
+  courtScheduleId: number;
+  date: string;
+  startTime: string;
+  endTime: string;
+}>

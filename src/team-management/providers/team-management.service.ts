@@ -53,9 +53,10 @@ export class TeamManagementService {
     return [teams, totalRecords];
   }
 
-  async findTeamsByTournament(tournament: Tournament): Promise<Team[]> {
+  async findTeamsByTournament(tournament: Tournament, relations?: string[]): Promise<Team[]> {
     return this.teamRepository.find({
       where: { tournament: { id: tournament.id } },
+      relations
     });
   }
 

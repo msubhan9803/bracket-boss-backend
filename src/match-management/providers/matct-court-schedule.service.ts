@@ -7,7 +7,7 @@ import { CourtSchedule } from 'src/court-management/entities/court-schedule.enti
 import { MatchWithCourtDto } from 'src/scheduling/dtos/schedule.dto';
 
 @Injectable()
-export class MatctCourtScheduleService {
+export class MatchCourtScheduleService {
     constructor(
         @InjectRepository(MatchCourtSchedules)
         private matchCourtSchedulesRepository: Repository<MatchCourtSchedules>
