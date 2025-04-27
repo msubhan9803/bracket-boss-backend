@@ -32,9 +32,10 @@ export class RoundRobinScheduleBuilderService {
     let roundList: Round[] = [];
 
     const timeSlotWithCourts = await this.getAvailableCourts(tournament.start_date, tournament.end_date);
-    const matchTimeslotMapping = this.validateAndAssignTimeslots(draftedRoundsWithMatches, timeSlotWithCourts);
 
     for (let index = 0; index < Object.keys(draftedRoundsWithMatches).length; index++) {
+      const roundKey = Object.keys(draftedRoundsWithMatches)[index];
+      const roundMatches = draftedRoundsWithMatches[roundKey];
       const round = await this.roundService.createRound({
         name: `Round ${index + 1}`,
         tournament,
@@ -42,6 +43,13 @@ export class RoundRobinScheduleBuilderService {
       });
 
       let createdMatches = [];
+
+      const matchTimeslotMapping = this.validateAndAssignTimeslots(
+        {
+          [roundKey]: roundMatches,
+        },
+        timeSlotWithCourts,
+      );
 
       for (const [match, courtScheduleElem] of matchTimeslotMapping.entries()) {
         const { courtScheduleId, date, startTime } = courtScheduleElem;
@@ -126,13 +134,13 @@ export class RoundRobinScheduleBuilderService {
     return roundsWithMatches;
   }
 
-  private generateRoundRobinMatches(teams: Team[]) {
+  private generateRoundRobinMatches(teams: Team[]): { title: string; teams: Team[] }[] {
     const matches = [];
 
     for (let i = 0; i < teams.length; i++) {
       for (let j = i + 1; j < teams.length; j++) {
         matches.push({
-          name: `Match ${teams[i].name} vs ${teams[j].name}`,
+          title: `Match ${teams[i].name} vs ${teams[j].name}`,
           teams: [teams[i], teams[j]],
         });
       }
@@ -214,20 +222,5 @@ export class RoundRobinScheduleBuilderService {
 
   private async getAvailableCourts(startDate: Date, endDate: Date) {
     return this.courtManagementService.getCourtsGroupedByScheduleTimeslots(startDate, endDate);
-  }
-
-  private logGroupedMatches(groupedMatches: { [key: string]: { matches: DraftMatch[] } }): void {
-    Object.keys(groupedMatches).forEach((groupName) => {
-      console.log(' ');
-      console.log(`Group: ${groupName}`);
-
-      const group = groupedMatches[groupName];
-
-      group.matches.forEach((match) => {
-        console.log(match.teams.map((team) => team.name).join(' vs '));
-      });
-
-      console.log(' ');
-    });
   }
 }

@@ -19,22 +19,31 @@ import { PoolModule } from 'src/pool/pool.module';
 import { RoundModule } from 'src/round/round.module';
 
 @Module({
-  imports: [TournamentManagementModule, UsersModule, ClubsModule, TeamManagementModule, CourtManagementModule, MatchManagementModule, LevelModule, PoolModule, RoundModule],
+  imports: [
+    TournamentManagementModule,
+    UsersModule,
+    ClubsModule,
+    TeamManagementModule,
+    CourtManagementModule,
+    MatchManagementModule,
+    LevelModule,
+    PoolModule,
+    RoundModule,
+  ],
   providers: [
     SchedulingService,
     SchedulingResolver,
     JwtService,
     {
       provide: StrategyTypes.FORMAT_STRATEGIES,
-      useFactory: (matchGroupingService: RoundRobinScheduleBuilderService) => [new RoundRobinStrategy(matchGroupingService)],
+      useFactory: (roundRobinScheduleBuilderService: RoundRobinScheduleBuilderService) => [
+        new RoundRobinStrategy(roundRobinScheduleBuilderService),
+      ],
       inject: [RoundRobinScheduleBuilderService],
     },
     {
       provide: StrategyTypes.TEAM_GENERATION_STRATEGIES,
-      useFactory: () => [
-        new BlindDrawTeamGenerationStrategy(),
-        new SplitSwitchTeamGenerationStrategy(),
-      ],
+      useFactory: () => [new BlindDrawTeamGenerationStrategy(), new SplitSwitchTeamGenerationStrategy()],
     },
     ScheduleSpreadsheetHandlerService,
     RoundRobinScheduleBuilderService,

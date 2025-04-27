@@ -6,11 +6,6 @@ export type MatchTeam = {
   players: User[];
 };
 
-export type Match = {
-  name: string;
-  teams: MatchTeam[];
-};
-
 export enum SplitSwitchGroupByEnum {
   gender = 'gender',
   rating = 'rating',

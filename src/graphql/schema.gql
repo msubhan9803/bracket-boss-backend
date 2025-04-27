@@ -62,10 +62,6 @@ type CreateClubResponseDto {
   message: String!
 }
 
-type CreateScheduleResponseDto {
-  schedule: ScheduleDto!
-}
-
 input CreateTeamInputDto {
   name: String!
   tournamentId: Int!
@@ -253,7 +249,7 @@ type ModulePolicyRole {
 type Mutation {
   bulkMatchImport(file: Upload!): BulkMatchImportResponseDto!
   createClub(input: CreateClubInputDto!): CreateClubResponseDto!
-  createSchedule(tournamentId: Float!): CreateScheduleResponseDto!
+  createSchedule(tournamentId: Float!): Level!
   createTeam(input: CreateTeamInputDto!): Team!
   createTournament(input: CreateTournamentInputDto!): Tournament!
   createTournamentTeam(input: CreateTournamentTeamsInputDto!): [Team!]!

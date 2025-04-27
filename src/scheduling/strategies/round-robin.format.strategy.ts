@@ -11,19 +11,9 @@ import { Pool } from 'src/pool/entities/pool.entity';
 export class RoundRobinStrategy implements FormatStrategy {
   type = FormatType.round_robin;
 
-  constructor(
-    private readonly roundRobinScheduleBuilderService: RoundRobinScheduleBuilderService,
-  ) {}
+  constructor(private readonly roundRobinScheduleBuilderService: RoundRobinScheduleBuilderService) {}
 
-  async createInitialRounds(
-    tournament: Tournament,
-    pool: Pool,
-    teams: Team[],
-  ): Promise<Round[]> {
-    return this.roundRobinScheduleBuilderService.generateRoundsMatches(
-      tournament,
-      pool,
-      teams,
-    );
+  async createInitialRounds(tournament: Tournament, pool: Pool, teams: Team[]): Promise<Round[]> {
+    return this.roundRobinScheduleBuilderService.generateRoundsMatches(tournament, pool, teams);
   }
 }
