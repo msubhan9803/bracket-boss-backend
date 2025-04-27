@@ -346,8 +346,15 @@ type Round {
   name: String!
   order: Float!
   pool: Pool!
+  status: RoundStatusTypesEnum!
   tournament: Tournament!
   updated_at: DateTime!
+}
+
+enum RoundStatusTypesEnum {
+  completed
+  in_progress
+  not_started
 }
 
 input ScheduleTimingInputDto {

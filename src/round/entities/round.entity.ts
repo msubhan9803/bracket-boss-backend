@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import {
   Column,
   CreateDateColumn,
@@ -13,6 +13,11 @@ import { Tournament } from 'src/tournament-management/entities/tournament.entity
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Match } from 'src/match-management/entities/match.entity';
+import { RoundStatusTypesEnum } from 'src/common/types/global';
+
+registerEnumType(RoundStatusTypesEnum, {
+  name: 'RoundStatusTypesEnum',
+});
 
 @ObjectType()
 @Entity()
@@ -28,6 +33,10 @@ export class Round {
   @Field()
   @Column('int')
   order: number;
+
+  @Field(() => RoundStatusTypesEnum)
+  @Column('varchar')
+  status: RoundStatusTypesEnum;
 
   @ManyToOne(() => Tournament, {
     onDelete: 'CASCADE',

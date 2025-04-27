@@ -13,6 +13,7 @@ import { MatchStatusTypes } from 'src/match-management/types/common';
 import { MatchCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
 import { MatchRoundService } from 'src/match-management/providers/match-round.service';
 import { CourtManagementService } from 'src/court-management/providers/court-management.service';
+import { RoundStatusTypesEnum } from 'src/common/types/global';
 
 @Injectable()
 export class RoundRobinScheduleBuilderService {
@@ -41,6 +42,7 @@ export class RoundRobinScheduleBuilderService {
         tournament,
         pool,
         order: index + 1,
+        status: RoundStatusTypesEnum.not_started,
       });
 
       let createdMatches = [];
