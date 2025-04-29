@@ -12,6 +12,8 @@ import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
 import { ScheduleSpreadsheetHandlerService } from './providers/schedule-spreadsheet-handler.service';
 import { BulkMatchImportResponseDto } from './dtos/bulk-match-import-response.dto';
 import { Level } from 'src/level/entities/level.entity';
+import { Team } from 'src/team-management/entities/team.entity';
+import { CreateTournamentTeamsInputDto } from 'src/team-management/dtos/create-tournament-teams-input.dto';
 
 @Resolver()
 export class SchedulingResolver {
@@ -107,5 +109,12 @@ export class SchedulingResolver {
     return {
       message: messages.MATCH_SCHEDULE_CREATED_SUCCESSFULLY,
     };
+  }
+
+  @Mutation(() => [Team])
+  async createTournamentTeam(
+    @Args('input') createTournamentTeamsInputDto: CreateTournamentTeamsInputDto,
+  ): Promise<Team[]> {
+    return this.schedulingService.createTournamentTeams(createTournamentTeamsInputDto);
   }
 }

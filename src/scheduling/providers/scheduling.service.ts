@@ -10,22 +10,34 @@ import { PoolService } from 'src/pool/providers/pool.service';
 import { LevelTypeEnum, LevelTypeOrderNumber } from 'src/level/types/common';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Level } from 'src/level/entities/level.entity';
+import { TeamGenerationStrategy } from '../interface/team-generation-strategy.interface';
+import { CreateTournamentTeamsInputDto } from 'src/team-management/dtos/create-tournament-teams-input.dto';
+import { Team } from 'src/team-management/entities/team.entity';
+import { UsersService } from 'src/users/providers/users.service';
 
 @Injectable()
 export class SchedulingService {
   private formatStrategies: { [key: string]: FormatStrategy };
+  private teamGenerationStrategies: { [key: string]: TeamGenerationStrategy };
 
   constructor(
     @Inject(StrategyTypes.FORMAT_STRATEGIES)
     formatStrategies: FormatStrategy[],
+    @Inject(StrategyTypes.TEAM_GENERATION_STRATEGIES)
+    teamGenerationStrategies: TeamGenerationStrategy[],
     private readonly tournamentManagementService: TournamentManagementService,
     private readonly teamManagementService: TeamManagementService,
     private readonly matchService: MatchService,
     private readonly matchCourtScheduleService: MatchCourtScheduleService,
     private readonly levelService: LevelService,
     private readonly poolService: PoolService,
+    private readonly usersService: UsersService,
   ) {
     this.formatStrategies = formatStrategies.reduce((acc, strategy) => {
+      acc[strategy.type] = strategy;
+      return acc;
+    }, {});
+    this.teamGenerationStrategies = teamGenerationStrategies.reduce((acc, strategy) => {
       acc[strategy.type] = strategy;
       return acc;
     }, {});
@@ -110,5 +122,26 @@ export class SchedulingService {
     }
 
     await this.teamManagementService.deleteTeamsByTournament(tournament);
+  }
+
+  async createTournamentTeams(createTournamentTeamsInputDto: CreateTournamentTeamsInputDto): Promise<Team[]> {
+    const { tournamentId, teams } = createTournamentTeamsInputDto;
+
+    const tournament = await this.tournamentManagementService.findOne(tournamentId);
+    if (!tournament) {
+      throw new Error(`Tournament with ID ${tournamentId} not found`);
+    }
+
+    const allUserIds = teams.reduce((acc, team) => [...acc, ...team.userIds], []);
+    const uniqueUserIds = [...new Set(allUserIds)];
+    const users = await this.usersService.findMultipleUsersById(uniqueUserIds);
+
+    if (users.length !== uniqueUserIds.length) {
+      const foundUserIds = users.map((user) => user.id);
+      const missingUserIds = uniqueUserIds.filter((id) => !foundUserIds.includes(id));
+      throw new Error(`Users with IDs ${missingUserIds.join(', ')} not found`);
+    }
+
+    return await this.teamManagementService.createTeamOfTournament(tournament, teams, users);
   }
 }

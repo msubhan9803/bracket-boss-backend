@@ -4,11 +4,11 @@ import { Repository } from 'typeorm';
 import { CreateTeamInputDto } from '../dtos/create-team-input.dto';
 import { Team } from '../entities/team.entity';
 import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
-import { ClubsService } from 'src/clubs/providers/clubs.service';
 import { UsersService } from 'src/users/providers/users.service';
 import { TeamStatusTypes } from '../types/common';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
-import { CreateTournamentTeamsInputDto } from '../dtos/create-tournament-teams-input.dto';
+import { CreateTournamentTeamsInputDto, TournamentTeamInput } from '../dtos/create-tournament-teams-input.dto';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class TeamManagementService {
@@ -16,7 +16,6 @@ export class TeamManagementService {
     @InjectRepository(Team)
     private readonly teamRepository: Repository<Team>,
     private readonly tournamentManagementService: TournamentManagementService,
-    private readonly clubsService: ClubsService,
     private readonly usersService: UsersService,
   ) {}
 
@@ -83,32 +82,7 @@ export class TeamManagementService {
     return savedTeam;
   }
 
-  async createTournamentTeams(
-    createTournamentTeamsInputDto: CreateTournamentTeamsInputDto,
-  ): Promise<Team[]> {
-    const { tournamentId, teams } = createTournamentTeamsInputDto;
-
-    const tournament =
-      await this.tournamentManagementService.findOne(tournamentId);
-    if (!tournament) {
-      throw new Error(`Tournament with ID ${tournamentId} not found`);
-    }
-
-    const allUserIds = teams.reduce(
-      (acc, team) => [...acc, ...team.userIds],
-      [],
-    );
-    const uniqueUserIds = [...new Set(allUserIds)];
-    const users = await this.usersService.findMultipleUsersById(uniqueUserIds);
-
-    if (users.length !== uniqueUserIds.length) {
-      const foundUserIds = users.map((user) => user.id);
-      const missingUserIds = uniqueUserIds.filter(
-        (id) => !foundUserIds.includes(id),
-      );
-      throw new Error(`Users with IDs ${missingUserIds.join(', ')} not found`);
-    }
-
+  async createTeamOfTournament(tournament: Tournament, teams: TournamentTeamInput[], users: User[]) {
     const teamsToCreate = teams.map((teamInput) => {
       const teamUsers = users.filter((user) =>
         teamInput.userIds.includes(user.id),

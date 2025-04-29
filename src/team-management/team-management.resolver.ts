@@ -47,11 +47,4 @@ export class TeamManagementResolver {
   ): Promise<Team> {
     return this.teamManagementService.createTeam(createTeamInput);
   }
-
-  @Mutation(() => [Team])
-  async createTournamentTeam(
-    @Args('input') createTournamentTeamsInputDto: CreateTournamentTeamsInputDto,
-  ): Promise<Team[]> {
-    return this.teamManagementService.createTournamentTeams(createTournamentTeamsInputDto);
-  }
 }
