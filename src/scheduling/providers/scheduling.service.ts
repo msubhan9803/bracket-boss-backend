@@ -125,23 +125,23 @@ export class SchedulingService {
   }
 
   async createTournamentTeams(createTournamentTeamsInputDto: CreateTournamentTeamsInputDto): Promise<Team[]> {
-    const { tournamentId, teams } = createTournamentTeamsInputDto;
+    const { tournamentId, users } = createTournamentTeamsInputDto;
 
-    const tournament = await this.tournamentManagementService.findOne(tournamentId);
+    const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
     if (!tournament) {
       throw new Error(`Tournament with ID ${tournamentId} not found`);
     }
 
-    const allUserIds = teams.reduce((acc, team) => [...acc, ...team.userIds], []);
-    const uniqueUserIds = [...new Set(allUserIds)];
-    const users = await this.usersService.findMultipleUsersById(uniqueUserIds);
+    const uniqueUserIds = [...new Set(users)];
+    const userRecords = await this.usersService.findMultipleUsersById(uniqueUserIds);
+    const teams = await this.teamGenerationStrategies[tournament.teamGenerationType.name].generateTeams(userRecords);
 
-    if (users.length !== uniqueUserIds.length) {
-      const foundUserIds = users.map((user) => user.id);
+    if (userRecords.length !== uniqueUserIds.length) {
+      const foundUserIds = userRecords.map((user) => user.id);
       const missingUserIds = uniqueUserIds.filter((id) => !foundUserIds.includes(id));
       throw new Error(`Users with IDs ${missingUserIds.join(', ')} not found`);
     }
 
-    return await this.teamManagementService.createTeamOfTournament(tournament, teams, users);
+    return await this.teamManagementService.createTeamOfTournament(tournament, teams, userRecords);
   }
 }

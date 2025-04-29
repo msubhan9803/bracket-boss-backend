@@ -7,8 +7,8 @@ import { TournamentManagementService } from 'src/tournament-management/providers
 import { UsersService } from 'src/users/providers/users.service';
 import { TeamStatusTypes } from '../types/common';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
-import { CreateTournamentTeamsInputDto, TournamentTeamInput } from '../dtos/create-tournament-teams-input.dto';
 import { User } from 'src/users/entities/user.entity';
+import { DraftTeam } from 'src/scheduling/types/common';
 
 @Injectable()
 export class TeamManagementService {
@@ -82,15 +82,12 @@ export class TeamManagementService {
     return savedTeam;
   }
 
-  async createTeamOfTournament(tournament: Tournament, teams: TournamentTeamInput[], users: User[]) {
+  async createTeamOfTournament(tournament: Tournament, teams: DraftTeam[], users: User[]) {
     const teamsToCreate = teams.map((teamInput) => {
-      const teamUsers = users.filter((user) =>
-        teamInput.userIds.includes(user.id),
-      );
       return this.teamRepository.create({
         name: teamInput.name,
         tournament,
-        users: teamUsers,
+        users: teamInput.players,
         statusInTournament: TeamStatusTypes.not_assigned,
       });
     });

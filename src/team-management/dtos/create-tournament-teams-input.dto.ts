@@ -1,16 +1,5 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
-import { IsString, IsInt, IsArray } from 'class-validator';
-
-@InputType()
-export class TournamentTeamInput {
-  @Field(() => String)
-  @IsString()
-  name: string;
-
-  @Field(() => [Number])
-  @IsArray({ each: true })
-  userIds: number[];
-}
+import { IsInt, IsArray } from 'class-validator';
 
 @InputType()
 export class CreateTournamentTeamsInputDto {
@@ -18,7 +7,7 @@ export class CreateTournamentTeamsInputDto {
   @IsInt({ message: 'Tournament ID must be an integer' })
   tournamentId: number;
 
-  @Field(() => [TournamentTeamInput])
+  @Field(() => [Number])
   @IsArray()
-  teams: TournamentTeamInput[];
+  users: number[];
 }

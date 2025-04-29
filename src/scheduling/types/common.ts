@@ -1,7 +1,7 @@
 import { User } from 'src/users/entities/user.entity';
 import { Team } from 'src/team-management/entities/team.entity';
 
-export type MatchTeam = {
+export type DraftTeam = {
   name: string;
   players: User[];
 };

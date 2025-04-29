@@ -83,8 +83,8 @@ input CreateTournamentInputDto {
 }
 
 input CreateTournamentTeamsInputDto {
-  teams: [TournamentTeamInput!]!
   tournamentId: Int!
+  users: [Float!]!
 }
 
 """A custom scalar to handle numeric IDs as integers"""
@@ -486,11 +486,6 @@ enum TournamentStatusTypesEnum {
   not_started
   play_off_in_progress
   pool_play_in_progress
-}
-
-input TournamentTeamInput {
-  name: String!
-  userIds: [Float!]!
 }
 
 input UpdateTournamentInput {
