@@ -97,7 +97,7 @@ export class SchedulingService {
 
   async getScheduleOfTournament(tournamentId: number): Promise<Level[]> {
     const tournament = await this.tournamentManagementService.findOne(tournamentId);
-    const levels = await this.levelService.findOneWithRelations(tournament, [
+    const levels = await this.levelService.findOneByTournamentWithRelations(tournament, [
       'format',
       'tournament',
       'pools',

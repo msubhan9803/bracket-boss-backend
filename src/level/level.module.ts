@@ -4,6 +4,10 @@ import { Level } from './entities/level.entity';
 import { LevelTeam } from './entities/level-team.entity';
 import { LevelTeamStanding } from './entities/levelStandings.entity';
 import { LevelService } from './providers/level.service';
+import { LevelResolver } from './level.resolver';
+import { TournamentManagementModule } from 'src/tournament-management/tournament-management.module';
+import { JwtService } from '@nestjs/jwt';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
     imports: [
@@ -11,9 +15,11 @@ import { LevelService } from './providers/level.service';
             Level,
             LevelTeam,
             LevelTeamStanding
-        ])
+        ]),
+        UsersModule,
+        TournamentManagementModule
     ],
-    providers: [LevelService],
+    providers: [LevelService, LevelResolver, JwtService],
     exports: [LevelService]
 })
 export class LevelModule {}

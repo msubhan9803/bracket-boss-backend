@@ -12,7 +12,11 @@ export class LevelService {
     private levelRepository: Repository<Level>,
   ) {}
 
-  findOneWithRelations(tournament: Tournament, relations: string[] = ['format', 'tournament', 'pools']): Promise<Level[]> {
+  findOne(levelId: number): Promise<Level> {
+    return this.levelRepository.findOneBy({ id: levelId });
+  }
+
+  findOneByTournamentWithRelations(tournament: Tournament, relations: string[] = ['format', 'tournament', 'pools']): Promise<Level[]> {
     return this.levelRepository.find({
       where: { tournament: { id: tournament.id } },
       relations,
