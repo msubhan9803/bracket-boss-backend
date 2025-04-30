@@ -316,6 +316,7 @@ type Query {
   getClubById(clubId: Float!): Club!
   getCourtById(courtId: Float!): Court!
   getLevelsByTournament(tournamentId: Float!): [Level!]!
+  getMatchesByRoundId(roundId: Float!): [Match!]!
   getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!
   getPoolsByLevel(levelId: Float!): [Pool!]!
   getRoundsByPoolId(poolId: Float!): [Pool!]!

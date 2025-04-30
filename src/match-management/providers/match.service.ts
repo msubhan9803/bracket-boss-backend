@@ -7,31 +7,36 @@ import { Tournament } from 'src/tournament-management/entities/tournament.entity
 
 @Injectable()
 export class MatchService {
-    constructor(
-        @InjectRepository(Match)
-        private readonly matchRepository: Repository<Match>,
-    ) { }
+  constructor(
+    @InjectRepository(Match)
+    private readonly matchRepository: Repository<Match>,
+  ) {}
 
-    findMatchesByTournament(
-        tournament: Tournament,
-        relations: string[] = [
-            'awayTeam',
-            'awayTeam.users',
-            'homeTeam',
-            'homeTeam.users',
-        ]
-    ): Promise<Match[]> {
-        return this.matchRepository.find({
-            where: { tournament: { id: tournament.id } },
-            relations,
-        });
-    }
+  findMatchesByTournament(
+    tournament: Tournament,
+    relations: string[] = ['awayTeam', 'awayTeam.users', 'homeTeam', 'homeTeam.users'],
+  ): Promise<Match[]> {
+    return this.matchRepository.find({
+      where: { tournament: { id: tournament.id } },
+      relations,
+    });
+  }
 
-    createMatch(match: CreateMatchInputDto): Promise<Match> {
-        return this.matchRepository.save(match);
-    }
+  findMatchesByRoundId(
+    roundId: number,
+    relations: string[] = ['awayTeam', 'awayTeam.users', 'homeTeam', 'homeTeam.users'],
+  ): Promise<Match[]> {
+    return this.matchRepository.find({
+      where: { round: { id: roundId } },
+      relations,
+    });
+  }
 
-    async deleteMatch(match: Match) {
-        await this.matchRepository.delete({ id: match.id });
-    }
+  createMatch(match: CreateMatchInputDto): Promise<Match> {
+    return this.matchRepository.save(match);
+  }
+
+  async deleteMatch(match: Match) {
+    await this.matchRepository.delete({ id: match.id });
+  }
 }

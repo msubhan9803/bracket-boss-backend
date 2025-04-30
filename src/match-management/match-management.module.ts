@@ -8,6 +8,9 @@ import { MatchService } from './providers/match.service';
 import { MatchRoundService } from './providers/match-round.service';
 import { MatchCourtSchedules } from './entities/match-court-schedule.entity';
 import { MatchCourtScheduleService } from './providers/matct-court-schedule.service';
+import { MatchManagementResolver } from './match-management.resolver';
+import { UsersModule } from 'src/users/users.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -18,8 +21,9 @@ import { MatchCourtScheduleService } from './providers/matct-court-schedule.serv
       MatchRoundScore,
       MatchCommentary,
     ]),
+    UsersModule
   ],
-  providers: [MatchService, MatchRoundService, MatchCourtScheduleService],
+  providers: [MatchService, MatchRoundService, MatchCourtScheduleService, MatchManagementResolver, JwtService],
   exports: [MatchService, MatchRoundService, MatchCourtScheduleService]
 })
 export class MatchManagementModule {}
