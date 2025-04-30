@@ -14,4 +14,11 @@ export class RoundService {
   createRound(round: RoundInputDto) {
     return this.roundRepository.save(round);
   }
+
+  findRoundsByPoolId(poolId: number, relations: string[] = ['matches']): Promise<Round[]> {
+    return this.roundRepository.find({
+      where: { pool: { id: poolId } },
+      relations
+    })
+  }
 }

@@ -318,6 +318,7 @@ type Query {
   getLevelsByTournament(tournamentId: Float!): [Level!]!
   getPermissionsByRoleId(roleId: Float!): [PermissionByRoleIdResponse!]!
   getPoolsByLevel(levelId: Float!): [Pool!]!
+  getRoundsByPoolId(poolId: Float!): [Pool!]!
   getScheduleOfTournament(input: GetScheduleOfTournamentInput!): [Level!]!
   getStepsOfUser: [Step!]!
   getTournamentById(tournamentId: Float!): Tournament!
