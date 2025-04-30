@@ -107,6 +107,12 @@ export class SchedulingService {
       'pools.rounds.matches.awayTeam',
       'pools.rounds.matches.winnerTeam',
       'pools.rounds.matches.matchRounds',
+      'pools.rounds.matches.matchCourtSchedule',
+      'pools.rounds.matches.matchCourtSchedule.courtSchedule',
+      'pools.rounds.matches.matchCourtSchedule.courtSchedule.day',
+      'pools.rounds.matches.matchCourtSchedule.courtSchedule.timeSlot',
+      'pools.rounds.matches.matchCourtSchedule.courtSchedule.court',
+      'pools.rounds.matches.matchCourtSchedule.courtSchedule.court.club',
     ]);
 
     return levels;

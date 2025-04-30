@@ -5,6 +5,7 @@ import {
     JoinColumn,
     CreateDateColumn,
     Column,
+    OneToOne,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CourtSchedule } from 'src/court-management/entities/court-schedule.entity';
@@ -17,7 +18,7 @@ export class MatchCourtSchedules {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => Match)
+    @OneToOne(() => Match, (match) => match.matchCourtSchedule)
     @JoinColumn()
     @Field(() => Match)
     match: Match;
@@ -28,7 +29,7 @@ export class MatchCourtSchedules {
     courtSchedule: CourtSchedule;
 
     @Field()
-    @Column('date')
+    @CreateDateColumn()
     matchDate: Date;
 
     @Field()

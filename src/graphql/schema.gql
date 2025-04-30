@@ -184,6 +184,7 @@ type Match {
   created_at: DateTime!
   homeTeam: Team!
   id: CustomID!
+  matchCourtSchedule: MatchCourtSchedules
   matchRounds: [MatchRound!]!
   round: Round!
   status: MatchStatusTypes!
@@ -191,6 +192,14 @@ type Match {
   tournament: Tournament!
   updated_at: DateTime!
   winnerTeam: Team
+}
+
+type MatchCourtSchedules {
+  courtSchedule: CourtSchedule!
+  createdAt: DateTime!
+  id: Float!
+  match: Match!
+  matchDate: DateTime!
 }
 
 type MatchRound {

@@ -16,6 +16,7 @@ import { Team } from 'src/team-management/entities/team.entity';
 import { MatchRound } from './matchRound.entity';
 import { Round } from 'src/round/entities/round.entity';
 import { MatchStatusTypes } from '../types/common';
+import { MatchCourtSchedules } from './match-court-schedule.entity';
 
 registerEnumType(MatchStatusTypes, {
   name: 'MatchStatusTypes',
@@ -69,6 +70,13 @@ export class Match {
     onDelete: 'CASCADE',
   })
   matchRounds: MatchRound[];
+
+  @Field(() => MatchCourtSchedules, { nullable: true })
+  @OneToOne(() => MatchCourtSchedules, (mcs) => mcs.match, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  matchCourtSchedule?: MatchCourtSchedules;
 
   @Field()
   @CreateDateColumn()
