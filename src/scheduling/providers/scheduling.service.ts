@@ -52,7 +52,7 @@ export class SchedulingService {
     /**
      * Group Teams into Pools
      */
-    const teams = await this.teamManagementService.findTeamsByTournament(tournament, ['users']);
+    const teams = await this.teamManagementService.findTeamsByTournament(tournament.id, ['users']);
     const teamsByPool: any[][] = Array.from({ length: numberOfPools }, () => []);
     teams.forEach((team, index) => {
       teamsByPool[index % numberOfPools].push(team);

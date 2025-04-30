@@ -144,6 +144,10 @@ enum GenderTypes {
   MALE
 }
 
+type GetAllTeamsByTournamentIdResponse {
+  teams: [Team!]!
+}
+
 input GetScheduleOfTournamentInput {
   tournamentId: Float!
 }
@@ -295,6 +299,7 @@ type Query {
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
   getAllTeamGenerationTypesByFormatId(formatId: Float!): [TeamGenerationType!]!
   getAllTeams(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TeamListResponse!
+  getAllTeamsByTournamentId(tournamentId: Float!): GetAllTeamsByTournamentIdResponse!
   getAllTournaments(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TournamentListResponse!
   getAllTournamentsWithoutPagination: [Tournament!]!
   getAllUsers(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput, userRole: Float): UserListResponse!

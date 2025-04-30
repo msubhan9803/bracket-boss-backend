@@ -52,9 +52,9 @@ export class TeamManagementService {
     return [teams, totalRecords];
   }
 
-  async findTeamsByTournament(tournament: Tournament, relations?: string[]): Promise<Team[]> {
+  async findTeamsByTournament(tournamentId: number, relations: string[] = ['users']): Promise<Team[]> {
     return this.teamRepository.find({
-      where: { tournament: { id: tournament.id } },
+      where: { tournament: { id: tournamentId } },
       relations
     });
   }
@@ -88,7 +88,7 @@ export class TeamManagementService {
         name: teamInput.name,
         tournament,
         users: teamInput.players,
-        statusInTournament: TeamStatusTypes.not_assigned,
+        statusInTournament: TeamStatusTypes.registered,
       });
     });
 

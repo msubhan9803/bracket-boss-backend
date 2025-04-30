@@ -7,6 +7,7 @@ import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
 import { TeamListResponse } from './dtos/get-all-teams-response.dto';
 import { SortInput } from 'src/common/dtos/sort-input.dto';
 import { CreateTournamentTeamsInputDto } from './dtos/create-tournament-teams-input.dto';
+import { GetAllTeamsByTournamentIdResponse } from './dtos/get-all-teams-by-tournament-id-response.dto';
 
 @Resolver(() => Team)
 export class TeamManagementResolver {
@@ -26,14 +27,13 @@ export class TeamManagementResolver {
     },
   ) {
     try {
-      const [teams, totalRecords] =
-        await this.teamManagementService.findAllWithRelations({
-          page,
-          pageSize,
-          filterBy,
-          filter,
-          sort,
-        });
+      const [teams, totalRecords] = await this.teamManagementService.findAllWithRelations({
+        page,
+        pageSize,
+        filterBy,
+        filter,
+        sort,
+      });
 
       return { teams, totalRecords };
     } catch (error) {
@@ -41,10 +41,19 @@ export class TeamManagementResolver {
     }
   }
 
+  @UseGuards(AuthCheckGuard)
+  @Query(() => GetAllTeamsByTournamentIdResponse)
+  async getAllTeamsByTournamentId(@Args('tournamentId') tournamentId: number) {
+    try {
+      const teams = await this.teamManagementService.findTeamsByTournament(tournamentId);
+      return { teams };
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
   @Mutation(() => Team)
-  async createTeam(
-    @Args('input') createTeamInput: CreateTeamInputDto,
-  ): Promise<Team> {
+  async createTeam(@Args('input') createTeamInput: CreateTeamInputDto): Promise<Team> {
     return this.teamManagementService.createTeam(createTeamInput);
   }
 }
