@@ -118,15 +118,4 @@ export class SchedulingResolver {
   ): Promise<Team[]> {
     return this.schedulingService.createTournamentTeams(createTournamentTeamsInputDto);
   }
-
-  @UseGuards(AuthCheckGuard)
-  @Mutation(() => Tournament)
-  async startTournament(@Args('tournamentId') tournamentId: number): Promise<Tournament> {
-    try {
-      const updatedTournament = await this.schedulingService.startTournament(tournamentId);
-      return updatedTournament;
-    } catch (error) {
-      throw new InternalServerErrorException('Error: ', error.message);
-    }
-  }
 }

@@ -152,15 +152,4 @@ export class SchedulingService {
 
     return await this.teamManagementService.createTeamOfTournament(tournament, teams, userRecords);
   }
-
-  async startTournament(tournamentId: number): Promise<Tournament> {
-    const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
-    if (!tournament) {
-      throw new Error(`Tournament with ID ${tournamentId} not found`);
-    }
-
-    return this.tournamentManagementService.update(tournamentId, {
-      status: TournamentStatusTypesEnum.pool_play_in_progress,
-    });
-  }
 }

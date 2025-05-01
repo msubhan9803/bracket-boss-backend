@@ -101,4 +101,15 @@ export class TournamentManagementResolver {
       throw new InternalServerErrorException('Error: ', error.message);
     }
   }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => Tournament)
+  async startTournament(@Args('tournamentId') tournamentId: number): Promise<Tournament> {
+    try {
+      const updatedTournament = await this.tournamentManagementService.startTournament(tournamentId);
+      return updatedTournament;
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
 }

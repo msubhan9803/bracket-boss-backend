@@ -114,4 +114,15 @@ export class TournamentManagementService {
       throw new Error(`Error finding tournament: ${error.message}`);
     }
   }
+
+  async startTournament(tournamentId: number): Promise<Tournament> {
+    const tournament = await this.findOneWithRelations(tournamentId);
+    if (!tournament) {
+      throw new Error(`Tournament with ID ${tournamentId} not found`);
+    }
+
+    return this.update(tournamentId, {
+      status: TournamentStatusTypesEnum.pool_play_in_progress,
+    });
+  }
 }
