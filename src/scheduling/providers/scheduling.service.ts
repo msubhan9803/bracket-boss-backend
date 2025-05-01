@@ -14,6 +14,8 @@ import { TeamGenerationStrategy } from '../interface/team-generation-strategy.in
 import { CreateTournamentTeamsInputDto } from 'src/team-management/dtos/create-tournament-teams-input.dto';
 import { Team } from 'src/team-management/entities/team.entity';
 import { UsersService } from 'src/users/providers/users.service';
+import { Tournament } from 'src/tournament-management/entities/tournament.entity';
+import { TournamentStatusTypesEnum } from 'src/tournament-management/types/common';
 
 @Injectable()
 export class SchedulingService {
@@ -149,5 +151,16 @@ export class SchedulingService {
     }
 
     return await this.teamManagementService.createTeamOfTournament(tournament, teams, userRecords);
+  }
+
+  async startTournament(tournamentId: number): Promise<Tournament> {
+    const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
+    if (!tournament) {
+      throw new Error(`Tournament with ID ${tournamentId} not found`);
+    }
+
+    return this.tournamentManagementService.update(tournamentId, {
+      status: TournamentStatusTypesEnum.pool_play_in_progress,
+    });
   }
 }

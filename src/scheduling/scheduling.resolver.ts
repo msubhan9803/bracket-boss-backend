@@ -14,6 +14,7 @@ import { BulkMatchImportResponseDto } from './dtos/bulk-match-import-response.dt
 import { Level } from 'src/level/entities/level.entity';
 import { Team } from 'src/team-management/entities/team.entity';
 import { CreateTournamentTeamsInputDto } from 'src/team-management/dtos/create-tournament-teams-input.dto';
+import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 
 @Resolver()
 export class SchedulingResolver {
@@ -116,5 +117,16 @@ export class SchedulingResolver {
     @Args('input') createTournamentTeamsInputDto: CreateTournamentTeamsInputDto,
   ): Promise<Team[]> {
     return this.schedulingService.createTournamentTeams(createTournamentTeamsInputDto);
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => Tournament)
+  async startTournament(@Args('tournamentId') tournamentId: number): Promise<Tournament> {
+    try {
+      const updatedTournament = await this.schedulingService.startTournament(tournamentId);
+      return updatedTournament;
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
   }
 }

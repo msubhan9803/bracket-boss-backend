@@ -24,7 +24,17 @@ export class MatchService {
 
   findMatchesByRoundId(
     roundId: number,
-    relations: string[] = ['awayTeam', 'awayTeam.users', 'homeTeam', 'homeTeam.users'],
+    relations: string[] = [
+      'awayTeam',
+      'awayTeam.users',
+      'homeTeam',
+      'homeTeam.users',
+      'matchCourtSchedule',
+      'matchCourtSchedule.courtSchedule',
+      'matchCourtSchedule.courtSchedule.court',
+      'matchCourtSchedule.courtSchedule.timeSlot',
+      'matchCourtSchedule.courtSchedule.day',
+    ],
   ): Promise<Match[]> {
     return this.matchRepository.find({
       where: { round: { id: roundId } },

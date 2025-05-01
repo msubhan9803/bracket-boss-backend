@@ -43,10 +43,10 @@ export class MatchCourtScheduleService {
                 'match.homeTeam',
                 'match.awayTeam',
                 'match.winnerTeam',
-                'courtSchedule',
-                'courtSchedule.court',
-                'courtSchedule.day',
-                'courtSchedule.timeSlot'
+                'match.matchCourtSchedule',
+                'match.matchCourtSchedule.court',
+                'match.matchCourtSchedule.day',
+                'match.matchCourtSchedule.timeSlot'
             ],
         });
 

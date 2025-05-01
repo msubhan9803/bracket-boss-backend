@@ -7,11 +7,16 @@ import { UpdateTournamentInput } from './dtos/update-tournament-input.dto';
 import { TournamentListResponse } from './dtos/get-all-tournaments-response.dto';
 import { SortInput } from 'src/common/dtos/sort-input.dto';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
+import { SportManagementService } from 'src/sport-management/providers/sport-management.service';
+import { FormatManagementService } from 'src/format-management/providers/format-management.service';
+import { SportName } from 'src/sport-management/types/sport.enums';
 
 @Resolver(() => Tournament)
 export class TournamentManagementResolver {
   constructor(
     private readonly tournamentManagementService: TournamentManagementService,
+    private readonly sportManagementService: SportManagementService,
+    private readonly formatManagementService: FormatManagementService,
   ) {}
 
   @Query(() => [Tournament])
@@ -39,14 +44,13 @@ export class TournamentManagementResolver {
     },
   ) {
     try {
-      const [tournaments, totalRecords] =
-        await this.tournamentManagementService.findAllWithRelations({
-          page,
-          pageSize,
-          filterBy,
-          filter,
-          sort,
-        });
+      const [tournaments, totalRecords] = await this.tournamentManagementService.findAllWithRelations({
+        page,
+        pageSize,
+        filterBy,
+        filter,
+        sort,
+      });
 
       return { tournaments, totalRecords };
     } catch (error) {
@@ -58,10 +62,7 @@ export class TournamentManagementResolver {
   @Query(() => Tournament)
   async getTournamentById(@Args('tournamentId') tournamentId: number) {
     try {
-      const tournaments =
-        await this.tournamentManagementService.findOneWithRelations(
-          tournamentId,
-        );
+      const tournaments = await this.tournamentManagementService.findOneWithRelations(tournamentId);
 
       return tournaments;
     } catch (error) {
@@ -71,13 +72,9 @@ export class TournamentManagementResolver {
 
   @UseGuards(AuthCheckGuard)
   @Mutation(() => Tournament)
-  async createTournament(
-    @Args('input') createTournamentDto: CreateTournamentInputDto,
-  ): Promise<Tournament> {
+  async createTournament(@Args('input') createTournamentDto: CreateTournamentInputDto): Promise<Tournament> {
     try {
-      return this.tournamentManagementService.createTournament(
-        createTournamentDto,
-      );
+      return this.tournamentManagementService.createTournament(createTournamentDto);
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }
@@ -85,14 +82,21 @@ export class TournamentManagementResolver {
 
   @UseGuards(AuthCheckGuard)
   @Mutation(() => Tournament)
-  async updateTournament(
-    @Args('input') updateTournamentInput: UpdateTournamentInput,
-  ): Promise<Tournament> {
+  async updateTournament(@Args('input') updateTournamentInput: UpdateTournamentInput): Promise<Tournament> {
     try {
-      return this.tournamentManagementService.update(
-        updateTournamentInput.id,
-        updateTournamentInput,
-      );
+      const sport = await this.sportManagementService.findSportByName(SportName.pickleball);
+
+      const poolPlayFormat = await this.formatManagementService.findOne(updateTournamentInput.formatId);
+
+      return this.tournamentManagementService.update(updateTournamentInput.id, {
+        name: updateTournamentInput.name,
+        description: updateTournamentInput.description,
+        start_date: updateTournamentInput.start_date,
+        end_date: updateTournamentInput.end_date,
+        isPrivate: updateTournamentInput.isPrivate,
+        sport,
+        poolPlayFormat,
+      });
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }

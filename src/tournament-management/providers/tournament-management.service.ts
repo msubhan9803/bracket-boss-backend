@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { Tournament } from '../entities/tournament.entity';
 import { SportManagementService } from 'src/sport-management/providers/sport-management.service';
 import { SportName } from 'src/sport-management/types/sport.enums';
 import { CreateTournamentInputDto } from '../dtos/create-tournament-input.dto';
 import { FormatManagementService } from 'src/format-management/providers/format-management.service';
-import { UpdateTournamentInput } from '../dtos/update-tournament-input.dto';
-import messages from 'src/utils/messages';
 import { TeamGenerationTypeManagementService } from 'src/team-generation-type-management/providers/team-generation-type-management.service';
 import { TournamentStatusTypesEnum } from '../types/common';
 
@@ -73,25 +71,16 @@ export class TournamentManagementService {
     });
   }
 
-  async createTournament(
-    createTournamentDto: CreateTournamentInputDto,
-  ): Promise<Tournament> {
-    const sport = await this.sportManagementService.findSportByName(
-      SportName.pickleball,
-    );
+  async createTournament(createTournamentDto: CreateTournamentInputDto): Promise<Tournament> {
+    const sport = await this.sportManagementService.findSportByName(SportName.pickleball);
 
-    const poolPlayFormat = await this.formatManagementService.findOne(
-      createTournamentDto.poolPlayFormatId,
-    );
+    const poolPlayFormat = await this.formatManagementService.findOne(createTournamentDto.poolPlayFormatId);
 
-    const playOffFormat = await this.formatManagementService.findOne(
-      createTournamentDto.poolPlayFormatId,
-    );
+    const playOffFormat = await this.formatManagementService.findOne(createTournamentDto.poolPlayFormatId);
 
-    const teamGenerationType =
-      await this.teamGenerationTypeManagementService.findOne(
-        createTournamentDto.teamGenerationTypeId,
-      );
+    const teamGenerationType = await this.teamGenerationTypeManagementService.findOne(
+      createTournamentDto.teamGenerationTypeId,
+    );
 
     const newTournament = this.tournamentRepository.create({
       name: createTournamentDto.name,
@@ -112,33 +101,17 @@ export class TournamentManagementService {
     return this.tournamentRepository.save(newTournament);
   }
 
-  async update(
-    id: number,
-    updateTournamentInput: Partial<UpdateTournamentInput>,
-  ): Promise<Tournament> {
-    const sport = await this.sportManagementService.findSportByName(
-      SportName.pickleball,
-    );
+  async update(tournamentId: number, updatedTournament: Partial<Tournament>): Promise<Tournament> {
+    await this.tournamentRepository.update(tournamentId, updatedTournament);
 
-    const poolPlayFormat = await this.formatManagementService.findOne(
-      updateTournamentInput.formatId,
-    );
-
-    const user = await this.tournamentRepository.preload({
-      id,
-      name: updateTournamentInput.name,
-      description: updateTournamentInput.description,
-      start_date: updateTournamentInput.start_date,
-      end_date: updateTournamentInput.end_date,
-      isPrivate: updateTournamentInput.isPrivate,
-      sport,
-      poolPlayFormat,
-    });
-
-    if (!user) {
-      throw new Error(messages.NOT_FOUND);
+    try {
+      const tournament = await this.findOneWithRelations(tournamentId);
+      if (!tournament) {
+        throw new Error(`Tournament with ID ${tournamentId} not found`);
+      }
+      return tournament;
+    } catch (error) {
+      throw new Error(`Error finding tournament: ${error.message}`);
     }
-
-    return this.tournamentRepository.save(user);
   }
 }

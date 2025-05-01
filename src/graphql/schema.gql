@@ -258,6 +258,7 @@ type Mutation {
   register(input: RegisterInputDto!): MessageResponseDto!
   resetPassword(newPassword: String!): MessageResponseDto!
   sendForgotPasswordEmail(email: String!): MessageResponseDto!
+  startTournament(tournamentId: Float!): Tournament!
   updateTournament(input: UpdateTournamentInput!): Tournament!
   updateUserClub(input: UpdateUserClubDto!): UpdateUserResponseDto!
   updateUserRole(input: UpdateUserRoleDto!): UpdateUserRoleResponseDto!

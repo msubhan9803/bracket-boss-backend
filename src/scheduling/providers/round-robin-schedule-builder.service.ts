@@ -144,7 +144,7 @@ export class RoundRobinScheduleBuilderService {
     for (let i = 0; i < teams.length; i++) {
       for (let j = i + 1; j < teams.length; j++) {
         matches.push({
-          title: `Match ${teams[i].name} vs ${teams[j].name}`,
+          title: `Match ${matches.length + 1}`,
           teams: [teams[i], teams[j]],
         });
       }
