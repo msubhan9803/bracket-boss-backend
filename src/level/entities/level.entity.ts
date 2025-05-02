@@ -15,6 +15,7 @@ import { LevelTypeEnum } from '../types/common';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Pool } from 'src/pool/entities/pool.entity';
+import { Match } from 'src/match-management/entities/match.entity';
 
 registerEnumType(LevelTypeEnum, {
   name: 'LevelTypeEnum',
@@ -57,6 +58,14 @@ export class Level {
   })
   @Field(() => [Pool])
   pools: Pool[];
+
+  @OneToMany(() => Match, (match) => match.level, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @Field(() => [Match])
+  @JoinColumn()
+  matches: Match[];
 
   @Field()
   @CreateDateColumn()

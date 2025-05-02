@@ -13,6 +13,7 @@ import { Tournament } from 'src/tournament-management/entities/tournament.entity
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Level } from 'src/level/entities/level.entity';
 import { Round } from 'src/round/entities/round.entity';
+import { Match } from 'src/match-management/entities/match.entity';
 
 @ObjectType()
 @Entity()
@@ -30,14 +31,14 @@ export class Pool {
   order: number;
 
   @ManyToOne(() => Tournament, {
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   @Field(() => Tournament)
   tournament: Tournament;
 
   @ManyToOne(() => Level, (level) => level.pools, {
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   @Field(() => Level)
@@ -49,6 +50,14 @@ export class Pool {
   })
   @Field(() => [Round])
   rounds: Round[];
+
+  @OneToMany(() => Match, (match) => match.pool, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @Field(() => [Match])
+  @JoinColumn()
+  matches: Match[];
 
   @Field()
   @CreateDateColumn()

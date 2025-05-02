@@ -83,7 +83,7 @@ export class SchedulingService {
         order: poolNumber + 1,
       });
 
-      const roundsWithMatches = await formatStrategy.createInitialRounds(tournament, pool, teamsByPool[poolNumber]);
+      const roundsWithMatches = await formatStrategy.createInitialRounds(tournament, level, pool, teamsByPool[poolNumber]);
 
       pools.push({
         ...pool,

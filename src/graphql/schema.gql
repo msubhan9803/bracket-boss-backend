@@ -156,6 +156,7 @@ type Level {
   created_at: DateTime!
   format: Format!
   id: CustomID!
+  matches: [Match!]!
   name: String!
   order: Float!
   pools: [Pool!]!
@@ -184,8 +185,10 @@ type Match {
   created_at: DateTime!
   homeTeam: Team!
   id: CustomID!
+  level: Level!
   matchCourtSchedule: MatchCourtSchedules
   matchRounds: [MatchRound!]!
+  pool: Pool!
   round: Round!
   status: MatchStatusTypes!
   title: String!
@@ -295,6 +298,7 @@ type Pool {
   created_at: DateTime!
   id: CustomID!
   level: Level!
+  matches: [Match!]!
   name: String!
   order: Float!
   rounds: [Round!]!
@@ -306,6 +310,7 @@ type Query {
   getAllClubs: [Club!]!
   getAllCourts(clubId: Int, filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): CourtListResponse!
   getAllFormats: [Format!]!
+  getAllMatchesWithFilters(courts: [Float!], date: DateTime, endTime: DateTime, levels: [Float!], pools: [Float!], rounds: [Float!], startTime: DateTime, status: [MatchStatusTypes!], teams: [Float!], tournamentId: Float!): [Match!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
   getAllTeamGenerationTypesByFormatId(formatId: Float!): [TeamGenerationType!]!
   getAllTeams(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TeamListResponse!

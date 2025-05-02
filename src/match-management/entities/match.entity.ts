@@ -17,6 +17,8 @@ import { MatchRound } from './matchRound.entity';
 import { Round } from 'src/round/entities/round.entity';
 import { MatchStatusTypes } from '../types/common';
 import { MatchCourtSchedules } from './match-court-schedule.entity';
+import { Level } from 'src/level/entities/level.entity';
+import { Pool } from 'src/pool/entities/pool.entity';
 
 registerEnumType(MatchStatusTypes, {
   name: 'MatchStatusTypes',
@@ -33,6 +35,20 @@ export class Match {
   @ManyToOne(() => Tournament)
   @JoinColumn()
   tournament: Tournament;
+
+  @ManyToOne(() => Level, (level) => level.matches, {
+    onDelete: 'CASCADE',
+  })
+  @Field(() => Level)
+  @JoinColumn()
+  level: Level;
+
+  @ManyToOne(() => Pool, (pool) => pool.matches, {
+    onDelete: 'CASCADE',
+  })
+  @Field(() => Pool)
+  @JoinColumn()
+  pool: Pool;
 
   @ManyToOne(() => Round, (round) => round.matches, {
     onDelete: 'CASCADE',

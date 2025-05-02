@@ -6,6 +6,7 @@ import { Round } from 'src/round/entities/round.entity';
 import { RoundRobinScheduleBuilderService } from '../providers/round-robin-schedule-builder.service';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { Pool } from 'src/pool/entities/pool.entity';
+import { Level } from 'src/level/entities/level.entity';
 
 @Injectable()
 export class RoundRobinStrategy implements FormatStrategy {
@@ -13,7 +14,7 @@ export class RoundRobinStrategy implements FormatStrategy {
 
   constructor(private readonly roundRobinScheduleBuilderService: RoundRobinScheduleBuilderService) {}
 
-  async createInitialRounds(tournament: Tournament, pool: Pool, teams: Team[]): Promise<Round[]> {
-    return this.roundRobinScheduleBuilderService.generateRoundsMatches(tournament, pool, teams);
+  async createInitialRounds(tournament: Tournament, level: Level, pool: Pool, teams: Team[]): Promise<Round[]> {
+    return this.roundRobinScheduleBuilderService.generateRoundsMatches(tournament, level, pool, teams);
   }
 }

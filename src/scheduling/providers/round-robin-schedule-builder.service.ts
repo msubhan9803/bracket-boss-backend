@@ -14,6 +14,7 @@ import { MatchCourtScheduleService } from 'src/match-management/providers/matct-
 import { MatchRoundService } from 'src/match-management/providers/match-round.service';
 import { CourtManagementService } from 'src/court-management/providers/court-management.service';
 import { RoundStatusTypesEnum } from 'src/common/types/global';
+import { Level } from 'src/level/entities/level.entity';
 
 @Injectable()
 export class RoundRobinScheduleBuilderService {
@@ -26,7 +27,7 @@ export class RoundRobinScheduleBuilderService {
     private readonly courtManagementService: CourtManagementService,
   ) {}
 
-  async generateRoundsMatches(tournament: Tournament, pool: Pool, teams: Team[]): Promise<Round[]> {
+  async generateRoundsMatches(tournament: Tournament, level: Level, pool: Pool, teams: Team[]): Promise<Round[]> {
     const draftMatchList = this.generateRoundRobinMatches(teams);
     const draftedRoundsWithMatches = this.draftOutRoundsWithMatches(draftMatchList);
 
@@ -73,6 +74,8 @@ export class RoundRobinScheduleBuilderService {
           homeTeam,
           awayTeam,
           status: MatchStatusTypes.not_started,
+          level,
+          pool,
           round,
         });
         createdMatches.push(createdMatch);
