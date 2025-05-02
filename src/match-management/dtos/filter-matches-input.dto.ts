@@ -1,8 +1,8 @@
-import { ArgsType, Field } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { MatchStatusTypes } from '../types/common';
-import { IsOptional, IsArray, IsNumber, IsDate, IsNotEmpty } from 'class-validator';
+import { IsOptional, IsArray, IsNumber, IsDate, IsNotEmpty, IsString } from 'class-validator';
 
-@ArgsType()
+@InputType()
 export class FilterMatchesInputDto {
   @Field(() => Number)
   @IsNumber()
@@ -43,15 +43,15 @@ export class FilterMatchesInputDto {
   @IsDate()
   date?: Date;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => String, { nullable: true })
   @IsOptional()
-  @IsDate()
-  startTime?: Date;
+  @IsString()
+  startTime?: string;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => String, { nullable: true })
   @IsOptional()
-  @IsDate()
-  endTime?: Date;
+  @IsString()
+  endTime?: string;
 
   @Field(() => [Number], { nullable: true })
   @IsOptional()

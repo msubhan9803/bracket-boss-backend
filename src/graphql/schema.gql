@@ -125,6 +125,19 @@ type DeleteScheduleResponseDto {
   message: String!
 }
 
+input FilterMatchesInputDto {
+  courts: [Float!]
+  date: DateTime
+  endTime: String
+  levels: [Float!]
+  pools: [Float!]
+  rounds: [Float!]
+  startTime: String
+  status: [MatchStatusTypes!]
+  teams: [Float!]
+  tournamentId: Float!
+}
+
 type Format {
   created_at: DateTime!
   id: CustomID!
@@ -310,7 +323,7 @@ type Query {
   getAllClubs: [Club!]!
   getAllCourts(clubId: Int, filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): CourtListResponse!
   getAllFormats: [Format!]!
-  getAllMatchesWithFilters(courts: [Float!], date: DateTime, endTime: DateTime, levels: [Float!], pools: [Float!], rounds: [Float!], startTime: DateTime, status: [MatchStatusTypes!], teams: [Float!], tournamentId: Float!): [Match!]!
+  getAllMatchesWithFilters(input: FilterMatchesInputDto!): [Match!]!
   getAllStepsByRole(input: StepsByRoleDto!): [Step!]!
   getAllTeamGenerationTypesByFormatId(formatId: Float!): [TeamGenerationType!]!
   getAllTeams(filter: String, filterBy: String, page: Int, pageSize: Int, sort: SortInput): TeamListResponse!

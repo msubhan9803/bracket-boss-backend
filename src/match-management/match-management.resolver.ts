@@ -22,7 +22,7 @@ export class MatchManagementResolver {
 
   @UseGuards(AuthCheckGuard)
   @Query(() => [Match])
-  async getAllMatchesWithFilters(@Args() filters: FilterMatchesInputDto): Promise<Match[]> {
+  async getAllMatchesWithFilters(@Args('input') filters: FilterMatchesInputDto): Promise<Match[]> {
     try {
       const matches = await this.matchService.findAllWithFilters(filters);
       return matches;
