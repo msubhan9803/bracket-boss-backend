@@ -68,6 +68,7 @@ export class MatchService {
       'awayTeam.users',
       'winnerTeam',
       'matchCourtSchedule',
+      'matchRounds',
       'matchCourtSchedule.courtSchedule',
       'matchCourtSchedule.courtSchedule.court',
       'matchCourtSchedule.courtSchedule.day',
@@ -79,7 +80,7 @@ export class MatchService {
     if (filters.courts || filters.date || filters.startTime || filters.endTime) {
       baseWhere['matchCourtSchedule'] = {};
 
-      if (filters.courts) {
+      if (filters.courts.length > 0) {
         baseWhere['matchCourtSchedule'].courtSchedule = {
           court: { id: In(filters.courts) },
         };
