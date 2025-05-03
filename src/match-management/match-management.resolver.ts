@@ -1,4 +1,4 @@
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { MatchService } from './providers/match.service';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { Match } from './entities/match.entity';
@@ -28,6 +28,17 @@ export class MatchManagementResolver {
       return matches;
     } catch (error) {
       throw new InternalServerErrorException('Error fetching matches with filters: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => Match)
+  async startMatch(@Args('matchId') matchId: number): Promise<Match> {
+    try {
+      const updatedMatch = await this.matchService.startMatch(matchId);
+      return updatedMatch;
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
     }
   }
 }

@@ -5,6 +5,7 @@ import { Repository, FindManyOptions, Between, Equal, In } from 'typeorm';
 import { CreateMatchInputDto } from '../dtos/create-match-input.dto';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { FilterMatchesInputDto } from '../dtos/filter-matches-input.dto';
+import { MatchStatusTypes } from '../types/common';
 
 @Injectable()
 export class MatchService {
@@ -12,6 +13,16 @@ export class MatchService {
     @InjectRepository(Match)
     private readonly matchRepository: Repository<Match>,
   ) {}
+
+  findMatchById(
+    matchId: number,
+    relations: string[] = ['awayTeam', 'awayTeam.users', 'homeTeam', 'homeTeam.users'],
+  ): Promise<Match> {
+    return this.matchRepository.findOne({
+      where: { id: matchId },
+      relations,
+    });
+  }
 
   findMatchesByTournament(
     tournament: Tournament,
@@ -126,5 +137,10 @@ export class MatchService {
     });
 
     return matches;
+  }
+
+  async startMatch(matchId: number) {
+    await this.matchRepository.update(matchId, { status: MatchStatusTypes.in_progress });
+    return this.findMatchById(matchId);
   }
 }
