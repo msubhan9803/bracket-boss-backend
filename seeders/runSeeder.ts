@@ -6,7 +6,6 @@ import { SuperAdminSeeder } from 'seeders/scripts/SuperAdminSeeder';
 import { UserManagementSeeder } from 'seeders/scripts/UserManagementSeeder';
 import { AddFormatsAndTeamGenerationTypesSeeder } from './scripts/AddFormatsAndTeamGenerationTypesSeeder';
 import { AddMatchStatusSeeder } from './scripts/AddMatchStatusSeeder';
-import { AddMatchRoundStatusSeeder } from './scripts/AddMatchRoundStatusSeeder';
 import { AddTeamStatusSeeder } from './scripts/AddTeamStatusSeeder';
 import { AddDaysSeeder } from './scripts/AddDaysSeeder';
 import { AddTimeSlotsSeeder } from './scripts/AddTimeSlotsSeeder';
@@ -24,7 +23,6 @@ async function runSeeder() {
   await AddPickleballSportSeeder.seed(dataSource);
   await AddFormatsAndTeamGenerationTypesSeeder.seed(dataSource);
   await AddMatchStatusSeeder.seed(dataSource);
-  await AddMatchRoundStatusSeeder.seed(dataSource);
   await AddTeamStatusSeeder.seed(dataSource);
   await AddDaysSeeder.seed(dataSource);
   await AddTimeSlotsSeeder.seed(dataSource);

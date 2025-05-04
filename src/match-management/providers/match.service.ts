@@ -6,17 +6,19 @@ import { CreateMatchInputDto } from '../dtos/create-match-input.dto';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { FilterMatchesInputDto } from '../dtos/filter-matches-input.dto';
 import { MatchStatusTypes } from '../types/common';
+import { MatchRoundService } from './match-round.service';
 
 @Injectable()
 export class MatchService {
   constructor(
     @InjectRepository(Match)
     private readonly matchRepository: Repository<Match>,
+    private readonly matchRoundService: MatchRoundService,
   ) {}
 
   findMatchById(
     matchId: number,
-    relations: string[] = ['awayTeam', 'awayTeam.users', 'homeTeam', 'homeTeam.users'],
+    relations: string[] = ['awayTeam', 'awayTeam.users', 'homeTeam', 'homeTeam.users', 'matchRounds'],
   ): Promise<Match> {
     return this.matchRepository.findOne({
       where: { id: matchId },
@@ -141,6 +143,10 @@ export class MatchService {
 
   async startMatch(matchId: number) {
     await this.matchRepository.update(matchId, { status: MatchStatusTypes.in_progress });
+
+    const matchRounds = await this.matchRoundService.findAllRoundsByMatchId(matchId);
+    await this.matchRoundService.startMatchRound(matchRounds[0]);
+
     return this.findMatchById(matchId);
   }
 }

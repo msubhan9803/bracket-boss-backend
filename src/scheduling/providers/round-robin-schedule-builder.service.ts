@@ -9,7 +9,7 @@ import { Tournament } from 'src/tournament-management/entities/tournament.entity
 import { Pool } from 'src/pool/entities/pool.entity';
 import { CourtScheduleService } from 'src/court-management/providers/court-schedule.service';
 import { MatchService } from 'src/match-management/providers/match.service';
-import { MatchStatusTypes } from 'src/match-management/types/common';
+import { MatchRoundStatusTypes, MatchStatusTypes } from 'src/match-management/types/common';
 import { MatchCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
 import { MatchRoundService } from 'src/match-management/providers/match-round.service';
 import { CourtManagementService } from 'src/court-management/providers/court-management.service';
@@ -218,6 +218,7 @@ export class RoundRobinScheduleBuilderService {
           startTime: match.matchDate,
           endTime: match.matchDate,
           matchRoundNumber: index,
+          status: MatchRoundStatusTypes.not_started
         });
 
         createdMatchRounds.push(createdMatchRound);

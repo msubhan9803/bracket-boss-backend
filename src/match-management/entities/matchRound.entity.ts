@@ -7,9 +7,14 @@ import {
   JoinColumn,
   Column,
 } from 'typeorm';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Match } from './match.entity';
+import { MatchRoundStatusTypes } from '../types/common';
+
+registerEnumType(MatchRoundStatusTypes, {
+  name: 'MatchRoundStatusTypes',
+});
 
 @ObjectType()
 @Entity()
@@ -28,6 +33,10 @@ export class MatchRound {
   @Field()
   @Column('int')
   matchRoundNumber: number;
+
+  @Field(() => MatchRoundStatusTypes)
+  @Column('varchar')
+  status: MatchRoundStatusTypes;
 
   @Field()
   @CreateDateColumn()

@@ -223,7 +223,16 @@ type MatchRound {
   id: CustomID!
   match: Match!
   matchRoundNumber: Float!
+  status: MatchRoundStatusTypes!
   updated_at: DateTime!
+}
+
+enum MatchRoundStatusTypes {
+  completed
+  in_progress
+  not_started
+  paused
+  void
 }
 
 enum MatchStatusTypes {
