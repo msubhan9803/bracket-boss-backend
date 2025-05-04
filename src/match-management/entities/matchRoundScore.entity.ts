@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
@@ -18,9 +19,8 @@ export class MatchRoundScore {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @OneToOne(() => MatchRound, (matchRound) => matchRound.matchRoundScore)
   @Field(() => MatchRound)
-  @ManyToOne(() => MatchRound)
-  @JoinColumn()
   matchRound: MatchRound;
 
   @Field()

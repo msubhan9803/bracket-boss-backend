@@ -10,6 +10,25 @@ import { MatchRoundService } from './match-round.service';
 
 @Injectable()
 export class MatchService {
+  private readonly commonMatchRelationships = [
+    'tournament',
+    'round',
+    'homeTeam',
+    'homeTeam.users',
+    'awayTeam',
+    'awayTeam.users',
+    'winnerTeam',
+    'matchCourtSchedule',
+    'matchRounds',
+    'matchRounds.matchRoundScore',
+    'matchCourtSchedule.courtSchedule',
+    'matchCourtSchedule.courtSchedule.court',
+    'matchCourtSchedule.courtSchedule.day',
+    'matchCourtSchedule.courtSchedule.timeSlot',
+    'level',
+    'pool',
+  ];
+
   constructor(
     @InjectRepository(Match)
     private readonly matchRepository: Repository<Match>,
@@ -18,7 +37,7 @@ export class MatchService {
 
   findMatchById(
     matchId: number,
-    relations: string[] = ['awayTeam', 'awayTeam.users', 'homeTeam', 'homeTeam.users', 'matchRounds'],
+    relations: string[] = this.commonMatchRelationships,
   ): Promise<Match> {
     return this.matchRepository.findOne({
       where: { id: matchId },
@@ -29,7 +48,7 @@ export class MatchService {
 
   findMatchesByTournament(
     tournament: Tournament,
-    relations: string[] = ['awayTeam', 'awayTeam.users', 'homeTeam', 'homeTeam.users'],
+    relations: string[] = this.commonMatchRelationships,
   ): Promise<Match[]> {
     return this.matchRepository.find({
       where: { tournament: { id: tournament.id } },
@@ -39,17 +58,7 @@ export class MatchService {
 
   findMatchesByRoundId(
     roundId: number,
-    relations: string[] = [
-      'awayTeam',
-      'awayTeam.users',
-      'homeTeam',
-      'homeTeam.users',
-      'matchCourtSchedule',
-      'matchCourtSchedule.courtSchedule',
-      'matchCourtSchedule.courtSchedule.court',
-      'matchCourtSchedule.courtSchedule.timeSlot',
-      'matchCourtSchedule.courtSchedule.day',
-    ],
+    relations: string[] = this.commonMatchRelationships,
   ): Promise<Match[]> {
     return this.matchRepository.find({
       where: { round: { id: roundId } },
@@ -73,23 +82,7 @@ export class MatchService {
       ...(filters?.rounds?.length && { round: { id: In(filters.rounds) } }),
       ...(filters.status && { status: In(filters.status) }),
     };
-    const relations: string[] = [
-      'tournament',
-      'round',
-      'homeTeam',
-      'homeTeam.users',
-      'awayTeam',
-      'awayTeam.users',
-      'winnerTeam',
-      'matchCourtSchedule',
-      'matchRounds',
-      'matchCourtSchedule.courtSchedule',
-      'matchCourtSchedule.courtSchedule.court',
-      'matchCourtSchedule.courtSchedule.day',
-      'matchCourtSchedule.courtSchedule.timeSlot',
-      'level',
-      'pool',
-    ];
+    const relations: string[] = this.commonMatchRelationships;
 
     if (filters.courts || filters.date || filters.startTime || filters.endTime) {
       baseWhere['matchCourtSchedule'] = {};

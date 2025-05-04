@@ -22,7 +22,8 @@ export class MatchManagementResolver {
   @Query(() => Match)
   async getMatchByMatchId(@Args('matchId') matchId: number) {
     try {
-      return this.matchService.findMatchById(matchId);
+      const match = await this.matchService.findMatchById(matchId);
+      return match;
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }

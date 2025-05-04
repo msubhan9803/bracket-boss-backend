@@ -223,6 +223,7 @@ type MatchRound {
   id: CustomID!
   match: Match!
   matchRoundNumber: Float!
+  matchRoundScore: MatchRoundScore
   status: MatchRoundStatusTypes!
   updated_at: DateTime!
 }
