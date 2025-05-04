@@ -8,6 +8,7 @@ import { MatchRoundScore } from './entities/matchRoundScore.entity';
 import { MatchRoundService } from './providers/match-round.service';
 import { MatchRoundScoreService } from './providers/match-round-score.service';
 import { MatchRound } from './entities/matchRound.entity';
+import { UpdateMatchScoreInputDto } from './dtos/update-match-score-input.dto';
 
 @Resolver()
 export class MatchManagementResolver {
@@ -62,13 +63,9 @@ export class MatchManagementResolver {
 
   @UseGuards(AuthCheckGuard)
   @Mutation(() => MatchRoundScore)
-  async updateScore(
-    @Args('matchId') matchId: number,
-    @Args('roundId') roundId: number,
-    @Args('homeTeamScore') homeTeamScore: number,
-    @Args('awayTeamScore') awayTeamScore: number,
-  ) {
+  async updateScore(@Args('input') updateMatchScoreInputDto: UpdateMatchScoreInputDto) {
     try {
+      const { matchId, roundId, homeTeamScore, awayTeamScore } = updateMatchScoreInputDto;
       const matchRound = await this.matchRoundService.findMatchRoundById(roundId);
 
       if (matchRound.match.id !== matchId) {

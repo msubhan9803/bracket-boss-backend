@@ -295,7 +295,7 @@ type Mutation {
   sendForgotPasswordEmail(email: String!): MessageResponseDto!
   startMatch(matchId: Float!): Match!
   startTournament(tournamentId: Float!): Tournament!
-  updateScore(awayTeamScore: Float!, homeTeamScore: Float!, matchId: Float!, roundId: Float!): MatchRoundScore!
+  updateScore(input: UpdateMatchScoreInputDto!): MatchRoundScore!
   updateTournament(input: UpdateTournamentInput!): Tournament!
   updateUserClub(input: UpdateUserClubDto!): UpdateUserResponseDto!
   updateUserRole(input: UpdateUserRoleDto!): UpdateUserRoleResponseDto!
@@ -545,6 +545,13 @@ enum TournamentStatusTypesEnum {
   not_started
   play_off_in_progress
   pool_play_in_progress
+}
+
+input UpdateMatchScoreInputDto {
+  awayTeamScore: Float!
+  homeTeamScore: Float!
+  matchId: Float!
+  roundId: Float!
 }
 
 input UpdateTournamentInput {
