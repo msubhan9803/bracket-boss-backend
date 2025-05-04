@@ -227,6 +227,15 @@ type MatchRound {
   updated_at: DateTime!
 }
 
+type MatchRoundScore {
+  awayTeamScore: Float!
+  created_at: DateTime!
+  homeTeamScore: Float!
+  id: CustomID!
+  matchRound: MatchRound!
+  updated_at: DateTime!
+}
+
 enum MatchRoundStatusTypes {
   completed
   in_progress
@@ -285,6 +294,7 @@ type Mutation {
   sendForgotPasswordEmail(email: String!): MessageResponseDto!
   startMatch(matchId: Float!): Match!
   startTournament(tournamentId: Float!): Tournament!
+  updateScore(awayTeamScore: Float!, homeTeamScore: Float!, matchId: Float!, roundId: Float!): MatchRoundScore!
   updateTournament(input: UpdateTournamentInput!): Tournament!
   updateUserClub(input: UpdateUserClubDto!): UpdateUserResponseDto!
   updateUserRole(input: UpdateUserRoleDto!): UpdateUserRoleResponseDto!

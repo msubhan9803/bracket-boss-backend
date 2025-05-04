@@ -4,10 +4,17 @@ import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { Match } from './entities/match.entity';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
 import { FilterMatchesInputDto } from './dtos/filter-matches-input.dto';
+import { MatchRoundScore } from './entities/matchRoundScore.entity';
+import { MatchRoundService } from './providers/match-round.service';
+import { MatchRoundScoreService } from './providers/match-round-score.service';
 
 @Resolver()
 export class MatchManagementResolver {
-  constructor(private readonly matchService: MatchService) {}
+  constructor(
+    private readonly matchService: MatchService,
+    private readonly matchRoundService: MatchRoundService,
+    private readonly matchRoundScoreService: MatchRoundScoreService
+  ) { }
 
   @UseGuards(AuthCheckGuard)
   @Query(() => Match)
@@ -49,6 +56,34 @@ export class MatchManagementResolver {
       return updatedMatch;
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => MatchRoundScore)
+  async updateScore(
+    @Args('matchId') matchId: number,
+    @Args('roundId') roundId: number,
+    @Args('homeTeamScore') homeTeamScore: number,
+    @Args('awayTeamScore') awayTeamScore: number,
+  ) {
+    try {
+      // First find the match round
+      const matchRound = await this.matchRoundService.findMatchRoundById(roundId);
+
+      // Verify the match round belongs to the specified match
+      if (matchRound.match.id !== matchId) {
+        throw new Error('Round does not belong to the specified match');
+      }
+
+      // Update the score
+      return this.matchRoundScoreService.updateScore(
+        matchRound.id,
+        homeTeamScore,
+        awayTeamScore
+      );
+    } catch (error) {
+      throw new InternalServerErrorException('Error updating score: ', error.message);
     }
   }
 }
