@@ -23,6 +23,7 @@ export class MatchService {
     return this.matchRepository.findOne({
       where: { id: matchId },
       relations,
+      order: { matchRounds: { matchRoundNumber: "ASC" } }
     });
   }
 
