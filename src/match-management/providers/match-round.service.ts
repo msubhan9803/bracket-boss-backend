@@ -28,12 +28,19 @@ export class MatchRoundService {
   async findMatchRoundById(roundId: number): Promise<MatchRound> {
     return this.matchRoundRepository.findOne({
       where: { id: roundId },
-      relations: ['match']
+      relations: ['match', ]
     });
   }
 
   async startMatchRound(matchRound: MatchRound) {
     await this.matchRoundRepository.update(matchRound.id, { status: MatchRoundStatusTypes.in_progress });
     return this.matchRoundScoreService.createScore(matchRound);
+  }
+
+  async endMatchRound(roundId: number) {
+    await this.matchRoundRepository.update(roundId, { 
+      status: MatchRoundStatusTypes.completed 
+    });
+    return this.findMatchRoundById(roundId);
   }
 }

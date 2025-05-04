@@ -7,6 +7,7 @@ import { FilterMatchesInputDto } from './dtos/filter-matches-input.dto';
 import { MatchRoundScore } from './entities/matchRoundScore.entity';
 import { MatchRoundService } from './providers/match-round.service';
 import { MatchRoundScoreService } from './providers/match-round-score.service';
+import { MatchRound } from './entities/matchRound.entity';
 
 @Resolver()
 export class MatchManagementResolver {
@@ -84,6 +85,25 @@ export class MatchManagementResolver {
       );
     } catch (error) {
       throw new InternalServerErrorException('Error updating score: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => MatchRound)
+  async endMatchRound(
+    @Args('matchId') matchId: number,
+    @Args('roundId') roundId: number
+  ) {
+    try {
+      const matchRound = await this.matchRoundService.findMatchRoundById(roundId);
+
+      if (matchRound.match.id !== matchId) {
+        throw new Error('Round does not belong to the specified match');
+      }
+
+      return this.matchRoundService.endMatchRound(roundId);
+    } catch (error) {
+      throw new InternalServerErrorException('Error ending match round: ', error.message);
     }
   }
 }
