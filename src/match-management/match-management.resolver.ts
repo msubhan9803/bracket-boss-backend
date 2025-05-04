@@ -69,15 +69,12 @@ export class MatchManagementResolver {
     @Args('awayTeamScore') awayTeamScore: number,
   ) {
     try {
-      // First find the match round
       const matchRound = await this.matchRoundService.findMatchRoundById(roundId);
 
-      // Verify the match round belongs to the specified match
       if (matchRound.match.id !== matchId) {
         throw new Error('Round does not belong to the specified match');
       }
 
-      // Update the score
       return this.matchRoundScoreService.updateScore(
         matchRound.id,
         homeTeamScore,
