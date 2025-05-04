@@ -10,6 +10,16 @@ export class MatchManagementResolver {
   constructor(private readonly matchService: MatchService) {}
 
   @UseGuards(AuthCheckGuard)
+  @Query(() => Match)
+  async getMatchByMatchId(@Args('matchId') matchId: number) {
+    try {
+      return this.matchService.findMatchById(matchId);
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
   @Query(() => [Match])
   async getMatchesByRoundId(@Args('roundId') roundId: number) {
     try {
