@@ -101,4 +101,23 @@ export class MatchManagementResolver {
       throw new InternalServerErrorException('Error ending match round: ', error.message);
     }
   }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => MatchRound)
+  async startMatchRound(
+    @Args('matchId') matchId: number,
+    @Args('roundId') roundId: number
+  ) {
+    try {
+      const matchRound = await this.matchRoundService.findMatchRoundById(roundId);
+
+      if (matchRound.match.id !== matchId) {
+        throw new Error('Round does not belong to the specified match');
+      }
+
+      return this.matchRoundService.startMatchRound(matchRound);
+    } catch (error) {
+      throw new InternalServerErrorException('Error starting match round: ', error.message);
+    }
+  }
 }

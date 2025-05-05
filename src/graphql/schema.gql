@@ -295,6 +295,7 @@ type Mutation {
   resetPassword(newPassword: String!): MessageResponseDto!
   sendForgotPasswordEmail(email: String!): MessageResponseDto!
   startMatch(matchId: Float!): Match!
+  startMatchRound(matchId: Float!, roundId: Float!): MatchRound!
   startTournament(tournamentId: Float!): Tournament!
   updateScore(input: UpdateMatchScoreInputDto!): MatchRoundScore!
   updateTournament(input: UpdateTournamentInput!): Tournament!

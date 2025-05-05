@@ -28,19 +28,34 @@ export class MatchRoundService {
   async findMatchRoundById(roundId: number): Promise<MatchRound> {
     return this.matchRoundRepository.findOne({
       where: { id: roundId },
-      relations: ['match', ]
+      relations: ['match',]
     });
   }
 
   async startMatchRound(matchRound: MatchRound) {
     await this.matchRoundRepository.update(matchRound.id, { status: MatchRoundStatusTypes.in_progress });
-    return this.matchRoundScoreService.createScore(matchRound);
+    await this.matchRoundScoreService.createScore(matchRound);
+    return this.findMatchRoundById(matchRound.id);
   }
 
   async endMatchRound(roundId: number) {
-    await this.matchRoundRepository.update(roundId, { 
-      status: MatchRoundStatusTypes.completed 
+    const matchRound = await this.matchRoundRepository.findOne({
+      where: { id: roundId },
+      relations: ['matchRoundScore']
     });
+
+    if (!matchRound?.matchRoundScore) {
+      throw new Error('Match round score not found');
+    }
+
+    if (matchRound.matchRoundScore.homeTeamScore === 0 && matchRound.matchRoundScore.awayTeamScore === 0) {
+      throw new Error('Both teams must have non-zero scores to end the match round');
+    }
+
+    await this.matchRoundRepository.update(roundId, {
+      status: MatchRoundStatusTypes.completed
+    });
+
     return this.findMatchRoundById(roundId);
   }
 }
