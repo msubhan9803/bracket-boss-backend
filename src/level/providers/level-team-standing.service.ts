@@ -5,10 +5,23 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class LevelTeamStandingService {
+    private readonly commonLevelTeamStandingRelationships = [
+        'level',
+        'team',
+        'team.users',
+    ];
+
     constructor(
         @InjectRepository(LevelTeamStanding)
         private readonly levelTeamStandingRepository: Repository<LevelTeamStanding>,
     ) { }
+
+    findAllByLevelId(levelId: number, relations: string[] = this.commonLevelTeamStandingRelationships,): Promise<LevelTeamStanding[]> {
+        return this.levelTeamStandingRepository.find({
+            where: { level: { id: levelId } },
+            relations
+        });
+    }
 
     async updateLevelTeamStanding(
         levelId: number,

@@ -146,32 +146,6 @@ export class MatchService {
     return this.findMatchById(matchId);
   }
 
-  // async endMatch(matchId: number) {
-  //   const matchRounds = await this.matchRoundService.findAllRoundsByMatchId(matchId);
-  //   if (matchRounds.some(
-  //       matchRound => matchRound.status === MatchRoundStatusTypes.not_started ||
-  //       matchRound.status === MatchRoundStatusTypes.in_progress)
-  //   ) {
-  //     throw new Error("Unable to end match as all of the match rounds aren't completed yet.")
-  //   }
-
-  //   /**
-  //    * Update Match status
-  //    * Select Winning Team
-  //    */
-  //   const match = await this.findMatchById(matchId);
-  //   await this.matchRepository.update(match, { status: MatchStatusTypes.completed })
-
-
-  //   /**
-  //    * Update Level standings for winning team
-  //    */
-
-
-  //   return this.findMatchById(matchId);
-  // }
-
-
   async endMatch(matchId: number) {
     /**
      * Verify that all match rounds are completed before ending the match

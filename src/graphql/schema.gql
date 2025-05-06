@@ -380,6 +380,7 @@ type Query {
   getAllUsersWithoutPagination(userRole: Float): [User!]!
   getClubById(clubId: Float!): Club!
   getCourtById(courtId: Float!): Court!
+  getLevelTeamStandingsByLevelId(levelId: Float!): [LevelTeamStanding!]!
   getLevelsByTournament(tournamentId: Float!): [Level!]!
   getMatchByMatchId(matchId: Float!): Match!
   getMatchesByRoundId(roundId: Float!): [Match!]!
