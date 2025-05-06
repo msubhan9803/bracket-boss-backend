@@ -120,4 +120,16 @@ export class MatchManagementResolver {
       throw new InternalServerErrorException('Error starting match round: ', error.message);
     }
   }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => Match)
+  async endMatch(
+    @Args('matchId') matchId: number
+  ) {
+    try {
+      return this.matchService.endMatch(matchId);
+    } catch (error) {
+      throw new InternalServerErrorException('Error ending match round: ', error.message);
+    }
+  }
 }

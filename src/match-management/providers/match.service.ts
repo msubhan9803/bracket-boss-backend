@@ -5,8 +5,9 @@ import { Repository, FindManyOptions, Between, Equal, In } from 'typeorm';
 import { CreateMatchInputDto } from '../dtos/create-match-input.dto';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { FilterMatchesInputDto } from '../dtos/filter-matches-input.dto';
-import { MatchStatusTypes } from '../types/common';
+import { MatchResultType, MatchRoundStatusTypes, MatchStatusTypes } from '../types/common';
 import { MatchRoundService } from './match-round.service';
+import { LevelTeamStandingService } from 'src/level/providers/level-team-standing.service';
 
 @Injectable()
 export class MatchService {
@@ -33,7 +34,8 @@ export class MatchService {
     @InjectRepository(Match)
     private readonly matchRepository: Repository<Match>,
     private readonly matchRoundService: MatchRoundService,
-  ) {}
+    private readonly levelTeamStandingService: LevelTeamStandingService,
+  ) { }
 
   findMatchById(
     matchId: number,
@@ -140,6 +142,100 @@ export class MatchService {
 
     const matchRounds = await this.matchRoundService.findAllRoundsByMatchId(matchId);
     await this.matchRoundService.startMatchRound(matchRounds[0]);
+
+    return this.findMatchById(matchId);
+  }
+
+  // async endMatch(matchId: number) {
+  //   const matchRounds = await this.matchRoundService.findAllRoundsByMatchId(matchId);
+  //   if (matchRounds.some(
+  //       matchRound => matchRound.status === MatchRoundStatusTypes.not_started ||
+  //       matchRound.status === MatchRoundStatusTypes.in_progress)
+  //   ) {
+  //     throw new Error("Unable to end match as all of the match rounds aren't completed yet.")
+  //   }
+
+  //   /**
+  //    * Update Match status
+  //    * Select Winning Team
+  //    */
+  //   const match = await this.findMatchById(matchId);
+  //   await this.matchRepository.update(match, { status: MatchStatusTypes.completed })
+
+
+  //   /**
+  //    * Update Level standings for winning team
+  //    */
+
+
+  //   return this.findMatchById(matchId);
+  // }
+
+
+  async endMatch(matchId: number) {
+    /**
+     * Verify that all match rounds are completed before ending the match
+     */
+    const matchRounds = await this.matchRoundService.findAllRoundsByMatchId(matchId);
+    if (matchRounds.some(
+      matchRound => matchRound.status === MatchRoundStatusTypes.not_started ||
+        matchRound.status === MatchRoundStatusTypes.in_progress)
+    ) {
+      throw new Error("Unable to end match as all of the match rounds aren't completed yet.")
+    }
+
+    const match = await this.findMatchById(matchId);
+
+    /**
+     * Determine the winning team.
+     */
+    const homeTeamWins = match.matchRounds.filter(round => round?.matchRoundScore?.homeTeamScore > round?.matchRoundScore?.awayTeamScore).length;
+    const awayTeamWins = match.matchRounds.filter(round => round?.matchRoundScore?.awayTeamScore > round?.matchRoundScore?.homeTeamScore).length;
+    let winningTeam;
+    if (homeTeamWins > awayTeamWins) {
+      winningTeam = match.homeTeam;
+      match.resultType = MatchResultType.WINNER;
+    } else if (awayTeamWins > homeTeamWins) {
+      winningTeam = match.awayTeam;
+      match.resultType = MatchResultType.WINNER;
+    } else {
+      winningTeam = null;
+      match.resultType = MatchResultType.TIE;
+    }
+
+    match.winnerTeam = winningTeam;
+    await this.matchRepository.save(match);
+
+
+    /**
+     * 2. Calculate the score statistics.
+     */
+    let homeTeamPointsScored = 0;
+    let awayTeamPointsScored = 0;
+
+    match.matchRounds.forEach(round => {
+      homeTeamPointsScored += round?.matchRoundScore?.homeTeamScore || 0;
+      awayTeamPointsScored += round?.matchRoundScore?.awayTeamScore || 0;
+    });
+
+    /**
+     * 3. Update the LevelTeamStanding for both teams.
+     */
+    await this.levelTeamStandingService.updateLevelTeamStanding(match.level.id, match.homeTeam.id, {
+      pointsScored: homeTeamPointsScored,
+      pointsAgainst: awayTeamPointsScored,
+      wins: winningTeam?.id === match.homeTeam.id ? 1 : 0,
+      losses: winningTeam?.id === match.homeTeam.id ? 0 : 1,
+    }, match.matchRounds.length);
+
+    await this.levelTeamStandingService.updateLevelTeamStanding(match.level.id, match.awayTeam.id, {
+      pointsScored: awayTeamPointsScored,
+      pointsAgainst: homeTeamPointsScored,
+      wins: winningTeam?.id === match.awayTeam.id ? 1 : 0,
+      losses: winningTeam?.id === match.awayTeam.id ? 0 : 1,
+    }, match.matchRounds.length);
+
+    await this.matchRepository.update(matchId, { status: MatchStatusTypes.completed });
 
     return this.findMatchById(matchId);
   }

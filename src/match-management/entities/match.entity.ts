@@ -15,13 +15,17 @@ import { Tournament } from 'src/tournament-management/entities/tournament.entity
 import { Team } from 'src/team-management/entities/team.entity';
 import { MatchRound } from './matchRound.entity';
 import { Round } from 'src/round/entities/round.entity';
-import { MatchStatusTypes } from '../types/common';
+import { MatchResultType, MatchStatusTypes } from '../types/common';
 import { MatchCourtSchedules } from './match-court-schedule.entity';
 import { Level } from 'src/level/entities/level.entity';
 import { Pool } from 'src/pool/entities/pool.entity';
 
 registerEnumType(MatchStatusTypes, {
   name: 'MatchStatusTypes',
+});
+
+registerEnumType(MatchResultType, {
+  name: 'MatchResultType',
 });
 
 @ObjectType()
@@ -79,6 +83,14 @@ export class Match {
   @Field(() => MatchStatusTypes)
   @Column('varchar')
   status: MatchStatusTypes;
+
+  @Column({
+    type: 'enum',
+    enum: MatchResultType,
+    nullable: true
+  })
+  @Field(() => MatchResultType, { nullable: true })
+  resultType: MatchResultType | null;
 
   @Field(() => [MatchRound])
   @OneToMany(() => MatchRound, (matchRound) => matchRound.match, {

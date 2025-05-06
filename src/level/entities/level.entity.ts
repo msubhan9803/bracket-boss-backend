@@ -16,6 +16,7 @@ import { Tournament } from 'src/tournament-management/entities/tournament.entity
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Match } from 'src/match-management/entities/match.entity';
+import { LevelTeamStanding } from './levelStandings.entity';
 
 registerEnumType(LevelTypeEnum, {
   name: 'LevelTypeEnum',
@@ -66,6 +67,11 @@ export class Level {
   @Field(() => [Match])
   @JoinColumn()
   matches: Match[];
+
+  @OneToMany(() => LevelTeamStanding, (levelTeamStanding) => levelTeamStanding.level)
+  @JoinColumn()
+  @Field(() => [LevelTeamStanding])
+  levelTeamStandings: LevelTeamStanding[];
 
   @Field()
   @CreateDateColumn()

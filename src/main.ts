@@ -13,7 +13,7 @@ async function bootstrap() {
   const config = app.get(ConfigService);
   const port = config.get<number>('APP_PORT', 4000);
 
-  console.log('🌺🌺🌺🌺🌺 Port: ', port)
+  console.log('🌺🌺🌺🌺🌺 Port: ', port);
 
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 50 }));
 
@@ -26,12 +26,6 @@ async function bootstrap() {
 
   app.use('/uploads', express.static(path.resolve('uploads')));
 
-  await app
-    .listen(port)
-    .then(() =>
-      console.log(
-        `🚀 Apollo server running at: http://localhost:${port}/graphql`,
-      ),
-    );
+  await app.listen(port).then(() => console.log(`🚀 Apollo server running at: http://localhost:${port}/graphql`));
 }
 bootstrap();

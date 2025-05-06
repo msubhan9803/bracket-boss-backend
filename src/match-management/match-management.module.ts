@@ -12,6 +12,7 @@ import { MatchManagementResolver } from './match-management.resolver';
 import { UsersModule } from 'src/users/users.module';
 import { JwtService } from '@nestjs/jwt';
 import { MatchRoundScoreService } from './providers/match-round-score.service';
+import { LevelModule } from 'src/level/level.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { MatchRoundScoreService } from './providers/match-round-score.service';
       MatchRoundScore,
       MatchCommentary,
     ]),
-    UsersModule
+    UsersModule,
+    LevelModule
   ],
   providers: [MatchService, MatchRoundService, MatchCourtScheduleService, MatchManagementResolver, JwtService, MatchRoundScoreService],
   exports: [MatchService, MatchRoundService, MatchCourtScheduleService]

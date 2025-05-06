@@ -169,6 +169,7 @@ type Level {
   created_at: DateTime!
   format: Format!
   id: CustomID!
+  levelTeamStandings: [LevelTeamStanding!]!
   matches: [Match!]!
   name: String!
   order: Float!
@@ -176,6 +177,21 @@ type Level {
   tournament: Tournament!
   type: LevelTypeEnum!
   updated_at: DateTime!
+}
+
+type LevelTeamStanding {
+  created_at: DateTime!
+  id: CustomID!
+  level: Level!
+  losses: Float!
+  pointDiffByNumberOfGames: Float!
+  pointsAgainst: Float!
+  pointsAgainstByNumberOfGames: Float!
+  pointsScored: Float!
+  pointsScoredByNumberOfGames: Float!
+  team: Team!
+  updated_at: DateTime!
+  wins: Float!
 }
 
 enum LevelTypeEnum {
@@ -202,6 +218,7 @@ type Match {
   matchCourtSchedule: MatchCourtSchedules
   matchRounds: [MatchRound!]!
   pool: Pool!
+  resultType: MatchResultType
   round: Round!
   status: MatchStatusTypes!
   title: String!
@@ -216,6 +233,11 @@ type MatchCourtSchedules {
   id: Float!
   match: Match!
   matchDate: DateTime!
+}
+
+enum MatchResultType {
+  TIE
+  WINNER
 }
 
 type MatchRound {
@@ -288,6 +310,7 @@ type Mutation {
 
   """Download user data for schedule"""
   downloadUserDataForSchedule: String!
+  endMatch(matchId: Float!): Match!
   endMatchRound(matchId: Float!, roundId: Float!): MatchRound!
   login(input: LoginInputDto!): LoginResponseDto!
   refreshToken: RefreshTokenResponseDto!

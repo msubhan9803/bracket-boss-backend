@@ -13,3 +13,8 @@ export enum MatchRoundStatusTypes {
   paused = 'paused',
   completed = 'completed',
 }
+
+export enum MatchResultType {
+  TIE = 'TIE',
+  WINNER = 'WINNER',
+}

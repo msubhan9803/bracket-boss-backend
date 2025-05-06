@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -19,7 +20,7 @@ export class LevelTeamStanding {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Level)
+  @ManyToOne(() => Level, (level) => level.levelTeamStandings)
   @JoinColumn()
   @Field(() => Level)
   level: Level;

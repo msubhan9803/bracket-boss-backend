@@ -8,6 +8,7 @@ import { LevelResolver } from './level.resolver';
 import { TournamentManagementModule } from 'src/tournament-management/tournament-management.module';
 import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
+import { LevelTeamStandingService } from './providers/level-team-standing.service';
 
 @Module({
     imports: [
@@ -19,7 +20,7 @@ import { UsersModule } from 'src/users/users.module';
         UsersModule,
         TournamentManagementModule
     ],
-    providers: [LevelService, LevelResolver, JwtService],
-    exports: [LevelService]
+    providers: [LevelService, LevelResolver, JwtService, LevelTeamStandingService],
+    exports: [LevelService, LevelTeamStandingService]
 })
 export class LevelModule {}
