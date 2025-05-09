@@ -47,15 +47,15 @@ export class LevelTeamStanding {
   pointsAgainst: number;
 
   @Field()
-  @Column('int')
+  @Column('decimal')
   pointsScoredByNumberOfGames: number;
 
   @Field()
-  @Column('int')
+  @Column('decimal')
   pointsAgainstByNumberOfGames: number;
 
   @Field()
-  @Column('int')
+  @Column('decimal')
   pointDiffByNumberOfGames: number;
 
   @Field()

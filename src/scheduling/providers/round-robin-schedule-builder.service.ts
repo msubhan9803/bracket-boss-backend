@@ -1,100 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { DrafRoundsWithMatches, DraftMatch, DraftMatchToAvailableSchedulesMapping } from '../types/common';
 import { Team } from 'src/team-management/entities/team.entity';
-import { Round } from 'src/round/entities/round.entity';
 import { TimeSlotWithCourts } from 'src/court-management/types';
 import messages from 'src/utils/messages';
-import { RoundService } from 'src/round/providers/round.service';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
-import { Pool } from 'src/pool/entities/pool.entity';
-import { CourtScheduleService } from 'src/court-management/providers/court-schedule.service';
-import { MatchService } from 'src/match-management/providers/match.service';
-import { MatchRoundStatusTypes, MatchStatusTypes } from 'src/match-management/types/common';
-import { MatchCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
+import { MatchRoundStatusTypes } from 'src/match-management/types/common';
 import { MatchRoundService } from 'src/match-management/providers/match-round.service';
 import { CourtManagementService } from 'src/court-management/providers/court-management.service';
-import { RoundStatusTypesEnum } from 'src/common/types/global';
-import { Level } from 'src/level/entities/level.entity';
 
 @Injectable()
 export class RoundRobinScheduleBuilderService {
   constructor(
-    private readonly roundService: RoundService,
-    private readonly courtScheduleService: CourtScheduleService,
-    private readonly matchService: MatchService,
-    private readonly matchCourtScheduleService: MatchCourtScheduleService,
     private readonly matchRoundService: MatchRoundService,
     private readonly courtManagementService: CourtManagementService,
   ) {}
 
-  async generateRoundsMatches(tournament: Tournament, level: Level, pool: Pool, teams: Team[]): Promise<Round[]> {
-    const draftMatchList = this.generateRoundRobinMatches(teams);
-    const draftedRoundsWithMatches = this.draftOutRoundsWithMatches(draftMatchList);
-
-    let roundList: Round[] = [];
-
-    const timeSlotWithCourts = await this.getAvailableCourts(tournament.start_date, tournament.end_date);
-
-    for (let index = 0; index < Object.keys(draftedRoundsWithMatches).length; index++) {
-      const roundKey = Object.keys(draftedRoundsWithMatches)[index];
-      const roundMatches = draftedRoundsWithMatches[roundKey];
-      const round = await this.roundService.createRound({
-        name: `Round ${index + 1}`,
-        tournament,
-        pool,
-        order: index + 1,
-        status: RoundStatusTypesEnum.not_started,
-      });
-
-      let createdMatches = [];
-
-      const matchTimeslotMapping = this.validateAndAssignTimeslots(
-        {
-          [roundKey]: roundMatches,
-        },
-        timeSlotWithCourts,
-      );
-
-      for (const [match, courtScheduleElem] of matchTimeslotMapping.entries()) {
-        const { courtScheduleId, date, startTime } = courtScheduleElem;
-        const courtSchedule = await this.courtScheduleService.findOneByID(courtScheduleId);
-
-        const homeTeam = match.teams[0];
-        const awayTeam = match.teams[1];
-
-        if (!homeTeam || !awayTeam) {
-          throw new Error(messages.TEAM_NOT_FOUND_FOR_MATCH);
-        }
-
-        const matchDate = new Date(`${date}T${startTime}`);
-
-        const createdMatch = await this.matchService.createMatch({
-          title: match.title,
-          tournament,
-          homeTeam,
-          awayTeam,
-          status: MatchStatusTypes.not_started,
-          level,
-          pool,
-          round,
-        });
-        createdMatches.push(createdMatch);
-
-        await this.matchCourtScheduleService.createMatchCourtScheduleRelation(createdMatch, courtSchedule, matchDate);
-      }
-
-      await this.createMatchRounds(createdMatches, tournament, tournament.matchBestOfRounds);
-
-      roundList.push({
-        ...round,
-        matches: createdMatches,
-      });
-    }
-
-    return roundList;
-  }
-
-  private draftOutRoundsWithMatches(matches: DraftMatch[]): DrafRoundsWithMatches {
+  public draftOutRoundsWithMatches(matches: DraftMatch[]): DrafRoundsWithMatches {
     let roundsWithMatches: { [key: string]: { matches: DraftMatch[] } } = {
       round1: {
         matches: [],
@@ -141,7 +62,7 @@ export class RoundRobinScheduleBuilderService {
     return roundsWithMatches;
   }
 
-  private generateRoundRobinMatches(teams: Team[]): { title: string; teams: Team[] }[] {
+  public generateRoundRobinMatches(teams: Team[]): { title: string; teams: Team[] }[] {
     const matches = [];
 
     for (let i = 0; i < teams.length; i++) {
@@ -156,11 +77,11 @@ export class RoundRobinScheduleBuilderService {
     return matches;
   }
 
-  private getMatchUserIds(match: DraftMatch): number[] {
+  public getMatchUserIds(match: DraftMatch): number[] {
     return match.teams.map((team) => team.users.map((user) => user.id).flat()).flat();
   }
 
-  private validateAndAssignTimeslots(
+  public validateAndAssignTimeslots(
     groupedMatches: DrafRoundsWithMatches,
     availableTimeSlots: TimeSlotWithCourts[],
   ): DraftMatchToAvailableSchedulesMapping {
@@ -205,7 +126,7 @@ export class RoundRobinScheduleBuilderService {
     return assignedMatches;
   }
 
-  private async createMatchRounds(createdMatches: any[], tournament: Tournament, bestOfRounds: number) {
+  public async createMatchRounds(createdMatches: any[], tournament: Tournament, bestOfRounds: number) {
     let createdMatchRounds = [];
 
     for (let index = 0; index < createdMatches.length; index++) {
@@ -228,7 +149,7 @@ export class RoundRobinScheduleBuilderService {
     return createdMatchRounds;
   }
 
-  private async getAvailableCourts(startDate: Date, endDate: Date) {
+  public async getAvailableCourts(startDate: Date, endDate: Date) {
     return this.courtManagementService.getCourtsGroupedByScheduleTimeslots(startDate, endDate);
   }
 }

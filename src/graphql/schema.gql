@@ -297,6 +297,7 @@ type ModulePolicyRole {
 }
 
 type Mutation {
+  advanceToNextPoolRound(poolId: Float!, tournamentId: Float!): [Round!]!
   bulkMatchImport(file: Upload!): BulkMatchImportResponseDto!
   createClub(input: CreateClubInputDto!): CreateClubResponseDto!
   createSchedule(tournamentId: Float!): Level!

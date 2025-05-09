@@ -15,6 +15,7 @@ import { Level } from 'src/level/entities/level.entity';
 import { Team } from 'src/team-management/entities/team.entity';
 import { CreateTournamentTeamsInputDto } from 'src/team-management/dtos/create-tournament-teams-input.dto';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
+import { Round } from 'src/round/entities/round.entity';
 
 @Resolver()
 export class SchedulingResolver {
@@ -43,6 +44,19 @@ export class SchedulingResolver {
   async createSchedule(@Args('tournamentId') tournamentId: number): Promise<Level> {
     try {
       return this.schedulingService.createSchedule(tournamentId);
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => [Round])
+  async advanceToNextPoolRound(
+    @Args('tournamentId') tournamentId: number,
+    @Args('poolId') poolId: number
+  ): Promise<Round[]> {
+    try {
+      return this.schedulingService.advanceToNextPoolRound(tournamentId, poolId);
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }

@@ -1,13 +1,10 @@
 import { Module } from '@nestjs/common';
 import { SchedulingService } from './providers/scheduling.service';
 import { SchedulingResolver } from './scheduling.resolver';
-import { TournamentManagementModule } from 'src/tournament-management/tournament-management.module';
 import { JwtService } from '@nestjs/jwt';
+
+import { TournamentManagementModule } from 'src/tournament-management/tournament-management.module';
 import { UsersModule } from 'src/users/users.module';
-import { RoundRobinStrategy } from './strategies/round-robin.format.strategy';
-import { StrategyTypes } from 'src/common/types/global';
-import { BlindDrawTeamGenerationStrategy } from './strategies/blind-draw.team-generation.strategy';
-import { SplitSwitchTeamGenerationStrategy } from './strategies/split-switch.team-generation.strategy';
 import { ClubsModule } from 'src/clubs/clubs.module';
 import { TeamManagementModule } from 'src/team-management/team-management.module';
 import { CourtManagementModule } from 'src/court-management/court-management.module';
@@ -17,6 +14,11 @@ import { RoundRobinScheduleBuilderService } from './providers/round-robin-schedu
 import { LevelModule } from 'src/level/level.module';
 import { PoolModule } from 'src/pool/pool.module';
 import { RoundModule } from 'src/round/round.module';
+
+import { StrategyTypes } from 'src/common/types/global';
+import { RoundRobinStrategy } from './strategies/round-robin.format.strategy';
+import { BlindDrawTeamGenerationStrategy } from './strategies/blind-draw.team-generation.strategy';
+import { SplitSwitchTeamGenerationStrategy } from './strategies/split-switch.team-generation.strategy';
 
 @Module({
   imports: [
@@ -34,19 +36,36 @@ import { RoundModule } from 'src/round/round.module';
     SchedulingService,
     SchedulingResolver,
     JwtService,
-    {
-      provide: StrategyTypes.FORMAT_STRATEGIES,
-      useFactory: (roundRobinScheduleBuilderService: RoundRobinScheduleBuilderService) => [
-        new RoundRobinStrategy(roundRobinScheduleBuilderService),
-      ],
-      inject: [RoundRobinScheduleBuilderService],
-    },
-    {
-      provide: StrategyTypes.TEAM_GENERATION_STRATEGIES,
-      useFactory: () => [new BlindDrawTeamGenerationStrategy(), new SplitSwitchTeamGenerationStrategy()],
-    },
     ScheduleSpreadsheetHandlerService,
     RoundRobinScheduleBuilderService,
+
+    /**
+     * Inject strategy classes
+     */
+    RoundRobinStrategy,
+    BlindDrawTeamGenerationStrategy,
+    SplitSwitchTeamGenerationStrategy,
+
+    /**
+     * Aggregate format strategies
+     */
+    {
+      provide: StrategyTypes.FORMAT_STRATEGIES,
+      useFactory: (roundRobin: RoundRobinStrategy) => [roundRobin],
+      inject: [RoundRobinStrategy],
+    },
+
+    /**
+     * Aggregate team generation strategies
+     */
+    {
+      provide: StrategyTypes.TEAM_GENERATION_STRATEGIES,
+      useFactory: (
+        blindDraw: BlindDrawTeamGenerationStrategy,
+        splitSwitch: SplitSwitchTeamGenerationStrategy,
+      ) => [blindDraw, splitSwitch],
+      inject: [BlindDrawTeamGenerationStrategy, SplitSwitchTeamGenerationStrategy],
+    },
   ],
 })
-export class SchedulingModule {}
+export class SchedulingModule { }

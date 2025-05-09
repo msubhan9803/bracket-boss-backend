@@ -16,6 +16,7 @@ import { Team } from 'src/team-management/entities/team.entity';
 import { UsersService } from 'src/users/providers/users.service';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { TournamentStatusTypesEnum } from 'src/tournament-management/types/common';
+import { Round } from 'src/round/entities/round.entity';
 
 @Injectable()
 export class SchedulingService {
@@ -95,6 +96,13 @@ export class SchedulingService {
       ...level,
       pools,
     };
+  }
+
+  async advanceToNextPoolRound(tournamentId: number, poolId: number): Promise<Round[]> {
+    const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
+    const formatStrategy = this.formatStrategies[tournament.poolPlayFormat.name];
+
+    return await formatStrategy.handleNextPoolRound(poolId);
   }
 
   async getScheduleOfTournament(tournamentId: number): Promise<Level[]> {

@@ -51,9 +51,10 @@ export class LevelTeamStandingService {
         standing.pointsAgainst += updates.pointsAgainst;
         standing.wins += updates.wins;
         standing.losses += updates.losses;
-        standing.pointsScoredByNumberOfGames += updates.pointsScored / numberOfRounds;
-        standing.pointsAgainstByNumberOfGames += updates.pointsAgainst / numberOfRounds;
-        standing.pointDiffByNumberOfGames = standing.pointsScoredByNumberOfGames - standing.pointsAgainstByNumberOfGames;
+        
+        standing.pointsScoredByNumberOfGames = Number((updates.pointsScored / numberOfRounds).toFixed(2));
+        standing.pointsAgainstByNumberOfGames = Number((updates.pointsAgainst / numberOfRounds).toFixed(2));
+        standing.pointDiffByNumberOfGames = Number((standing.pointsScoredByNumberOfGames - standing.pointsAgainstByNumberOfGames).toFixed(2));
 
         await this.levelTeamStandingRepository.save(standing);
     }
