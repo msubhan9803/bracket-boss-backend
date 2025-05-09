@@ -3,13 +3,14 @@ import { RoundService } from './providers/round.service';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
+import { Round } from './entities/round.entity';
 
 @Resolver()
 export class RoundResolver {
     constructor(private readonly roundService: RoundService) { }
 
     @UseGuards(AuthCheckGuard)
-    @Query(() => [Pool])
+    @Query(() => [Round])
     async getRoundsByPoolId(@Args('poolId') poolId: number) {
         try {
             const rounds = await this.roundService.findRoundsByPoolId(poolId);
