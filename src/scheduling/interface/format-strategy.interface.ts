@@ -8,5 +8,5 @@ import { Level } from 'src/level/entities/level.entity';
 export interface FormatStrategy {
   type: FormatType;
   createInitialRounds(tournament: Tournament, level: Level, pool: Pool, teams: Team[]): Promise<Round[]>;
-  handleNextPoolRound(poolId: number): Promise<Round[]>;
+  handleEndRound(poolId: number);
 }

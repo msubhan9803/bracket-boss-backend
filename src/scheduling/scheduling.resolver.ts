@@ -14,8 +14,7 @@ import { BulkMatchImportResponseDto } from './dtos/bulk-match-import-response.dt
 import { Level } from 'src/level/entities/level.entity';
 import { Team } from 'src/team-management/entities/team.entity';
 import { CreateTournamentTeamsInputDto } from 'src/team-management/dtos/create-tournament-teams-input.dto';
-import { Tournament } from 'src/tournament-management/entities/tournament.entity';
-import { Round } from 'src/round/entities/round.entity';
+import { MessageResponseDto } from 'src/common/dtos/message-response.dto';
 
 @Resolver()
 export class SchedulingResolver {
@@ -23,7 +22,7 @@ export class SchedulingResolver {
     private readonly schedulingService: SchedulingService,
     private readonly usersService: UsersService,
     private readonly scheduleSpreadsheetHandlerService: ScheduleSpreadsheetHandlerService,
-  ) {}
+  ) { }
 
   @UseGuards(AuthCheckGuard)
   @Query(() => [Level])
@@ -50,13 +49,17 @@ export class SchedulingResolver {
   }
 
   @UseGuards(AuthCheckGuard)
-  @Mutation(() => [Round])
-  async advanceToNextPoolRound(
+  @Mutation(() => MessageResponseDto)
+  async endRound(
     @Args('tournamentId') tournamentId: number,
     @Args('poolId') poolId: number
-  ): Promise<Round[]> {
+  ): Promise<MessageResponseDto> {
     try {
-      return this.schedulingService.advanceToNextPoolRound(tournamentId, poolId);
+      await this.schedulingService.endRound(tournamentId, poolId);
+
+      return {
+        message: messages.SUCCESS_MESSAGE,
+      };
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);
     }

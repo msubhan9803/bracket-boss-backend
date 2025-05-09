@@ -94,23 +94,18 @@ export class RoundRobinStrategy implements FormatStrategy {
     return roundList;
   }
 
-  async handleNextPoolRound(poolId: number): Promise<Round[]> {
+  async handleEndRound(poolId: number) {
     const rounds = await this.roundService.findRoundsByPoolId(poolId);
     const currentRound = await this.roundService.findInProgressRoundByPoolId(poolId);
 
     if (!currentRound.matches.every(match => match.status === MatchStatusTypes.completed)) {
       throw new Error("Can't move to next round as some of the Matches aren't completed yet");
     }
+    await this.roundService.updateRoundStatus(currentRound.id, RoundStatusTypesEnum.completed);
 
     const nextRound = rounds.find(round => round.order === currentRound.order + 1);
-    
-    if (!nextRound) {
-      throw new Error("No next round found");
+    if (nextRound) {
+      await this.roundService.updateRoundStatus(nextRound.id, RoundStatusTypesEnum.in_progress);
     }
-
-    await this.roundService.updateRoundStatus(currentRound.id, RoundStatusTypesEnum.completed);
-    await this.roundService.updateRoundStatus(nextRound.id, RoundStatusTypesEnum.in_progress);
-
-    return [nextRound];
   }
 }

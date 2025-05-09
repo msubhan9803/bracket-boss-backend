@@ -14,8 +14,6 @@ import { TeamGenerationStrategy } from '../interface/team-generation-strategy.in
 import { CreateTournamentTeamsInputDto } from 'src/team-management/dtos/create-tournament-teams-input.dto';
 import { Team } from 'src/team-management/entities/team.entity';
 import { UsersService } from 'src/users/providers/users.service';
-import { Tournament } from 'src/tournament-management/entities/tournament.entity';
-import { TournamentStatusTypesEnum } from 'src/tournament-management/types/common';
 import { Round } from 'src/round/entities/round.entity';
 
 @Injectable()
@@ -98,11 +96,10 @@ export class SchedulingService {
     };
   }
 
-  async advanceToNextPoolRound(tournamentId: number, poolId: number): Promise<Round[]> {
+  async endRound(tournamentId: number, poolId: number) {
     const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
     const formatStrategy = this.formatStrategies[tournament.poolPlayFormat.name];
-
-    return await formatStrategy.handleNextPoolRound(poolId);
+    await formatStrategy.handleEndRound(poolId)
   }
 
   async getScheduleOfTournament(tournamentId: number): Promise<Level[]> {
