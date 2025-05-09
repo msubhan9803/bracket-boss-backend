@@ -9,6 +9,9 @@ import { ClubsModule } from 'src/clubs/clubs.module';
 import { JwtService } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
 import { TeamGenerationTypeManagementModule } from 'src/team-generation-type-management/team-generation-type-management.module';
+import { LevelModule } from 'src/level/level.module';
+import { PoolModule } from 'src/pool/pool.module';
+import { RoundModule } from 'src/round/round.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { TeamGenerationTypeManagementModule } from 'src/team-generation-type-man
     ClubsModule,
     UsersModule,
     TeamGenerationTypeManagementModule,
+    LevelModule,
+    PoolModule,
+    RoundModule
   ],
   providers: [
     TournamentManagementService,

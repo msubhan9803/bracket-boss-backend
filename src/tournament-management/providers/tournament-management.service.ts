@@ -8,6 +8,10 @@ import { CreateTournamentInputDto } from '../dtos/create-tournament-input.dto';
 import { FormatManagementService } from 'src/format-management/providers/format-management.service';
 import { TeamGenerationTypeManagementService } from 'src/team-generation-type-management/providers/team-generation-type-management.service';
 import { TournamentStatusTypesEnum } from '../types/common';
+import { RoundService } from 'src/round/providers/round.service';
+import { LevelService } from 'src/level/providers/level.service';
+import { PoolService } from 'src/pool/providers/pool.service';
+import { RoundStatusTypesEnum } from 'src/common/types/global';
 
 @Injectable()
 export class TournamentManagementService {
@@ -17,6 +21,9 @@ export class TournamentManagementService {
     private sportManagementService: SportManagementService,
     private formatManagementService: FormatManagementService,
     private teamGenerationTypeManagementService: TeamGenerationTypeManagementService,
+    private levelService: LevelService,
+    private poolService: PoolService,
+    private roundService: RoundService,
   ) {}
 
   findAll(): Promise<Tournament[]> {
@@ -120,6 +127,16 @@ export class TournamentManagementService {
     if (!tournament) {
       throw new Error(`Tournament with ID ${tournamentId} not found`);
     }
+
+    const levels = await this.levelService.findOneByTournamentWithRelations(tournament);
+    const selectedLevel = levels[0];
+    const pools = await this.poolService.getPoolsByLevelId(selectedLevel.id);
+
+    pools.forEach(async (pool) => {
+      const round = await this.roundService.findRoundsByPoolId(pool.id);
+      const selectedRound = round[0];
+      await this.roundService.updateRoundStatus(selectedRound.id, RoundStatusTypesEnum.in_progress);
+    });
 
     return this.update(tournamentId, {
       status: TournamentStatusTypesEnum.pool_play_in_progress,

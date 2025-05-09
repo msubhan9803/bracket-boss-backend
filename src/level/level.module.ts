@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Level } from './entities/level.entity';
 import { LevelTeam } from './entities/level-team.entity';
@@ -18,9 +18,9 @@ import { LevelTeamStandingService } from './providers/level-team-standing.servic
             LevelTeamStanding
         ]),
         UsersModule,
-        TournamentManagementModule
+        forwardRef(() => TournamentManagementModule),
     ],
     providers: [LevelService, LevelResolver, JwtService, LevelTeamStandingService],
     exports: [LevelService, LevelTeamStandingService]
 })
-export class LevelModule {}
+export class LevelModule { }
