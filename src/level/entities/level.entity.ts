@@ -11,15 +11,15 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { LevelTypeEnum } from '../types/common';
+import { LevelStatusTypesEnum } from '../types/common';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Match } from 'src/match-management/entities/match.entity';
 import { LevelTeamStanding } from './levelStandings.entity';
 
-registerEnumType(LevelTypeEnum, {
-  name: 'LevelTypeEnum',
+registerEnumType(LevelStatusTypesEnum, {
+  name: 'LevelStatusTypesEnum',
 });
 
 @ObjectType()
@@ -29,10 +29,6 @@ export class Level {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => LevelTypeEnum)
-  @Column('varchar')
-  type: LevelTypeEnum;
-
   @Field()
   @Column('text')
   name: string;
@@ -40,6 +36,10 @@ export class Level {
   @Field()
   @Column('int')
   order: number;
+
+  @Field(() => LevelStatusTypesEnum)
+  @Column('varchar')
+  status: LevelStatusTypesEnum;
 
   @OneToOne(() => Format)
   @JoinColumn()

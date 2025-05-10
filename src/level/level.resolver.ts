@@ -20,7 +20,7 @@ export class LevelResolver {
   async getLevelsByTournament(@Args('tournamentId') tournamentId: number) {
     try {
       const tournament = await this.tournamentService.findOne(tournamentId);
-      const levels = await this.levelService.findOneByTournamentWithRelations(tournament);
+      const levels = await this.levelService.findAllByTournamentWithRelations(tournament);
 
       return levels;
     } catch (error) {

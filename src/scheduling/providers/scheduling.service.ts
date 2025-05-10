@@ -7,14 +7,12 @@ import { MatchService } from 'src/match-management/providers/match.service';
 import { MatchCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
 import { LevelService } from 'src/level/providers/level.service';
 import { PoolService } from 'src/pool/providers/pool.service';
-import { LevelTypeEnum, LevelTypeOrderNumber } from 'src/level/types/common';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Level } from 'src/level/entities/level.entity';
 import { TeamGenerationStrategy } from '../interface/team-generation-strategy.interface';
 import { CreateTournamentTeamsInputDto } from 'src/team-management/dtos/create-tournament-teams-input.dto';
 import { Team } from 'src/team-management/entities/team.entity';
 import { UsersService } from 'src/users/providers/users.service';
-import { Round } from 'src/round/entities/round.entity';
 
 @Injectable()
 export class SchedulingService {
@@ -44,10 +42,9 @@ export class SchedulingService {
     }, {});
   }
 
-  async createSchedule(tournamentId: number): Promise<Level> {
+  async createSchedule(tournamentId: number): Promise<Level[]> {
     const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
     const { numberOfPools } = tournament;
-    const formatStrategy = this.formatStrategies[tournament.poolPlayFormat.name];
     let pools: Pool[] = [];
 
     /**
@@ -62,13 +59,13 @@ export class SchedulingService {
     /**
      * Creating Level
      */
-    const level = await this.levelService.createLevel({
-      type: LevelTypeEnum.pool_play,
-      name: 'Pool Play',
-      order: LevelTypeOrderNumber.pool_play,
-      format: tournament.poolPlayFormat,
-      tournament,
-    });
+    let levels = await this.levelService.findAllByTournamentWithRelations(tournament);
+    const selectedLevel = levels[0];
+
+    /**
+     * Selecting Strategy
+     */
+    const formatStrategy = this.formatStrategies[selectedLevel.format.name];
 
     /**
      * Creating Pools
@@ -78,33 +75,33 @@ export class SchedulingService {
       const pool = await this.poolService.createPool({
         name: `Pool ${poolNumber + 1}`,
         tournament,
-        level,
+        level: selectedLevel,
         order: poolNumber + 1,
       });
 
-      const roundsWithMatches = await formatStrategy.createInitialRounds(tournament, level, pool, teamsByPool[poolNumber]);
+      const roundsWithMatches = await formatStrategy.createInitialRounds(tournament, selectedLevel, pool, teamsByPool[poolNumber]);
 
       pools.push({
         ...pool,
         rounds: roundsWithMatches,
       });
     }
+    selectedLevel.pools = pools;
 
-    return {
-      ...level,
-      pools,
-    };
+    return [
+      selectedLevel
+    ]
   }
 
-  async endRound(tournamentId: number, poolId: number) {
-    const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
-    const formatStrategy = this.formatStrategies[tournament.poolPlayFormat.name];
+  async endRound(levelId: number, poolId: number) {
+    const level = await this.levelService.findOne(levelId);
+    const formatStrategy = this.formatStrategies[level.format.name];
     await formatStrategy.handleEndRound(poolId)
   }
 
   async getScheduleOfTournament(tournamentId: number): Promise<Level[]> {
     const tournament = await this.tournamentManagementService.findOne(tournamentId);
-    const levels = await this.levelService.findOneByTournamentWithRelations(tournament, [
+    const levels = await this.levelService.findAllByTournamentWithRelations(tournament, [
       'format',
       'tournament',
       'pools',

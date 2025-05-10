@@ -54,16 +54,6 @@ export class Tournament {
   @Column('boolean')
   isPrivate: boolean;
 
-  @ManyToOne(() => Format)
-  @JoinColumn()
-  @Field(() => Format)
-  poolPlayFormat: Format;
-
-  @ManyToOne(() => Format)
-  @JoinColumn()
-  @Field(() => Format)
-  playOffFormat: Format;
-
   @ManyToOne(() => TeamGenerationType)
   @JoinColumn()
   @Field(() => TeamGenerationType)

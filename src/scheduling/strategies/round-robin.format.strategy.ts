@@ -7,13 +7,13 @@ import { RoundRobinScheduleBuilderService } from '../providers/round-robin-sched
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Level } from 'src/level/entities/level.entity';
-import { RoundStatusTypesEnum } from 'src/common/types/global';
 import { CourtScheduleService } from 'src/court-management/providers/court-schedule.service';
 import { MatchService } from 'src/match-management/providers/match.service';
 import { MatchCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
 import { MatchStatusTypes } from 'src/match-management/types/common';
 import { RoundService } from 'src/round/providers/round.service';
 import messages from 'src/utils/messages';
+import { RoundStatusTypesEnum } from 'src/round/types/common';
 
 @Injectable()
 export class RoundRobinStrategy implements FormatStrategy {

@@ -5,8 +5,23 @@ import {
   IsDate,
   IsInt,
   IsOptional,
+  IsArray,
+  ValidateNested,
+  IsNumber,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { SplitSwitchGroupByEnum } from 'src/scheduling/types/common';
+
+@InputType()
+export class LevelInput {
+  @Field()
+  @IsString({ message: 'Level name is required' })
+  name: string;
+
+  @Field()
+  @IsInt({ message: 'Level format is required' })
+  formatId: number;
+}
 
 @InputType()
 export class CreateTournamentInputDto {
@@ -31,14 +46,6 @@ export class CreateTournamentInputDto {
   isPrivate: boolean;
 
   @Field()
-  @IsInt({ message: 'Pool Play Format ID must be an integer' })
-  poolPlayFormatId: number;
-
-  @Field()
-  @IsInt({ message: 'Play Off Format ID must be an integer' })
-  playOffFormatId: number;
-
-  @Field()
   @IsInt({ message: 'Team Generation Type is required' })
   teamGenerationTypeId: number;
 
@@ -54,4 +61,10 @@ export class CreateTournamentInputDto {
   @Field()
   @IsInt({ message: 'Number of Pools must be an integer' })
   numberOfPools: number;
+
+  @Field(() => [LevelInput])
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => LevelInput)
+  levels: LevelInput[];
 }

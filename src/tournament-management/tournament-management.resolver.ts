@@ -86,8 +86,6 @@ export class TournamentManagementResolver {
     try {
       const sport = await this.sportManagementService.findSportByName(SportName.pickleball);
 
-      const poolPlayFormat = await this.formatManagementService.findOne(updateTournamentInput.formatId);
-
       return this.tournamentManagementService.update(updateTournamentInput.id, {
         name: updateTournamentInput.name,
         description: updateTournamentInput.description,
@@ -95,7 +93,6 @@ export class TournamentManagementResolver {
         end_date: updateTournamentInput.end_date,
         isPrivate: updateTournamentInput.isPrivate,
         sport,
-        poolPlayFormat,
       });
     } catch (error) {
       throw new InternalServerErrorException('Error: ', error.message);

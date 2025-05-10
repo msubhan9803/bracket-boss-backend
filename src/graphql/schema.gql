@@ -72,11 +72,10 @@ input CreateTournamentInputDto {
   description: String!
   end_date: DateTime!
   isPrivate: Boolean!
+  levels: [LevelInput!]!
   matchBestOfRounds: Float!
   name: String!
   numberOfPools: Float!
-  playOffFormatId: Float!
-  poolPlayFormatId: Float!
   splitSwitchGroupBy: SplitSwitchGroupByEnum
   start_date: DateTime!
   teamGenerationTypeId: Float!
@@ -174,9 +173,20 @@ type Level {
   name: String!
   order: Float!
   pools: [Pool!]!
+  status: LevelStatusTypesEnum!
   tournament: Tournament!
-  type: LevelTypeEnum!
   updated_at: DateTime!
+}
+
+input LevelInput {
+  formatId: Float!
+  name: String!
+}
+
+enum LevelStatusTypesEnum {
+  completed
+  in_progress
+  not_started
 }
 
 type LevelTeamStanding {
@@ -192,11 +202,6 @@ type LevelTeamStanding {
   team: Team!
   updated_at: DateTime!
   wins: Float!
-}
-
-enum LevelTypeEnum {
-  play_off
-  pool_play
 }
 
 input LoginInputDto {
@@ -299,7 +304,7 @@ type ModulePolicyRole {
 type Mutation {
   bulkMatchImport(file: Upload!): BulkMatchImportResponseDto!
   createClub(input: CreateClubInputDto!): CreateClubResponseDto!
-  createSchedule(tournamentId: Float!): Level!
+  createSchedule(tournamentId: Float!): [Level!]!
   createTeam(input: CreateTeamInputDto!): Team!
   createTournament(input: CreateTournamentInputDto!): Tournament!
   createTournamentTeam(input: CreateTournamentTeamsInputDto!): [Team!]!
@@ -552,8 +557,6 @@ type Tournament {
   matchBestOfRounds: Float!
   name: String!
   numberOfPools: Float!
-  playOffFormat: Format!
-  poolPlayFormat: Format!
   splitSwitchGroupBy: SplitSwitchGroupByEnum
   sport: Sport!
   start_date: DateTime!

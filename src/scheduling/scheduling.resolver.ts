@@ -39,8 +39,8 @@ export class SchedulingResolver {
   }
 
   @UseGuards(AuthCheckGuard)
-  @Mutation(() => Level)
-  async createSchedule(@Args('tournamentId') tournamentId: number): Promise<Level> {
+  @Mutation(() => [Level])
+  async createSchedule(@Args('tournamentId') tournamentId: number): Promise<Level[]> {
     try {
       return this.schedulingService.createSchedule(tournamentId);
     } catch (error) {

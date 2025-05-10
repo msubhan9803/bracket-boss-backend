@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Round } from '../entities/round.entity';
 import { Repository } from 'typeorm';
 import { RoundInputDto } from '../dtos/round-input.dto';
-import { RoundStatusTypesEnum } from 'src/common/types/global';
+import { RoundStatusTypesEnum } from '../types/common';
 
 @Injectable()
 export class RoundService {

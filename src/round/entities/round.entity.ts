@@ -13,7 +13,7 @@ import { Tournament } from 'src/tournament-management/entities/tournament.entity
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Match } from 'src/match-management/entities/match.entity';
-import { RoundStatusTypesEnum } from 'src/common/types/global';
+import { RoundStatusTypesEnum } from '../types/common';
 
 registerEnumType(RoundStatusTypesEnum, {
   name: 'RoundStatusTypesEnum',

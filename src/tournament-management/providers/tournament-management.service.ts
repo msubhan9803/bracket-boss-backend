@@ -11,7 +11,8 @@ import { TournamentStatusTypesEnum } from '../types/common';
 import { RoundService } from 'src/round/providers/round.service';
 import { LevelService } from 'src/level/providers/level.service';
 import { PoolService } from 'src/pool/providers/pool.service';
-import { RoundStatusTypesEnum } from 'src/common/types/global';
+import { RoundStatusTypesEnum } from 'src/round/types/common';
+import { LevelStatusTypesEnum } from 'src/level/types/common';
 
 @Injectable()
 export class TournamentManagementService {
@@ -24,7 +25,7 @@ export class TournamentManagementService {
     private levelService: LevelService,
     private poolService: PoolService,
     private roundService: RoundService,
-  ) {}
+  ) { }
 
   findAll(): Promise<Tournament[]> {
     return this.tournamentRepository.find();
@@ -43,8 +44,6 @@ export class TournamentManagementService {
     const query = this.tournamentRepository
       .createQueryBuilder('tournament')
       .leftJoinAndSelect('tournament.sport', 'sport')
-      .leftJoinAndSelect('tournament.poolPlayFormat', 'poolPlayFormat')
-      .leftJoinAndSelect('tournament.playOffFormat', 'playOffFormat')
       .leftJoinAndSelect('tournament.teamGenerationType', 'teamGenerationType')
       .skip((page - 1) * pageSize)
       .take(pageSize);
@@ -81,10 +80,6 @@ export class TournamentManagementService {
   async createTournament(createTournamentDto: CreateTournamentInputDto): Promise<Tournament> {
     const sport = await this.sportManagementService.findSportByName(SportName.pickleball);
 
-    const poolPlayFormat = await this.formatManagementService.findOne(createTournamentDto.poolPlayFormatId);
-
-    const playOffFormat = await this.formatManagementService.findOne(createTournamentDto.poolPlayFormatId);
-
     const teamGenerationType = await this.teamGenerationTypeManagementService.findOne(
       createTournamentDto.teamGenerationTypeId,
     );
@@ -96,8 +91,6 @@ export class TournamentManagementService {
       end_date: createTournamentDto.end_date,
       isPrivate: createTournamentDto.isPrivate,
       sport,
-      poolPlayFormat,
-      playOffFormat,
       teamGenerationType,
       splitSwitchGroupBy: createTournamentDto.splitSwitchGroupBy,
       matchBestOfRounds: createTournamentDto.matchBestOfRounds,
@@ -105,7 +98,23 @@ export class TournamentManagementService {
       numberOfPools: createTournamentDto.numberOfPools,
     });
 
-    return this.tournamentRepository.save(newTournament);
+    const savedTournament = await this.tournamentRepository.save(newTournament);
+
+    const levels = createTournamentDto.levels.map(async (levelInput, index) => {
+      const format = await this.formatManagementService.findOne(levelInput.formatId);
+
+      return this.levelService.createLevel({
+        name: levelInput.name,
+        format,
+        order: index + 1,
+        status: LevelStatusTypesEnum.not_started,
+        tournament: savedTournament,
+      });
+    });
+
+    await Promise.all(levels);
+
+    return this.findOneWithRelations(savedTournament.id);
   }
 
   async update(tournamentId: number, updatedTournament: Partial<Tournament>): Promise<Tournament> {
@@ -128,7 +137,7 @@ export class TournamentManagementService {
       throw new Error(`Tournament with ID ${tournamentId} not found`);
     }
 
-    const levels = await this.levelService.findOneByTournamentWithRelations(tournament);
+    const levels = await this.levelService.findAllByTournamentWithRelations(tournament);
     const selectedLevel = levels[0];
     const pools = await this.poolService.getPoolsByLevelId(selectedLevel.id);
 
