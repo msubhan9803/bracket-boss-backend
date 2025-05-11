@@ -319,6 +319,7 @@ type Mutation {
   endMatchRound(matchId: Float!, roundId: Float!): MatchRound!
   endRound(poolId: Float!, tournamentId: Float!): MessageResponseDto!
   login(input: LoginInputDto!): LoginResponseDto!
+  proceedToNextLevel(tournamentId: Float!): MessageResponseDto!
   refreshToken: RefreshTokenResponseDto!
   register(input: RegisterInputDto!): MessageResponseDto!
   resetPassword(newPassword: String!): MessageResponseDto!
@@ -557,6 +558,7 @@ type Tournament {
   matchBestOfRounds: Float!
   name: String!
   numberOfPools: Float!
+  rounds: [Round!]
   splitSwitchGroupBy: SplitSwitchGroupByEnum
   sport: Sport!
   start_date: DateTime!

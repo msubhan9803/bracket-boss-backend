@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Level } from '../entities/level.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsOrder, Repository, UpdateResult } from 'typeorm';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 
 @Injectable()
@@ -11,18 +11,30 @@ export class LevelService {
     private levelRepository: Repository<Level>,
   ) {}
 
-  findOne(levelId: number): Promise<Level> {
-    return this.levelRepository.findOneBy({ id: levelId });
+  findOne(levelId: number, relations: string[] = ['format', 'tournament', 'pools']): Promise<Level> {
+    return this.levelRepository.findOne({
+      where: { id: levelId },
+      relations
+    });
   }
 
-  findAllByTournamentWithRelations(tournament: Tournament, relations: string[] = ['format', 'tournament', 'pools']): Promise<Level[]> {
+  findAllByTournamentWithRelations(
+    tournament: Tournament, 
+    relations: string[] = ['format', 'tournament', 'pools'],
+    order: FindOptionsOrder<Level> = { order: "ASC" }
+  ): Promise<Level[]> {
     return this.levelRepository.find({
       where: { tournament: { id: tournament.id } },
+      order,
       relations,
     });
   }
 
   createLevel(level: Partial<Level>): Promise<Level> {
     return this.levelRepository.save(level);
+  }
+
+  updateLevel(levelId: number, updatedLevel: Partial<Level>): Promise<UpdateResult> {
+    return this.levelRepository.update(levelId, updatedLevel);
   }
 }

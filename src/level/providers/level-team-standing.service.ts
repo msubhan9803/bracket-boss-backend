@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LevelTeamStanding } from '../entities/levelStandings.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsOrder, Repository } from 'typeorm';
 
 @Injectable()
 export class LevelTeamStandingService {
@@ -16,10 +16,15 @@ export class LevelTeamStandingService {
         private readonly levelTeamStandingRepository: Repository<LevelTeamStanding>,
     ) { }
 
-    findAllByLevelId(levelId: number, relations: string[] = this.commonLevelTeamStandingRelationships,): Promise<LevelTeamStanding[]> {
+    findAllByLevelId(params: {
+        levelId: number;
+        relations?: string[];
+        order?: FindOptionsOrder<LevelTeamStanding>;
+    }): Promise<LevelTeamStanding[]> {
         return this.levelTeamStandingRepository.find({
-            where: { level: { id: levelId } },
-            relations
+            where: { level: { id: params.levelId } },
+            order: params.order,
+            relations: params.relations ?? this.commonLevelTeamStandingRelationships
         });
     }
 
@@ -51,7 +56,7 @@ export class LevelTeamStandingService {
         standing.pointsAgainst += updates.pointsAgainst;
         standing.wins += updates.wins;
         standing.losses += updates.losses;
-        
+
         standing.pointsScoredByNumberOfGames = Number((updates.pointsScored / numberOfRounds).toFixed(2));
         standing.pointsAgainstByNumberOfGames = Number((updates.pointsAgainst / numberOfRounds).toFixed(2));
         standing.pointDiffByNumberOfGames = Number((standing.pointsScoredByNumberOfGames - standing.pointsAgainstByNumberOfGames).toFixed(2));

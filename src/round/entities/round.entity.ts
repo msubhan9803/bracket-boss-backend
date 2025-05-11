@@ -38,7 +38,7 @@ export class Round {
   @Column('varchar')
   status: RoundStatusTypesEnum;
 
-  @ManyToOne(() => Tournament, {
+  @ManyToOne(() => Tournament, (tournament) => tournament.rounds, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()

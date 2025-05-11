@@ -13,6 +13,9 @@ import { TeamGenerationStrategy } from '../interface/team-generation-strategy.in
 import { CreateTournamentTeamsInputDto } from 'src/team-management/dtos/create-tournament-teams-input.dto';
 import { Team } from 'src/team-management/entities/team.entity';
 import { UsersService } from 'src/users/providers/users.service';
+import { LevelStatusTypesEnum } from 'src/level/types/common';
+import { RoundStatusTypesEnum } from 'src/round/types/common';
+import { LevelTeamStandingService } from 'src/level/providers/level-team-standing.service';
 
 @Injectable()
 export class SchedulingService {
@@ -31,6 +34,7 @@ export class SchedulingService {
     private readonly levelService: LevelService,
     private readonly poolService: PoolService,
     private readonly usersService: UsersService,
+    private readonly levelTeamStandingService: LevelTeamStandingService,
   ) {
     this.formatStrategies = formatStrategies.reduce((acc, strategy) => {
       acc[strategy.type] = strategy;
@@ -62,6 +66,8 @@ export class SchedulingService {
     let levels = await this.levelService.findAllByTournamentWithRelations(tournament);
     const selectedLevel = levels[0];
 
+    await this.levelService.updateLevel(selectedLevel.id, { status: LevelStatusTypesEnum.in_progress });
+
     /**
      * Selecting Strategy
      */
@@ -91,6 +97,52 @@ export class SchedulingService {
     return [
       selectedLevel
     ]
+  }
+
+  async proceedToNextLevel(tournamentId: number): Promise<Level[]> {
+    const tournament = await this.tournamentManagementService.findOne(tournamentId);
+    if (!tournament) {
+      throw new Error('Tournament not found');
+    }
+
+    const levels = await this.levelService.findAllByTournamentWithRelations(
+      tournament,
+      ['pools', 'pools.rounds', 'levelTeamStandings', 'levelTeamStandings.team']
+    );
+
+    const currentLevel = levels.find(level => level.status === LevelStatusTypesEnum.in_progress);
+    if (!currentLevel) {
+      throw new Error('No level is currently in progress');
+    }
+
+    for (const pool of currentLevel.pools) {
+      const incompleteRounds = pool.rounds.filter(round => round.status !== RoundStatusTypesEnum.completed);
+      if (incompleteRounds.length > 0) {
+        throw new Error(`Pool ${pool.name} has incomplete rounds. Please complete all rounds before proceeding.`);
+      }
+    }
+
+    /**
+     * Need to Select teams from previous Level's Standings
+     * Need to Create Initial Rounds/Matches
+     */
+    const levelTeamStandingsOfCurrentLevel = await this.levelTeamStandingService.findAllByLevelId({
+      levelId: currentLevel.id,
+      order: { wins: 'DESC' }
+    });
+ 
+    const nextLevel = levels.find(level => level.order === currentLevel.order + 1);
+    if (!nextLevel) {
+      throw new Error('No next level found');
+    }
+
+    // await this.levelService.updateLevel(currentLevel.id, { status: LevelStatusTypesEnum.completed });
+    // await this.levelService.updateLevel(nextLevel.id, { status: LevelStatusTypesEnum.in_progress });
+
+    return this.levelService.findAllByTournamentWithRelations(
+      tournament,
+      ['pools', 'pools.rounds', 'levelTeamStandings', 'levelTeamStandings.team']
+    );
   }
 
   async endRound(levelId: number, poolId: number) {

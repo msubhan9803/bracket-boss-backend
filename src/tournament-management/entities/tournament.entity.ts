@@ -12,12 +12,12 @@ import {
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Sport } from 'src/sport-management/entities/sport.entity';
-import { Format } from 'src/format-management/entities/format.entity';
 import { TeamGenerationType } from 'src/team-generation-type-management/entities/team-generation-type.entity';
 import { SplitSwitchGroupByEnum } from 'src/scheduling/types/common';
 import { IsOptional } from 'class-validator';
 import { TournamentStatusTypesEnum } from '../types/common';
 import { Level } from 'src/level/entities/level.entity';
+import { Round } from 'src/round/entities/round.entity';
 
 registerEnumType(SplitSwitchGroupByEnum, {
   name: 'SplitSwitchGroupByEnum',
@@ -87,6 +87,13 @@ export class Tournament {
   })
   @Field(() => [Level])
   levels: Level[];
+
+  @OneToMany(() => Round, round => round.tournament, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  @Field(() => [Round], { nullable: true })
+  rounds: Round[];
 
   @Field()
   @CreateDateColumn()

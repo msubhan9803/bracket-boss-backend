@@ -32,7 +32,7 @@ export class LevelResolver {
   @Query(() => [LevelTeamStanding])
   async getLevelTeamStandingsByLevelId(@Args('levelId') levelId: number) {
     try {
-      const levelTeamStandings = await this.levelTeamStandingService.findAllByLevelId(levelId);
+      const levelTeamStandings = await this.levelTeamStandingService.findAllByLevelId({ levelId });
 
       return levelTeamStandings;
     } catch (error) {

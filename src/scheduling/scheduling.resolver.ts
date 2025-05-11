@@ -66,6 +66,22 @@ export class SchedulingResolver {
   }
 
   @UseGuards(AuthCheckGuard)
+  @Mutation(() => MessageResponseDto)
+  async proceedToNextLevel(
+    @Args('tournamentId') tournamentId: number
+  ): Promise<MessageResponseDto> {
+    try {
+      await this.schedulingService.proceedToNextLevel(tournamentId);
+
+      return {
+        message: messages.SUCCESS_MESSAGE,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
   @Mutation(() => DeleteScheduleResponseDto)
   async deleteSchedule(
     @Args('input') deleteScheduleInputDto: DeleteScheduleInputDto,

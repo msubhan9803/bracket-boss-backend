@@ -69,7 +69,7 @@ export class TournamentManagementService {
 
   findOneWithRelations(
     tournamentId: number,
-    relations: string[] = ['sport', 'poolPlayFormat', 'playOffFormat', 'teamGenerationType'],
+    relations: string[] = ['sport', 'teamGenerationType', 'levels', 'levels.pools', 'levels.pools.rounds', 'rounds'],
   ): Promise<Tournament> {
     return this.tournamentRepository.findOne({
       where: { id: tournamentId },
