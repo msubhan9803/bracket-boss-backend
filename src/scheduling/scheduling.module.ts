@@ -54,13 +54,8 @@ import { SingleEliminationScheduleBuilderService } from './providers/single-elim
      */
     {
       provide: StrategyTypes.FORMAT_STRATEGIES,
-      useFactory: (roundRobin: RoundRobinStrategy) => [roundRobin],
-      inject: [RoundRobinStrategy],
-    },
-    {
-      provide: StrategyTypes.FORMAT_STRATEGIES,
-      useFactory: (singleElimination: SingleEliminationStrategy) => [singleElimination],
-      inject: [SingleEliminationStrategy],
+      useFactory: (roundRobin: RoundRobinStrategy, singleElimination: SingleEliminationStrategy) => [roundRobin, singleElimination],
+      inject: [RoundRobinStrategy, SingleEliminationStrategy],
     },
 
     /**

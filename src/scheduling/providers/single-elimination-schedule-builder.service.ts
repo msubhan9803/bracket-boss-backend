@@ -34,7 +34,6 @@ export class SingleEliminationScheduleBuilderService {
                 title: `Match ${createdMatches.length + 1}`,
                 teams: [homeTeam, awayTeam],
             });
-            createdMatches.push(createdMatches);
         }
 
         return createdMatches;

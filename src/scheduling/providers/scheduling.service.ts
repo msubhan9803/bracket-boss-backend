@@ -164,7 +164,6 @@ export class SchedulingService {
       }
     ];
 
-
     await this.levelService.updateLevel(currentLevel.id, { status: LevelStatusTypesEnum.completed });
     await this.levelService.updateLevel(nextLevel.id, { status: LevelStatusTypesEnum.in_progress });
 

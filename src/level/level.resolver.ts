@@ -5,7 +5,7 @@ import { Level } from './entities/level.entity';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { AuthCheckGuard } from 'src/auth/guards/auth-check.guard';
 import { LevelTeamStandingService } from './providers/level-team-standing.service';
-import { LevelTeamStanding } from './entities/levelStandings.entity';
+import { LevelTeamStanding } from './entities/level-team-standing.entity';
 
 @Resolver()
 export class LevelResolver {

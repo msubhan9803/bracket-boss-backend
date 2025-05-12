@@ -25,7 +25,7 @@ export class LevelTeamStanding {
   @Field(() => Level)
   level: Level;
 
-  @OneToOne(() => Team)
+  @ManyToOne(() => Team)
   @JoinColumn()
   @Field(() => Team)
   team: Team;

@@ -2,7 +2,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Level } from './entities/level.entity';
 import { LevelTeam } from './entities/level-team.entity';
-import { LevelTeamStanding } from './entities/levelStandings.entity';
+import { LevelTeamStanding } from './entities/level-team-standing.entity';
 import { LevelService } from './providers/level.service';
 import { LevelResolver } from './level.resolver';
 import { TournamentManagementModule } from 'src/tournament-management/tournament-management.module';

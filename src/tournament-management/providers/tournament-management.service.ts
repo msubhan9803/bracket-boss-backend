@@ -74,6 +74,11 @@ export class TournamentManagementService {
     return this.tournamentRepository.findOne({
       where: { id: tournamentId },
       relations,
+      order: {
+        levels: {
+          order: 'ASC'
+        }
+      }
     });
   }
 

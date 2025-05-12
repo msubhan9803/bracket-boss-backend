@@ -4,7 +4,7 @@ import { Round } from 'src/round/entities/round.entity';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Level } from 'src/level/entities/level.entity';
-import { LevelTeamStanding } from 'src/level/entities/levelStandings.entity';
+import { LevelTeamStanding } from 'src/level/entities/level-team-standing.entity';
 
 export interface FormatStrategy {
   type: FormatType;

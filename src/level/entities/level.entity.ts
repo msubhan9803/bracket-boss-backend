@@ -16,7 +16,7 @@ import { Tournament } from 'src/tournament-management/entities/tournament.entity
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Match } from 'src/match-management/entities/match.entity';
-import { LevelTeamStanding } from './levelStandings.entity';
+import { LevelTeamStanding } from './level-team-standing.entity';
 
 registerEnumType(LevelStatusTypesEnum, {
   name: 'LevelStatusTypesEnum',

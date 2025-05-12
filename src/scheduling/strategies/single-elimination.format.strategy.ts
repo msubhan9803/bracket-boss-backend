@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { FormatStrategy } from '../interface/format-strategy.interface';
 import { FormatType } from 'src/format-management/types/format.enums';
 import { Level } from 'src/level/entities/level.entity';
-import { LevelTeamStanding } from 'src/level/entities/levelStandings.entity';
+import { LevelTeamStanding } from 'src/level/entities/level-team-standing.entity';
 import { Pool } from 'src/pool/entities/pool.entity';
 import { Round } from 'src/round/entities/round.entity';
 import { Team } from 'src/team-management/entities/team.entity';
@@ -49,7 +49,6 @@ export class SingleEliminationStrategy implements FormatStrategy {
       timeSlotWithCourts,
     );
 
-    let roundList: Round[] = [];
     let createdMatches = [];
 
     for (const [match, courtScheduleElem] of matchTimeslotMapping.entries()) {
@@ -78,13 +77,14 @@ export class SingleEliminationStrategy implements FormatStrategy {
       createdMatches.push(createdMatch);
 
       await this.matchCourtScheduleService.createMatchCourtScheduleRelation(createdMatch, courtSchedule, matchDate);
-      await this.singleEliminationScheduleBuilderService.createMatchRounds(createdMatches, tournament, tournament.matchBestOfRounds);
-
-      roundList.push({
-        ...round,
-        matches: createdMatches,
-      });
     }
+
+    await this.singleEliminationScheduleBuilderService.createMatchRounds(createdMatches, tournament, tournament.matchBestOfRounds);
+
+    const roundList: Round[] = [{
+      ...round,
+      matches: createdMatches,
+    }];
 
     return roundList;
   }

@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LevelTeamStanding } from '../entities/levelStandings.entity';
+import { LevelTeamStanding } from '../entities/level-team-standing.entity';
 import { FindOptionsOrder, Repository } from 'typeorm';
 
 @Injectable()
@@ -61,6 +61,11 @@ export class LevelTeamStandingService {
         standing.pointsAgainstByNumberOfGames = Number((updates.pointsAgainst / numberOfRounds).toFixed(2));
         standing.pointDiffByNumberOfGames = Number((standing.pointsScoredByNumberOfGames - standing.pointsAgainstByNumberOfGames).toFixed(2));
 
-        await this.levelTeamStandingRepository.save(standing);
+        try {
+            await this.levelTeamStandingRepository.save(standing);
+        } catch (error) {
+            console.log('Error: ', error)
+            throw new InternalServerErrorException('Error: ', error.message);
+        }
     }
 }
