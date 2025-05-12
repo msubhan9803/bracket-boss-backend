@@ -1,19 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { DrafRoundsWithMatches, DraftMatch, DraftMatchToAvailableSchedulesMapping } from '../types/common';
+import { DrafRoundsWithMatches, DraftMatch } from '../types/common';
 import { Team } from 'src/team-management/entities/team.entity';
-import { TimeSlotWithCourts } from 'src/court-management/types';
-import messages from 'src/utils/messages';
 import { Tournament } from 'src/tournament-management/entities/tournament.entity';
 import { MatchRoundStatusTypes } from 'src/match-management/types/common';
 import { MatchRoundService } from 'src/match-management/providers/match-round.service';
-import { CourtManagementService } from 'src/court-management/providers/court-management.service';
+import { Match } from 'src/match-management/entities/match.entity';
 
 @Injectable()
 export class RoundRobinScheduleBuilderService {
   constructor(
     private readonly matchRoundService: MatchRoundService,
-    private readonly courtManagementService: CourtManagementService,
-  ) {}
+  ) { }
 
   public draftOutRoundsWithMatches(matches: DraftMatch[]): DrafRoundsWithMatches {
     let roundsWithMatches: { [key: string]: { matches: DraftMatch[] } } = {
@@ -81,52 +78,7 @@ export class RoundRobinScheduleBuilderService {
     return match.teams.map((team) => team.users.map((user) => user.id).flat()).flat();
   }
 
-  public validateAndAssignTimeslots(
-    groupedMatches: DrafRoundsWithMatches,
-    availableTimeSlots: TimeSlotWithCourts[],
-  ): DraftMatchToAvailableSchedulesMapping {
-    const assignedMatches = new Map<
-      DraftMatch,
-      {
-        courtScheduleId: number;
-        date: string;
-        startTime: string;
-        endTime: string;
-      }
-    >();
-
-    for (let index = 0; index < Object.keys(groupedMatches).length; index++) {
-      const groupKey = Object.keys(groupedMatches)[index];
-      const group = groupedMatches[groupKey];
-
-      for (let i = 0; i < group.matches.length; i += 1) {
-        const match = group.matches[i];
-        let courtScheduleId = availableTimeSlots[0]?.courtSchedules?.shift() as number;
-
-        if (!courtScheduleId) {
-          availableTimeSlots.shift();
-
-          courtScheduleId = availableTimeSlots[0]?.courtSchedules?.shift() as number;
-          if (!availableTimeSlots[0] || !courtScheduleId) {
-            throw new Error(messages.RAN_OUT_OF_TIMESLOTS);
-          }
-        }
-
-        assignedMatches.set(match, {
-          courtScheduleId: courtScheduleId,
-          date: availableTimeSlots[0].date,
-          startTime: availableTimeSlots[0].startTime,
-          endTime: availableTimeSlots[0].endTime,
-        });
-      }
-
-      availableTimeSlots.shift();
-    }
-
-    return assignedMatches;
-  }
-
-  public async createMatchRounds(createdMatches: any[], tournament: Tournament, bestOfRounds: number) {
+  public async createMatchRounds(createdMatches: Match[], tournament: Tournament, bestOfRounds: number) {
     let createdMatchRounds = [];
 
     for (let index = 0; index < createdMatches.length; index++) {
@@ -136,8 +88,6 @@ export class RoundRobinScheduleBuilderService {
         const createdMatchRound = await this.matchRoundService.createMatchRound({
           tournament,
           match,
-          startTime: match.matchDate,
-          endTime: match.matchDate,
           matchRoundNumber: index,
           status: MatchRoundStatusTypes.not_started
         });
@@ -147,9 +97,5 @@ export class RoundRobinScheduleBuilderService {
     }
 
     return createdMatchRounds;
-  }
-
-  public async getAvailableCourts(startDate: Date, endDate: Date) {
-    return this.courtManagementService.getCourtsGroupedByScheduleTimeslots(startDate, endDate);
   }
 }

@@ -9,11 +9,13 @@ import { Pool } from 'src/pool/entities/pool.entity';
 import { Level } from 'src/level/entities/level.entity';
 import { CourtScheduleService } from 'src/court-management/providers/court-schedule.service';
 import { MatchService } from 'src/match-management/providers/match.service';
-import { MatchCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
+import { MatchCourtScheduleService } from 'src/match-management/providers/match-court-schedule.service';
 import { MatchStatusTypes } from 'src/match-management/types/common';
 import { RoundService } from 'src/round/providers/round.service';
 import messages from 'src/utils/messages';
 import { RoundStatusTypesEnum } from 'src/round/types/common';
+import { CourtManagementService } from 'src/court-management/providers/court-management.service';
+import { Match } from 'src/match-management/entities/match.entity';
 
 @Injectable()
 export class RoundRobinStrategy implements FormatStrategy {
@@ -24,7 +26,8 @@ export class RoundRobinStrategy implements FormatStrategy {
     private readonly matchService: MatchService,
     private readonly matchCourtScheduleService: MatchCourtScheduleService,
     private readonly roundRobinScheduleBuilderService: RoundRobinScheduleBuilderService,
-    private readonly roundService: RoundService
+    private readonly roundService: RoundService,
+    private readonly courtManagementService: CourtManagementService,
   ) { }
 
   async createInitialRounds(tournament: Tournament, level: Level, pool: Pool, teams: Team[]): Promise<Round[]> {
@@ -33,7 +36,7 @@ export class RoundRobinStrategy implements FormatStrategy {
 
     let roundList: Round[] = [];
 
-    const timeSlotWithCourts = await this.roundRobinScheduleBuilderService.getAvailableCourts(tournament.start_date, tournament.end_date);
+    const timeSlotWithCourts = await this.courtManagementService.getAvailableCourts(tournament.start_date, tournament.end_date);
 
     for (let index = 0; index < Object.keys(draftedRoundsWithMatches).length; index++) {
       const roundKey = Object.keys(draftedRoundsWithMatches)[index];
@@ -46,9 +49,9 @@ export class RoundRobinStrategy implements FormatStrategy {
         status: RoundStatusTypesEnum.not_started,
       });
 
-      let createdMatches = [];
+      let createdMatches: Match[] = [];
 
-      const matchTimeslotMapping = this.roundRobinScheduleBuilderService.validateAndAssignTimeslots(
+      const matchTimeslotMapping = this.matchCourtScheduleService.validateAndAssignTimeslots(
         {
           [roundKey]: roundMatches,
         },

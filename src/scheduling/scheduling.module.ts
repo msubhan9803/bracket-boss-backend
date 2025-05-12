@@ -19,6 +19,8 @@ import { StrategyTypes } from 'src/common/types/global';
 import { RoundRobinStrategy } from './strategies/round-robin.format.strategy';
 import { BlindDrawTeamGenerationStrategy } from './strategies/blind-draw.team-generation.strategy';
 import { SplitSwitchTeamGenerationStrategy } from './strategies/split-switch.team-generation.strategy';
+import { SingleEliminationStrategy } from './strategies/single-elimination.format.strategy';
+import { SingleEliminationScheduleBuilderService } from './providers/single-elimination-schedule-builder.service';
 
 @Module({
   imports: [
@@ -43,6 +45,7 @@ import { SplitSwitchTeamGenerationStrategy } from './strategies/split-switch.tea
      * Inject strategy classes
      */
     RoundRobinStrategy,
+    SingleEliminationStrategy,
     BlindDrawTeamGenerationStrategy,
     SplitSwitchTeamGenerationStrategy,
 
@@ -53,6 +56,11 @@ import { SplitSwitchTeamGenerationStrategy } from './strategies/split-switch.tea
       provide: StrategyTypes.FORMAT_STRATEGIES,
       useFactory: (roundRobin: RoundRobinStrategy) => [roundRobin],
       inject: [RoundRobinStrategy],
+    },
+    {
+      provide: StrategyTypes.FORMAT_STRATEGIES,
+      useFactory: (singleElimination: SingleEliminationStrategy) => [singleElimination],
+      inject: [SingleEliminationStrategy],
     },
 
     /**
@@ -66,6 +74,8 @@ import { SplitSwitchTeamGenerationStrategy } from './strategies/split-switch.tea
       ) => [blindDraw, splitSwitch],
       inject: [BlindDrawTeamGenerationStrategy, SplitSwitchTeamGenerationStrategy],
     },
+
+    SingleEliminationScheduleBuilderService,
   ],
 })
 export class SchedulingModule { }

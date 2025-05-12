@@ -7,7 +7,7 @@ import { MatchCommentary } from './entities/matchCommentary.entity';
 import { MatchService } from './providers/match.service';
 import { MatchRoundService } from './providers/match-round.service';
 import { MatchCourtSchedules } from './entities/match-court-schedule.entity';
-import { MatchCourtScheduleService } from './providers/matct-court-schedule.service';
+import { MatchCourtScheduleService } from './providers/match-court-schedule.service';
 import { MatchManagementResolver } from './match-management.resolver';
 import { UsersModule } from 'src/users/users.module';
 import { JwtService } from '@nestjs/jwt';

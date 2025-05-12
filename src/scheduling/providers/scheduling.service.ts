@@ -4,7 +4,7 @@ import { StrategyTypes } from 'src/common/types/global';
 import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
 import { TeamManagementService } from 'src/team-management/providers/team-management.service';
 import { MatchService } from 'src/match-management/providers/match.service';
-import { MatchCourtScheduleService } from 'src/match-management/providers/matct-court-schedule.service';
+import { MatchCourtScheduleService } from 'src/match-management/providers/match-court-schedule.service';
 import { LevelService } from 'src/level/providers/level.service';
 import { PoolService } from 'src/pool/providers/pool.service';
 import { Pool } from 'src/pool/entities/pool.entity';
@@ -107,7 +107,7 @@ export class SchedulingService {
 
     const levels = await this.levelService.findAllByTournamentWithRelations(
       tournament,
-      ['pools', 'pools.rounds', 'levelTeamStandings', 'levelTeamStandings.team']
+      ['format', 'pools', 'pools.rounds', 'levelTeamStandings', 'levelTeamStandings.team']
     );
 
     const currentLevel = levels.find(level => level.status === LevelStatusTypesEnum.in_progress);
@@ -122,27 +122,55 @@ export class SchedulingService {
       }
     }
 
-    /**
-     * Need to Select teams from previous Level's Standings
-     * Need to Create Initial Rounds/Matches
-     */
-    const levelTeamStandingsOfCurrentLevel = await this.levelTeamStandingService.findAllByLevelId({
-      levelId: currentLevel.id,
-      order: { wins: 'DESC' }
-    });
- 
     const nextLevel = levels.find(level => level.order === currentLevel.order + 1);
     if (!nextLevel) {
       throw new Error('No next level found');
     }
 
-    // await this.levelService.updateLevel(currentLevel.id, { status: LevelStatusTypesEnum.completed });
-    // await this.levelService.updateLevel(nextLevel.id, { status: LevelStatusTypesEnum.in_progress });
+    /**
+     * Need to Select teams from previous Level's Standings
+     */
+    const levelTeamStandingsOfCurrentLevel = await this.levelTeamStandingService.findAllByLevelId({
+      levelId: currentLevel.id,
+      order: { wins: 'DESC' }
+    });
 
-    return this.levelService.findAllByTournamentWithRelations(
+    /**
+     * Get the Strategy
+     */
+    const formatStrategy = this.formatStrategies[nextLevel.format.name];
+
+    /**
+     * Select Teams
+     */
+    const teams = await formatStrategy.selectTeams(levelTeamStandingsOfCurrentLevel);
+
+    /**
+     * Create Pool
+     */
+    const pool = await this.poolService.createPool({
+      name: 'Pool 1',
       tournament,
-      ['pools', 'pools.rounds', 'levelTeamStandings', 'levelTeamStandings.team']
-    );
+      level: nextLevel,
+      order: 1,
+    });
+
+    const roundsWithMatches = await formatStrategy.createInitialRounds(tournament, nextLevel, pool, teams);
+
+    nextLevel.pools = [
+      {
+        ...pool,
+        rounds: roundsWithMatches,
+      }
+    ];
+
+
+    await this.levelService.updateLevel(currentLevel.id, { status: LevelStatusTypesEnum.completed });
+    await this.levelService.updateLevel(nextLevel.id, { status: LevelStatusTypesEnum.in_progress });
+
+    return [
+      nextLevel
+    ]
   }
 
   async endRound(levelId: number, poolId: number) {

@@ -5,8 +5,6 @@ import { MatchRoundStatusTypes } from "../types/common";
 export class CreateMatchRoundInputDto {
   tournament: Tournament;
   match: Match;
-  startTime: Date;
-  endTime: Date;
   matchRoundNumber: number;
   status: MatchRoundStatusTypes;
 }

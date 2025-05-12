@@ -309,7 +309,7 @@ export class CourtManagementService {
    * @param {Date} [endDate] - The end date of the range to filter schedules.
    * @returns {Promise<Court[]>} - A promise that resolves to an array of courts with their schedules.
    */
-  async getCourtsGroupedByScheduleTimeslots(startDate?: Date, endDate?: Date) {
+  async getAvailableCourts(startDate?: Date, endDate?: Date) {
     const query = this.courtRepository
       .createQueryBuilder('court')
       .leftJoinAndSelect('court.courtSchedules', 'courtSchedules')
