@@ -11,8 +11,11 @@ export class PoolService {
     private poolRepository: Repository<Pool>,
   ) {}
 
-  createPool(pool: PoolInputDto): Promise<Pool> {
-    return this.poolRepository.save(pool);
+  getPoolById(poolId: number, relations: string[] = ['rounds', 'tournament', 'level']): Promise<Pool> {
+    return this.poolRepository.findOne({
+      where: { id: poolId },
+      relations,
+    });
   }
 
   getPoolsByLevelId(levelId: number, relations: string[] = ['rounds']): Promise<Pool[]> {
@@ -20,5 +23,9 @@ export class PoolService {
       where: { level: { id: levelId } },
       relations,
     });
+  }
+
+  createPool(pool: PoolInputDto): Promise<Pool> {
+    return this.poolRepository.save(pool);
   }
 }

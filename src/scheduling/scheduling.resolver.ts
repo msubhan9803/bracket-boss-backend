@@ -51,11 +51,11 @@ export class SchedulingResolver {
   @UseGuards(AuthCheckGuard)
   @Mutation(() => MessageResponseDto)
   async endRound(
-    @Args('tournamentId') tournamentId: number,
+    @Args('levelId') levelId: number,
     @Args('poolId') poolId: number
   ): Promise<MessageResponseDto> {
     try {
-      await this.schedulingService.endRound(tournamentId, poolId);
+      await this.schedulingService.endRound(levelId, poolId);
 
       return {
         message: messages.SUCCESS_MESSAGE,
