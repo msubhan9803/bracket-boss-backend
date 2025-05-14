@@ -18,6 +18,7 @@ import { IsOptional } from 'class-validator';
 import { TournamentStatusTypesEnum } from '../types/common';
 import { Level } from 'src/level/entities/level.entity';
 import { Round } from 'src/round/entities/round.entity';
+import { TournamentResult } from './tournamentResult.entity';
 
 registerEnumType(SplitSwitchGroupByEnum, {
   name: 'SplitSwitchGroupByEnum',
@@ -94,6 +95,10 @@ export class Tournament {
   })
   @Field(() => [Round], { nullable: true })
   rounds: Round[];
+
+  @OneToOne(() => TournamentResult, (result) => result.tournament)
+  @Field(() => TournamentResult, { nullable: true })
+  tournamentResult: TournamentResult;
 
   @Field()
   @CreateDateColumn()

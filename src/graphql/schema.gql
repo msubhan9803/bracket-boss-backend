@@ -565,6 +565,7 @@ type Tournament {
   start_date: DateTime!
   status: TournamentStatusTypesEnum!
   teamGenerationType: TeamGenerationType!
+  tournamentResult: TournamentResult
   updated_at: DateTime!
 }
 
