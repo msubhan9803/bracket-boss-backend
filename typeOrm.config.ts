@@ -29,6 +29,8 @@ import { Pool } from 'src/pool/entities/pool.entity';
 import { Round } from 'src/round/entities/round.entity';
 import { LevelTeam } from 'src/level/entities/level-team.entity';
 import { RoundTeam } from 'src/round/entities/round-team.entity';
+import { TournamentResult } from 'src/tournament-management/entities/tournamentResult.entity';
+import { TournamentWinner } from 'src/tournament-management/entities/tournamentWinner.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFilePath });
@@ -65,6 +67,8 @@ export default new DataSource({
     Team,
     TeamGenerationType,
     Tournament,
+    TournamentResult,
+    TournamentWinner,
     Match,
     MatchCourtSchedules,
     MatchRound,

@@ -16,6 +16,9 @@ import messages from 'src/utils/messages';
 import { RoundStatusTypesEnum } from 'src/round/types/common';
 import { CourtManagementService } from 'src/court-management/providers/court-management.service';
 import { Match } from 'src/match-management/entities/match.entity';
+import { LevelTeamStandingService } from 'src/level/providers/level-team-standing.service';
+import { TournamentResultService } from 'src/tournament-management/providers/tournament-result.service';
+import { TournamentWinner } from 'src/tournament-management/entities/tournamentWinner.entity';
 
 @Injectable()
 export class RoundRobinStrategy implements FormatStrategy {
@@ -28,13 +31,15 @@ export class RoundRobinStrategy implements FormatStrategy {
     private readonly roundRobinScheduleBuilderService: RoundRobinScheduleBuilderService,
     private readonly roundService: RoundService,
     private readonly courtManagementService: CourtManagementService,
+    private readonly levelTeamStandingService: LevelTeamStandingService,
+    private readonly tournamentResultService: TournamentResultService,
   ) { }
 
   async createInitialRounds(tournament: Tournament, level: Level, pool: Pool, teams: Team[]): Promise<Round[]> {
     const draftMatchList = this.roundRobinScheduleBuilderService.generateRoundRobinMatches(teams);
     const draftedRoundsWithMatches = this.roundRobinScheduleBuilderService.draftOutRoundsWithMatches(draftMatchList);
 
-    let roundList: Round[] = [];
+    const roundList: Round[] = [];
 
     const timeSlotWithCourts = await this.courtManagementService.getAvailableCourts(tournament.start_date, tournament.end_date);
 
@@ -49,7 +54,7 @@ export class RoundRobinStrategy implements FormatStrategy {
         status: RoundStatusTypesEnum.not_started,
       });
 
-      let createdMatches: Match[] = [];
+      const createdMatches: Match[] = [];
 
       const matchTimeslotMapping = this.matchCourtScheduleService.validateAndAssignTimeslots(
         {
@@ -110,5 +115,26 @@ export class RoundRobinStrategy implements FormatStrategy {
     if (nextRound) {
       await this.roundService.updateRoundStatus(nextRound.id, RoundStatusTypesEnum.in_progress);
     }
+  }
+  
+  async concludeTournament(tournament: Tournament): Promise<void> {
+    const levels = tournament.levels;
+    const lastLevel = levels.pop();
+
+    const levelTeamStandings = await this.levelTeamStandingService.findAllByLevelId({
+      levelId: lastLevel.id,
+    });
+    const topThreeStandings = levelTeamStandings.slice(0, 3);
+
+    await this.tournamentResultService.createTournamentResult({
+      tournament,
+      winners: topThreeStandings.map((standing, index) => 
+        new TournamentWinner({
+          tournament,
+          team: standing.team,
+          rank: index + 1,
+        })
+      )
+    });
   }
 }

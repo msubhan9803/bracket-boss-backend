@@ -303,6 +303,7 @@ type ModulePolicyRole {
 
 type Mutation {
   bulkMatchImport(file: Upload!): BulkMatchImportResponseDto!
+  concludeTournament(tournamentId: Float!): MessageResponseDto!
   createClub(input: CreateClubInputDto!): CreateClubResponseDto!
   createSchedule(tournamentId: Float!): [Level!]!
   createTeam(input: CreateTeamInputDto!): Team!
@@ -572,11 +573,29 @@ type TournamentListResponse {
   tournaments: [Tournament!]!
 }
 
+type TournamentResult {
+  created_at: DateTime!
+  id: CustomID!
+  tournament: Tournament!
+  updated_at: DateTime!
+  winners: [TournamentWinner!]!
+}
+
 enum TournamentStatusTypesEnum {
   completed
   not_started
   play_off_in_progress
   pool_play_in_progress
+}
+
+type TournamentWinner {
+  created_at: DateTime!
+  id: CustomID!
+  rank: Float!
+  team: Team!
+  tournament: Tournament!
+  tournamentResult: TournamentResult!
+  updated_at: DateTime!
 }
 
 input UpdateMatchScoreInputDto {

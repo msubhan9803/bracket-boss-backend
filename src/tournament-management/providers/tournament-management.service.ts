@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Tournament } from '../entities/tournament.entity';
 import { SportManagementService } from 'src/sport-management/providers/sport-management.service';
 import { SportName } from 'src/sport-management/types/sport.enums';
@@ -69,7 +69,7 @@ export class TournamentManagementService {
 
   findOneWithRelations(
     tournamentId: number,
-    relations: string[] = ['sport', 'teamGenerationType', 'levels', 'levels.pools', 'levels.pools.rounds', 'rounds'],
+    relations: string[] = ['sport', 'teamGenerationType', 'levels', 'levels.format', 'levels.pools', 'levels.pools.rounds', 'rounds'],
   ): Promise<Tournament> {
     return this.tournamentRepository.findOne({
       where: { id: tournamentId },

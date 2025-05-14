@@ -11,4 +11,5 @@ export interface FormatStrategy {
   createInitialRounds(tournament: Tournament, level: Level, pool: Pool, teams: Team[]): Promise<Round[]>;
   handleEndRound(poolId: number): void;
   selectTeams?(levelTeamStanding: LevelTeamStanding[]): Promise<Team[]>;
+  concludeTournament(tournament: Tournament): Promise<void>;
 }

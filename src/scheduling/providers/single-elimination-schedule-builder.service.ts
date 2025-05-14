@@ -14,7 +14,7 @@ export class SingleEliminationScheduleBuilderService {
     ) { }
 
     public generateSingleEliminationMatches(teams: Team[]): { title: string; teams: Team[] }[] {
-        let createdMatches = [];
+        const createdMatches = [];
 
         /**
          * Generate matches where each team plays against one opponent
@@ -40,7 +40,7 @@ export class SingleEliminationScheduleBuilderService {
     }
 
     public async createMatchRounds(createdMatches: Match[], tournament: Tournament, bestOfRounds: number) {
-        let createdMatchRounds = [];
+        const createdMatchRounds = [];
 
         for (let index = 0; index < createdMatches.length; index++) {
             const match = createdMatches[index];

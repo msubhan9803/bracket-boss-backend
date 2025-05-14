@@ -22,11 +22,13 @@ export class SchedulingResolver {
     private readonly schedulingService: SchedulingService,
     private readonly usersService: UsersService,
     private readonly scheduleSpreadsheetHandlerService: ScheduleSpreadsheetHandlerService,
-  ) { }
+  ) {}
 
   @UseGuards(AuthCheckGuard)
   @Query(() => [Level])
-  async getScheduleOfTournament(@Args('input') getScheduleOfTournamentInput: GetScheduleOfTournamentInput) {
+  async getScheduleOfTournament(
+    @Args('input') getScheduleOfTournamentInput: GetScheduleOfTournamentInput,
+  ) {
     try {
       const { tournamentId } = getScheduleOfTournamentInput;
 
@@ -52,7 +54,7 @@ export class SchedulingResolver {
   @Mutation(() => MessageResponseDto)
   async endRound(
     @Args('levelId') levelId: number,
-    @Args('poolId') poolId: number
+    @Args('poolId') poolId: number,
   ): Promise<MessageResponseDto> {
     try {
       await this.schedulingService.endRound(levelId, poolId);
@@ -67,8 +69,22 @@ export class SchedulingResolver {
 
   @UseGuards(AuthCheckGuard)
   @Mutation(() => MessageResponseDto)
+  async concludeTournament(@Args('tournamentId') tournamentId: number): Promise<MessageResponseDto> {
+    try {
+      await this.schedulingService.concludeTournament(tournamentId);
+
+      return {
+        message: messages.SUCCESS_MESSAGE,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => MessageResponseDto)
   async proceedToNextLevel(
-    @Args('tournamentId') tournamentId: number
+    @Args('tournamentId') tournamentId: number,
   ): Promise<MessageResponseDto> {
     try {
       await this.schedulingService.proceedToNextLevel(tournamentId);
@@ -123,10 +139,11 @@ export class SchedulingResolver {
       const clubId = 1;
       const tournamentId = 4;
 
-      const templateBase64String = await this.scheduleSpreadsheetHandlerService.generateEmptyScheduleTemplate(
-        clubId,
-        tournamentId,
-      );
+      const templateBase64String =
+        await this.scheduleSpreadsheetHandlerService.generateEmptyScheduleTemplate(
+          clubId,
+          tournamentId,
+        );
 
       return templateBase64String;
     } catch (error) {
@@ -135,8 +152,11 @@ export class SchedulingResolver {
   }
 
   @Mutation(() => BulkMatchImportResponseDto)
-  async bulkMatchImport(@Args({ name: 'file', type: () => GraphQLUpload }) file: FileUpload): Promise<any> {
-    const parsedScheduleData = await this.scheduleSpreadsheetHandlerService.parseMatchScheduleFromTemplate(file);
+  async bulkMatchImport(
+    @Args({ name: 'file', type: () => GraphQLUpload }) file: FileUpload,
+  ): Promise<any> {
+    const parsedScheduleData =
+      await this.scheduleSpreadsheetHandlerService.parseMatchScheduleFromTemplate(file);
 
     await this.schedulingService.createSchedule(parsedScheduleData.tournamentId);
 

@@ -16,6 +16,7 @@ import { UsersService } from 'src/users/providers/users.service';
 import { LevelStatusTypesEnum } from 'src/level/types/common';
 import { RoundStatusTypesEnum } from 'src/round/types/common';
 import { LevelTeamStandingService } from 'src/level/providers/level-team-standing.service';
+import { TournamentStatusTypesEnum } from 'src/tournament-management/types/common';
 
 @Injectable()
 export class SchedulingService {
@@ -49,7 +50,7 @@ export class SchedulingService {
   async createSchedule(tournamentId: number): Promise<Level[]> {
     const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
     const { numberOfPools } = tournament;
-    let pools: Pool[] = [];
+    const pools: Pool[] = [];
 
     /**
      * Group Teams into Pools
@@ -63,7 +64,7 @@ export class SchedulingService {
     /**
      * Creating Level
      */
-    let levels = await this.levelService.findAllByTournamentWithRelations(tournament);
+    const levels = await this.levelService.findAllByTournamentWithRelations(tournament);
     const selectedLevel = levels[0];
 
     await this.levelService.updateLevel(selectedLevel.id, { status: LevelStatusTypesEnum.in_progress });
@@ -176,6 +177,16 @@ export class SchedulingService {
     const level = await this.levelService.findOne(levelId);
     const formatStrategy = this.formatStrategies[level.format.name];
     await formatStrategy.handleEndRound(poolId)
+  }
+
+  async concludeTournament(tournamentId: number) {
+    const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
+    const lastLevel = tournament.levels.pop();
+
+    const formatStrategy = this.formatStrategies[lastLevel.format.name];
+    await formatStrategy.concludeTournament(tournament)
+
+    await this.tournamentManagementService.update(tournamentId, { status: TournamentStatusTypesEnum.completed })
   }
 
   async getScheduleOfTournament(tournamentId: number): Promise<Level[]> {

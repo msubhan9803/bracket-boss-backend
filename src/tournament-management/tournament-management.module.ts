@@ -12,11 +12,17 @@ import { TeamGenerationTypeManagementModule } from 'src/team-generation-type-man
 import { LevelModule } from 'src/level/level.module';
 import { PoolModule } from 'src/pool/pool.module';
 import { RoundModule } from 'src/round/round.module';
+import { TournamentResult } from './entities/tournamentResult.entity';
+import { TournamentResultService } from './providers/tournament-result.service';
+import { TournamentWinner } from './entities/tournamentWinner.entity';
+import { TournamentWinnerService } from './providers/tournament-winner.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Tournament,
+      TournamentResult,
+      TournamentWinner
     ]),
     SportManagementModule,
     FormatManagementModule,
@@ -31,7 +37,9 @@ import { RoundModule } from 'src/round/round.module';
     TournamentManagementService,
     TournamentManagementResolver,
     JwtService,
+    TournamentResultService,
+    TournamentWinnerService,
   ],
-  exports: [TournamentManagementService],
+  exports: [TournamentManagementService, TournamentResultService, TournamentWinnerService],
 })
 export class TournamentManagementModule {}
