@@ -156,6 +156,9 @@ export class SchedulingService {
       order: 1,
     });
 
+    /**
+     * Create Rounds, Matches, Match Court Schedules & Match Rounds
+     */
     const roundsWithMatches = await formatStrategy.createInitialRounds(tournament, nextLevel, pool, teams);
 
     nextLevel.pools = [
@@ -165,8 +168,17 @@ export class SchedulingService {
       }
     ];
 
+    /**
+     * Updating Level Status
+     */
     await this.levelService.updateLevel(currentLevel.id, { status: LevelStatusTypesEnum.completed });
     await this.levelService.updateLevel(nextLevel.id, { status: LevelStatusTypesEnum.in_progress });
+
+
+    /**
+     * Updating Tournament Status
+     */
+    await this.tournamentManagementService.update(tournamentId, { status: TournamentStatusTypesEnum.play_off_in_progress })
 
     return [
       nextLevel
