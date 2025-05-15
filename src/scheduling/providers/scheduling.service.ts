@@ -252,7 +252,7 @@ export class SchedulingService {
         // Delete level related records
         await manager.query('DELETE FROM round WHERE "poolId" IN (SELECT id FROM pool WHERE "levelId" IN (SELECT id FROM level WHERE "tournamentId" = $1))', [tournamentId]);
         await manager.query('DELETE FROM pool WHERE "levelId" IN (SELECT id FROM level WHERE "tournamentId" = $1)', [tournamentId]);
-        await manager.query('DELETE FROM level WHERE "tournamentId" = $1', [tournamentId]);
+        await manager.query('UPDATE level SET status = $1 WHERE "tournamentId" = $2', [LevelStatusTypesEnum.not_started, tournamentId]);
       });
   
       await this.tournamentManagementService.update(tournamentId, { status: TournamentStatusTypesEnum.not_started });
