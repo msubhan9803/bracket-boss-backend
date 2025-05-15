@@ -261,6 +261,7 @@ type MatchRoundScore {
   homeTeamScore: Float!
   id: CustomID!
   matchRound: MatchRound!
+  matchRoundId: CustomID!
   updated_at: DateTime!
 }
 

@@ -46,7 +46,6 @@ export class MatchRound {
     onDelete: 'CASCADE',
     nullable: true
   })
-  @JoinColumn()
   @Field(() => MatchRoundScore, { nullable: true })
   matchRoundScore?: MatchRoundScore;
 

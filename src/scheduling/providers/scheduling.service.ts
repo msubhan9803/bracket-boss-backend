@@ -17,6 +17,7 @@ import { LevelStatusTypesEnum } from 'src/level/types/common';
 import { RoundStatusTypesEnum } from 'src/round/types/common';
 import { LevelTeamStandingService } from 'src/level/providers/level-team-standing.service';
 import { TournamentStatusTypesEnum } from 'src/tournament-management/types/common';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class SchedulingService {
@@ -36,6 +37,7 @@ export class SchedulingService {
     private readonly poolService: PoolService,
     private readonly usersService: UsersService,
     private readonly levelTeamStandingService: LevelTeamStandingService,
+    private readonly dataSource: DataSource,
   ) {
     this.formatStrategies = formatStrategies.reduce((acc, strategy) => {
       acc[strategy.type] = strategy;
@@ -226,14 +228,37 @@ export class SchedulingService {
 
   async deleteScheduleOfTournament(tournamentId: number) {
     const tournament = await this.tournamentManagementService.findOne(tournamentId);
-    const matches = await this.matchService.findMatchesByTournament(tournament);
-
-    for (const match of matches) {
-      await this.matchCourtScheduleService.deleteMatchCourtSchedules(match);
-      await this.matchService.deleteMatch(match);
+    if (!tournament) {
+      throw new Error(`Tournament with ID ${tournamentId} not found`);
     }
-
-    await this.teamManagementService.deleteTeamsByTournament(tournament);
+  
+    try {
+      // Start a transaction
+      await this.dataSource.transaction(async (manager) => {
+        // Delete tournament results and winners
+        await manager.query('DELETE FROM tournament_winner WHERE "tournamentId" = $1', [tournamentId]);
+        await manager.query('DELETE FROM tournament_result WHERE "tournamentId" = $1', [tournamentId]);
+        
+        // Delete match related records
+        await manager.query('DELETE FROM match_court_schedules WHERE "matchId" IN (SELECT id FROM match WHERE "tournamentId" = $1)', [tournamentId]);
+        await manager.query('DELETE FROM match_round_score WHERE "matchRoundId" IN (SELECT id FROM match_round WHERE "matchId" IN (SELECT id FROM match WHERE "tournamentId" = $1))', [tournamentId]);
+        await manager.query('DELETE FROM match_round WHERE "matchId" IN (SELECT id FROM match WHERE "tournamentId" = $1)', [tournamentId]);
+        await manager.query('DELETE FROM match WHERE "tournamentId" = $1', [tournamentId]);
+        
+        // Delete team related records
+        await manager.query('DELETE FROM level_team_standing WHERE "levelId" IN (SELECT id FROM level WHERE "tournamentId" = $1)', [tournamentId]);
+        await manager.query('DELETE FROM team WHERE "tournamentId" = $1', [tournamentId]);
+        
+        // Delete level related records
+        await manager.query('DELETE FROM round WHERE "poolId" IN (SELECT id FROM pool WHERE "levelId" IN (SELECT id FROM level WHERE "tournamentId" = $1))', [tournamentId]);
+        await manager.query('DELETE FROM pool WHERE "levelId" IN (SELECT id FROM level WHERE "tournamentId" = $1)', [tournamentId]);
+        await manager.query('DELETE FROM level WHERE "tournamentId" = $1', [tournamentId]);
+      });
+  
+      await this.tournamentManagementService.update(tournamentId, { status: TournamentStatusTypesEnum.not_started });
+    } catch (error) {
+      throw new Error(`Failed to delete tournament schedule: ${error.message}`);
+    }
   }
 
   async createTournamentTeams(createTournamentTeamsInputDto: CreateTournamentTeamsInputDto): Promise<Team[]> {

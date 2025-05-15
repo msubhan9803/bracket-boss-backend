@@ -19,9 +19,16 @@ export class MatchRoundScore {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => MatchRound, (matchRound) => matchRound.matchRoundScore)
+  @OneToOne(() => MatchRound, (matchRound) => matchRound.matchRoundScore, {
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn()
   @Field(() => MatchRound)
   matchRound: MatchRound;
+
+  @Field(() => CustomNumberIdScalar)
+  @Column()
+  matchRoundId: number;
 
   @Field()
   @Column('int')

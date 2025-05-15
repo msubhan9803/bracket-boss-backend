@@ -74,7 +74,7 @@ export class MatchManagementResolver {
       }
 
       return this.matchRoundScoreService.updateScore(
-        matchRound.id,
+        matchRound,
         homeTeamScore,
         awayTeamScore
       );

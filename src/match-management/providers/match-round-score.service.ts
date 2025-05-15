@@ -21,12 +21,12 @@ export class MatchRoundScoreService {
     }
 
     async updateScore(
-        roundId: number,
+        matchRound: MatchRound,
         homeTeamScore: number,
         awayTeamScore: number
     ): Promise<MatchRoundScore> {
         const score = await this.matchRoundScoreRepository.findOne({
-            where: { matchRound: { id: roundId } }
+            where: { matchRound: { id: matchRound.id } }
         });
 
         if (!score) {
@@ -35,6 +35,7 @@ export class MatchRoundScoreService {
 
         score.homeTeamScore = homeTeamScore;
         score.awayTeamScore = awayTeamScore;
+        score.matchRound = matchRound;
 
         return this.matchRoundScoreRepository.save(score);
     }
