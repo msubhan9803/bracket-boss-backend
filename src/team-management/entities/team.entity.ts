@@ -30,7 +30,7 @@ export class Team {
   @Column('text')
   name: string;
 
-  @ManyToOne(() => Tournament)
+  @ManyToOne(() => Tournament, { onDelete: 'CASCADE' })
   @JoinColumn()
   @Field(() => Tournament)
   tournament: Tournament;

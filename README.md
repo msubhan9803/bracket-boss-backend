@@ -47,9 +47,35 @@ $ GRANT ALL ON SCHEMA public TO dbuser;
 # Build
 $ pnpm run build
 
-# Start app with Pm2 process
-$ pm2 start npm --name "bracket-boss-backend-app" -- run start:prod
-
 # Stop & Delete Pm2 process
 $ pm2 stop 0 && pm2 delete 0
+
+# Start app with Pm2 process
+$ pm2 start npm --name "bracket-boss-backend-app" -- run start:prod
 ```
+
+
+
+
+# Connect to bracket boss db
+psql -h bracket-boss.c1i4kgo2c1pu.us-west-1.rds.amazonaws.com -p 5432 -U bb_db_user -d bracket_boss_db
+
+
+
+# Connect to temp db
+psql -h bracket-boss.c1i4kgo2c1pu.us-west-1.rds.amazonaws.com -p 5432 -U bb_db_user -d temp_db
+
+
+
+SELECT pg_terminate_backend(pid)
+FROM pg_stat_activity
+WHERE datname = 'bracket_boss_db';
+
+
+DROP DATABASE bracket_boss_db;
+CREATE DATABASE bracket_boss_db;
+
+\connect bracket_boss_db
+
+
+psql -h bracket-boss.c1i4kgo2c1pu.us-west-1.rds.amazonaws.com -U bb_db_user -d bracket_boss_db -f  /Users/hamari_m1/local-backup-15-may-2025.sql

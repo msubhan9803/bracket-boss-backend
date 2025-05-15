@@ -35,8 +35,8 @@ export class Match {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ManyToOne(() => Tournament, { onDelete: "CASCADE" })
   @Field(() => Tournament)
-  @ManyToOne(() => Tournament)
   @JoinColumn()
   tournament: Tournament;
 

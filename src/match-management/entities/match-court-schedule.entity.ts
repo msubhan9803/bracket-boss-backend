@@ -18,7 +18,7 @@ export class MatchCourtSchedules {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @OneToOne(() => Match, (match) => match.matchCourtSchedule)
+    @OneToOne(() => Match, (match) => match.matchCourtSchedule, { onDelete: "CASCADE" })
     @JoinColumn()
     @Field(() => Match)
     match: Match;

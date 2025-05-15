@@ -6,8 +6,8 @@ import {
   UpdateDateColumn,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { CustomNumberIdScalar } from 'src/common/scalars/custom-number-id.scalar';
@@ -19,6 +19,8 @@ import { TournamentStatusTypesEnum } from '../types/common';
 import { Level } from 'src/level/entities/level.entity';
 import { Round } from 'src/round/entities/round.entity';
 import { TournamentResult } from './tournamentResult.entity';
+import { Team } from 'src/team-management/entities/team.entity';
+import { Match } from 'src/match-management/entities/match.entity';
 
 registerEnumType(SplitSwitchGroupByEnum, {
   name: 'SplitSwitchGroupByEnum',
@@ -77,7 +79,7 @@ export class Tournament {
   @Column('varchar')
   status: TournamentStatusTypesEnum;
 
-  @OneToOne(() => Sport)
+  @ManyToOne(() => Sport)
   @JoinColumn()
   @Field(() => Sport)
   sport: Sport;
@@ -96,9 +98,23 @@ export class Tournament {
   @Field(() => [Round], { nullable: true })
   rounds: Round[];
 
+  @OneToMany(() => Match, match => match.tournament, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  @Field(() => [Match])
+  matches: Match[];
+
   @OneToOne(() => TournamentResult, (result) => result.tournament)
   @Field(() => TournamentResult, { nullable: true })
   tournamentResult: TournamentResult;
+
+  @OneToMany(() => Team, team => team.tournament, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  @Field(() => [Team])
+  teams: Team[];
 
   @Field()
   @CreateDateColumn()

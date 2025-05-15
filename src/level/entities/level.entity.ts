@@ -41,7 +41,7 @@ export class Level {
   @Column('varchar')
   status: LevelStatusTypesEnum;
 
-  @OneToOne(() => Format)
+  @ManyToOne(() => Format)
   @JoinColumn()
   @Field(() => Format)
   format: Format;

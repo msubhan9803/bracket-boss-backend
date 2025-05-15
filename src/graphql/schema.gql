@@ -557,6 +557,7 @@ type Tournament {
   isPrivate: Boolean!
   levels: [Level!]!
   matchBestOfRounds: Float!
+  matches: [Match!]!
   name: String!
   numberOfPools: Float!
   rounds: [Round!]
@@ -565,6 +566,7 @@ type Tournament {
   start_date: DateTime!
   status: TournamentStatusTypesEnum!
   teamGenerationType: TeamGenerationType!
+  teams: [Team!]!
   tournamentResult: TournamentResult
   updated_at: DateTime!
 }
