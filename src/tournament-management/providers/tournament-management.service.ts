@@ -167,4 +167,8 @@ export class TournamentManagementService {
       status: TournamentStatusTypesEnum.pool_play_in_progress,
     });
   }
+
+  async deleteTournament(tournamentId: number) {
+    await this.tournamentRepository.delete({ id: tournamentId })
+  }
 }

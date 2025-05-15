@@ -311,6 +311,7 @@ type Mutation {
   createTournament(input: CreateTournamentInputDto!): Tournament!
   createTournamentTeam(input: CreateTournamentTeamsInputDto!): [Team!]!
   deleteSchedule(input: DeleteScheduleInputDto!): DeleteScheduleResponseDto!
+  deleteTournament(tournamentId: Float!): MessageResponseDto!
 
   """Download empty schedule template"""
   downloadEmptyScheduleTemplate: String!

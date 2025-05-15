@@ -15,12 +15,14 @@ import { Level } from 'src/level/entities/level.entity';
 import { Team } from 'src/team-management/entities/team.entity';
 import { CreateTournamentTeamsInputDto } from 'src/team-management/dtos/create-tournament-teams-input.dto';
 import { MessageResponseDto } from 'src/common/dtos/message-response.dto';
+import { TournamentManagementService } from 'src/tournament-management/providers/tournament-management.service';
 
 @Resolver()
 export class SchedulingResolver {
   constructor(
     private readonly schedulingService: SchedulingService,
     private readonly usersService: UsersService,
+    private readonly tournamentManagementService: TournamentManagementService,
     private readonly scheduleSpreadsheetHandlerService: ScheduleSpreadsheetHandlerService,
   ) {}
 
@@ -170,5 +172,20 @@ export class SchedulingResolver {
     @Args('input') createTournamentTeamsInputDto: CreateTournamentTeamsInputDto,
   ): Promise<Team[]> {
     return this.schedulingService.createTournamentTeams(createTournamentTeamsInputDto);
+  }
+
+  @UseGuards(AuthCheckGuard)
+  @Mutation(() => MessageResponseDto)
+  async deleteTournament(@Args('tournamentId') tournamentId: number): Promise<MessageResponseDto> {
+    try {
+      await this.schedulingService.deleteScheduleOfTournament(tournamentId);
+      await this.tournamentManagementService.deleteTournament(tournamentId);
+
+      return {
+        message: messages.SUCCESS_MESSAGE,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
   }
 }
