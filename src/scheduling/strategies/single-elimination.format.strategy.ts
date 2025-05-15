@@ -250,17 +250,17 @@ export class SingleEliminationStrategy implements FormatStrategy {
     const levelTeamStandings = await this.levelTeamStandingService.findAllByLevelId({
       levelId: lastLevel.id,
     });
-    const winnerLevelTeamStanding = levelTeamStandings.shift();
+    const topThreeStandings = levelTeamStandings.slice(0, 3);
 
     await this.tournamentResultService.createTournamentResult({
       tournament,
-      winners: [
+      winners: topThreeStandings.map((standing, index) => 
         new TournamentWinner({
           tournament,
-          team: winnerLevelTeamStanding.team,
-          rank: 1,
+          team: standing.team,
+          rank: index + 1,
         })
-      ]
+      )
     });
   }
 }

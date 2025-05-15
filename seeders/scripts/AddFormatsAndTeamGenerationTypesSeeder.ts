@@ -41,6 +41,14 @@ export class AddFormatsAndTeamGenerationTypesSeeder {
         OR (f.name = 'round_robin' AND t.name = 'split_switch');
       `);
 
+      // Insert Relationships
+      await queryRunner.query(`
+        INSERT INTO "format_team_generation_types" ("formatId", "teamGenerationTypeId") 
+        SELECT f.id, t.id
+        FROM "format" f, "team_generation_type" t
+        WHERE (f.name = 'single_elimination' AND t.name = 'blind_draw');
+      `);
+
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
