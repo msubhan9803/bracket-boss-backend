@@ -9,7 +9,7 @@ import { LevelTeamStanding } from 'src/level/entities/level-team-standing.entity
 export interface FormatStrategy {
   type: FormatType;
   createInitialRounds(tournament: Tournament, level: Level, pool: Pool, teams: Team[]): Promise<Round[]>;
-  handleEndRound(poolId: number): void;
+  handleEndRound(level: Level, poolId: number): void;
   selectTeams?(levelTeamStanding: LevelTeamStanding[]): Promise<Team[]>;
   concludeTournament(tournament: Tournament): Promise<void>;
 }

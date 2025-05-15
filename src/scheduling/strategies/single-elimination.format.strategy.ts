@@ -118,9 +118,9 @@ export class SingleEliminationStrategy implements FormatStrategy {
     return roundList;
   }
 
-  async handleEndRound(poolId: number) {
+  async handleEndRound(level: Level, poolId: number) {
     const pool = await this.poolService.getPoolById(poolId);
-    const { tournament, level } = pool;
+    const { tournament } = pool;
 
     const rounds = await this.roundService.findRoundsByPoolId(poolId, [
       'matches',

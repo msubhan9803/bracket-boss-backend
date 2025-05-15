@@ -19,6 +19,8 @@ import { Match } from 'src/match-management/entities/match.entity';
 import { LevelTeamStandingService } from 'src/level/providers/level-team-standing.service';
 import { TournamentResultService } from 'src/tournament-management/providers/tournament-result.service';
 import { TournamentWinner } from 'src/tournament-management/entities/tournamentWinner.entity';
+import { LevelService } from 'src/level/providers/level.service';
+import { LevelStatusTypesEnum } from 'src/level/types/common';
 
 @Injectable()
 export class RoundRobinStrategy implements FormatStrategy {
@@ -33,6 +35,7 @@ export class RoundRobinStrategy implements FormatStrategy {
     private readonly courtManagementService: CourtManagementService,
     private readonly levelTeamStandingService: LevelTeamStandingService,
     private readonly tournamentResultService: TournamentResultService,
+    private readonly levelService: LevelService,
   ) { }
 
   async createInitialRounds(tournament: Tournament, level: Level, pool: Pool, teams: Team[]): Promise<Round[]> {
@@ -102,7 +105,7 @@ export class RoundRobinStrategy implements FormatStrategy {
     return roundList;
   }
 
-  async handleEndRound(poolId: number) {
+  async handleEndRound(level: Level, poolId: number) {
     const rounds = await this.roundService.findRoundsByPoolId(poolId);
     const currentRound = await this.roundService.findInProgressRoundByPoolId(poolId);
 
@@ -114,6 +117,18 @@ export class RoundRobinStrategy implements FormatStrategy {
     const nextRound = rounds.find(round => round.order === currentRound.order + 1);
     if (nextRound) {
       await this.roundService.updateRoundStatus(nextRound.id, RoundStatusTypesEnum.in_progress);
+    }
+
+    const allLevels = await this.levelService.findAllByTournamentWithRelations(level.tournament)
+    const lastLevel = allLevels.pop();
+    const isLastLevel = level.id === lastLevel.id;
+    const lastRound = rounds.pop();
+    const isLastRound = currentRound.id === lastRound.id;
+    
+    if (isLastLevel && isLastRound) {
+      await this.levelService.updateLevel(level.id, { 
+        status: LevelStatusTypesEnum.completed 
+      });
     }
   }
   

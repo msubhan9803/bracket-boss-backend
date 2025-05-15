@@ -188,14 +188,15 @@ export class SchedulingService {
   }
 
   async endRound(levelId: number, poolId: number) {
-    const level = await this.levelService.findOne(levelId);
-    const formatStrategy = this.formatStrategies[level.format.name];
-    await formatStrategy.handleEndRound(poolId)
+    const currentLevel = await this.levelService.findOne(levelId);
+    const formatStrategy = this.formatStrategies[currentLevel.format.name];
+    await formatStrategy.handleEndRound(currentLevel, poolId)
   }
 
   async concludeTournament(tournamentId: number) {
     const tournament = await this.tournamentManagementService.findOneWithRelations(tournamentId);
-    const lastLevel = tournament.levels.pop();
+    const { levels } = tournament;
+    const lastLevel = levels[levels.length - 1];
 
     const formatStrategy = this.formatStrategies[lastLevel.format.name];
     await formatStrategy.concludeTournament(tournament)
