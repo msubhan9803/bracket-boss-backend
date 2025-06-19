@@ -127,31 +127,14 @@ export class UserManagementSeeder {
       FROM "role" r
       JOIN "module" m ON m.name IN ('dashboard', 'my_club', 'scheduling')
       JOIN "policy" p ON p.name = 'read'
-      WHERE r.name = 'tournament_organizer';
+      WHERE r.name = 'organizer';
 
       INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
       SELECT r.id, m.id, p.id, NOW(), NOW()
       FROM "role" r
       JOIN "module" m ON m.name IN ('tournament_management', 'account_settings')
       JOIN "policy" p ON p.name = 'read_&_write'
-      WHERE r.name = 'tournament_organizer';
-    `);
-
-    // Insert access for League Organizer
-    await queryRunner.query(`
-      INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
-      SELECT r.id, m.id, p.id, NOW(), NOW()
-      FROM "role" r
-      JOIN "module" m ON m.name IN ('dashboard', 'my_club', 'scheduling')
-      JOIN "policy" p ON p.name = 'read'
-      WHERE r.name = 'league_organizer';
-
-      INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
-      SELECT r.id, m.id, p.id, NOW(), NOW()
-      FROM "role" r
-      JOIN "module" m ON m.name IN ('league_management', 'account_settings')
-      JOIN "policy" p ON p.name = 'read_&_write'
-      WHERE r.name = 'league_organizer';
+      WHERE r.name = 'organizer';
     `);
   }
 }

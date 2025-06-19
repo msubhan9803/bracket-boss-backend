@@ -428,10 +428,9 @@ type Role {
 
 enum RoleName {
   club_owner
-  league_organizer
+  organizer
   player
   super_admin
-  tournament_organizer
 }
 
 type Round {

@@ -21,8 +21,7 @@ export class RoleSeeder {
         ('super_admin', NOW(), NOW()),
         ('club_owner', NOW(), NOW()),
         ('player', NOW(), NOW()),
-        ('tournament_organizer', NOW(), NOW()),
-        ('league_organizer', NOW(), NOW())
+        ('organizer', NOW(), NOW())
         ON CONFLICT (name) DO NOTHING;
       `);
 

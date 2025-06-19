@@ -31,6 +31,7 @@ import { LevelTeam } from 'src/level/entities/level-team.entity';
 import { RoundTeam } from 'src/round/entities/round-team.entity';
 import { TournamentResult } from 'src/tournament-management/entities/tournamentResult.entity';
 import { TournamentWinner } from 'src/tournament-management/entities/tournamentWinner.entity';
+import { LevelTeamStanding } from 'src/level/entities/level-team-standing.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 config({ path: envFilePath });
@@ -60,6 +61,7 @@ export default new DataSource({
     Format,
     Level,
     LevelTeam,
+    LevelTeamStanding,
     Pool,
     Round,
     RoundTeam,

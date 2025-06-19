@@ -9,8 +9,7 @@ export class UpdateRoleNameToEnum1739386800606 implements MigrationInterface {
                 'super_admin', 
                 'club_owner', 
                 'player', 
-                'tournament_organizer', 
-                'league_organizer'
+                'organizer'
             )
         `);
 
