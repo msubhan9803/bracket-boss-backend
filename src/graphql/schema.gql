@@ -400,6 +400,7 @@ type Query {
   getScheduleOfTournament(input: GetScheduleOfTournamentInput!): [Level!]!
   getStepsOfUser: [Step!]!
   getTournamentById(tournamentId: Float!): Tournament!
+  getTournamentBySlug(slug: String!): Tournament!
   getUserById(clubId: Float, userId: Float!): UserWithRoleClub!
 }
 

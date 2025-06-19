@@ -71,6 +71,18 @@ export class TournamentManagementResolver {
   }
 
   @UseGuards(AuthCheckGuard)
+  @Query(() => Tournament)
+  async getTournamentBySlug(@Args('slug') slug: string) {
+    try {
+      const tournaments = await this.tournamentManagementService.findOneWithRelationsBySlug(slug);
+
+      return tournaments;
+    } catch (error) {
+      throw new InternalServerErrorException('Error: ', error.message);
+    }
+  }
+
+  @UseGuards(AuthCheckGuard)
   @Mutation(() => Tournament)
   async createTournament(@Args('input') createTournamentDto: CreateTournamentInputDto): Promise<Tournament> {
     try {

@@ -94,6 +94,32 @@ export class TournamentManagementService {
     });
   }
 
+  findOneWithRelationsBySlug(
+    slug: string,
+    relations: string[] = [
+      'sport',
+      'teamGenerationType',
+      'levels',
+      'levels.format',
+      'levels.pools',
+      'levels.pools.rounds',
+      'rounds',
+      'tournamentResult',
+      'tournamentResult.winners',
+      'tournamentResult.winners.team'
+    ],
+  ): Promise<Tournament> {
+    return this.tournamentRepository.findOne({
+      where: { slug },
+      relations,
+      order: {
+        levels: {
+          order: 'ASC'
+        }
+      }
+    });
+  }
+
   async createTournament(createTournamentDto: CreateTournamentInputDto): Promise<Tournament> {
     const sport = await this.sportManagementService.findSportByName(SportName.pickleball);
 
