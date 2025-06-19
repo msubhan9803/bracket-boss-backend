@@ -43,6 +43,10 @@ export class Tournament {
 
   @Field()
   @Column('text')
+  slug: string;
+
+  @Field()
+  @Column('text')
   description: string;
 
   @Field()

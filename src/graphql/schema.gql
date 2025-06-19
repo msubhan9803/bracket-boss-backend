@@ -562,6 +562,7 @@ type Tournament {
   name: String!
   numberOfPools: Float!
   rounds: [Round!]
+  slug: String!
   splitSwitchGroupBy: SplitSwitchGroupByEnum
   sport: Sport!
   start_date: DateTime!

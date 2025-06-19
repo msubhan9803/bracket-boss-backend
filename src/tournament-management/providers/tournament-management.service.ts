@@ -13,6 +13,7 @@ import { LevelService } from 'src/level/providers/level.service';
 import { PoolService } from 'src/pool/providers/pool.service';
 import { RoundStatusTypesEnum } from 'src/round/types/common';
 import { LevelStatusTypesEnum } from 'src/level/types/common';
+import { toSlug } from 'src/utils/helper';
 
 @Injectable()
 export class TournamentManagementService {
@@ -102,6 +103,7 @@ export class TournamentManagementService {
 
     const newTournament = this.tournamentRepository.create({
       name: createTournamentDto.name,
+      slug: toSlug(createTournamentDto.name),
       description: createTournamentDto.description,
       start_date: createTournamentDto.start_date,
       end_date: createTournamentDto.end_date,
