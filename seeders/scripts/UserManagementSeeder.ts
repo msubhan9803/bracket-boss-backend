@@ -120,21 +120,14 @@ export class UserManagementSeeder {
       WHERE r.name = 'player';
     `);
 
-    // Insert access for Tournament Organizer
+    // Insert access for Organizer
     await queryRunner.query(`
       INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
       SELECT r.id, m.id, p.id, NOW(), NOW()
       FROM "role" r
-      JOIN "module" m ON m.name IN ('dashboard', 'my_club', 'scheduling')
-      JOIN "policy" p ON p.name = 'read'
-      WHERE r.name = 'organizer';
-
-      INSERT INTO "modules_policies_roles" ("roleId", "moduleId", "policyId", "created_at", "updated_at")
-      SELECT r.id, m.id, p.id, NOW(), NOW()
-      FROM "role" r
-      JOIN "module" m ON m.name IN ('tournament_management', 'account_settings')
+      JOIN "module" m ON m.name NOT IN ('my_club', 'my_team', 'my_matches')
       JOIN "policy" p ON p.name = 'read_&_write'
-      WHERE r.name = 'organizer';
+      WHERE r.name = 'organizer';      
     `);
   }
 }
